@@ -11,6 +11,9 @@ importers:
       '@prospero/table-core':
         specifier: github:swe-shree/prospero-table-core
         version: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/5bf73e3be993c7579a13e16cab5727411dff126a(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@prospero/table-ui':
+        specifier: 'link:'
+        version: 'link:'
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)

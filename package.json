@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@prospero/table-core": "github:swe-shree/prospero-table-core",
+    "@prospero/table-ui": "link:",
     "@tanstack/react-table": "^8.21.3",
     "react-icons": "^5.6.0"
   },
