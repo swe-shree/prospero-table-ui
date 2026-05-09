@@ -89,10 +89,10 @@ function Table({
     table.lastPage();
     setPageIndex(totalPages - 1);
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white font-[Inter,sans-serif] shadow-sm", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-[1100px] border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-3 py-4 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12  px-[10px] py-[10px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             type: "checkbox",
@@ -104,7 +104,7 @@ function Table({
         headerGroup.headers.map((header) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "th",
           {
-            className: "px-4 py-4 text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
+            className: "px-[10px] py-[10px] text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
             children: header.isPlaceholder ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
               "button",
               {
@@ -136,7 +136,7 @@ function Table({
         {
           className: "border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0",
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-3 py-3 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-[10px] py-[8px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "input",
               {
                 type: "checkbox",
@@ -148,7 +148,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "px-4 py-3 align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
+                className: "px-[10px] py-[8px] align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()

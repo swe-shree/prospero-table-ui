@@ -93,13 +93,13 @@ export function Table<TData extends object>({
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white font-[Inter,sans-serif] shadow-sm">
+    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[1100px] border-collapse text-sm">
           <thead className="bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
-                <th className="w-12 px-3 py-4 text-center">
+                <th className="w-12  px-[10px] py-[10px] text-center">
                   <input
                     type="checkbox"
                     checked={allSelected}
@@ -111,7 +111,7 @@ export function Table<TData extends object>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-4 py-4 text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
+                    className="px-[10px] py-[10px] text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
                   >
                     {header.isPlaceholder ? null : (
                       <button
@@ -161,7 +161,7 @@ export function Table<TData extends object>({
                   key={row.id}
                   className="border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0"
                 >
-                  <td className="px-3 py-3 text-center">
+                  <td className="px-[10px] py-[8px] text-center">
                     <input
                       type="checkbox"
                       checked={Boolean(selectedRows[row.id])}
@@ -173,7 +173,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-4 py-3 align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
+                      className="px-[10px] py-[8px] align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
