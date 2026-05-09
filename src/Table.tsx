@@ -127,7 +127,7 @@ export function Table<TData extends object>({
                         </span>
 
                         {header.column.getCanSort() && (
-                          <span className="text-[11px] text-[#94A3B8]">
+                          <span className="text-[11px] text-[#64748B]">
                             {header.column.getIsSorted() === "asc" ? (
                               <FaSortUp />
                             ) : header.column.getIsSorted() === "desc" ? (
