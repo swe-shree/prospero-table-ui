@@ -89,13 +89,13 @@ function Table({
               {
                 type: "button",
                 onClick: header.column.getToggleSortingHandler(),
-                className: "flex w-full items-center justify-center gap-2 bg-transparent p-0 ",
+                className: "flex w-full items-center justify-centergap-2 bg-transparent p-0 text-center",
                 children: [
                   /* @__PURE__ */ jsx("span", { children: flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   ) }),
-                  header.column.getCanSort() && /* @__PURE__ */ jsx("span", { className: "text-[11px] text-[#64748B]", children: header.column.getIsSorted() === "asc" ? /* @__PURE__ */ jsx(FaSortUp, {}) : header.column.getIsSorted() === "desc" ? /* @__PURE__ */ jsx(FaSortDown, {}) : /* @__PURE__ */ jsx(FaSort, {}) })
+                  header.column.getCanSort() && /* @__PURE__ */ jsx("span", { className: "text-[11px] text-[#94A3B8]", children: header.column.getIsSorted() === "asc" ? /* @__PURE__ */ jsx(FaSortUp, {}) : header.column.getIsSorted() === "desc" ? /* @__PURE__ */ jsx(FaSortDown, {}) : /* @__PURE__ */ jsx(FaSort, {}) })
                 ]
               }
             )

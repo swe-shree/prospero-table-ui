@@ -117,7 +117,7 @@ export function Table<TData extends object>({
                       <button
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
-                        className="flex w-full items-center justify-center gap-2 bg-transparent p-0 "
+                        className="flex w-full items-center justify-centergap-2 bg-transparent p-0 text-center"
                       >
                         <span>
                           {flexRender(
@@ -127,7 +127,7 @@ export function Table<TData extends object>({
                         </span>
 
                         {header.column.getCanSort() && (
-                          <span className="text-[11px] text-[#64748B]">
+                          <span className="text-[11px] text-[#94A3B8]">
                             {header.column.getIsSorted() === "asc" ? (
                               <FaSortUp />
                             ) : header.column.getIsSorted() === "desc" ? (
