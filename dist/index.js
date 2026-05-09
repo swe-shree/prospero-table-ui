@@ -161,7 +161,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
