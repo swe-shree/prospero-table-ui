@@ -188,7 +188,7 @@ export function Table<TData extends object>({
         </table>
       </div>
 
-      <div className="flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-4">
+      <div className="flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
         <p className="text-sm text-[#64748B]">
           Showing{" "}
           <span className="font-bold text-[#111827]">
@@ -201,7 +201,7 @@ export function Table<TData extends object>({
           documents
         </p>
 
-        <div className="flex items-center gap-3 text-sm text-[#64748B]">
+        <div className="absolute left-1/2 flex -translate-x-1/2 flex items-center gap-3 text-sm text-[#64748B]">
           <button
             type="button"
             disabled={pageIndex === 0}

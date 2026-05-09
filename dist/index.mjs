@@ -140,7 +140,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
@@ -156,7 +156,7 @@ function Table({
         " ",
         "documents"
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 text-sm text-[#64748B]", children: [
+      /* @__PURE__ */ jsxs("div", { className: "absolute left-1/2 flex -translate-x-1/2 flex items-center gap-3 text-sm text-[#64748B]", children: [
         /* @__PURE__ */ jsx(
           "button",
           {
