@@ -117,7 +117,7 @@ export function Table<TData extends object>({
                       <button
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
-                        className="flex w-full items-center gap-2 bg-transparent p-0 text-left"
+                        className="flex w-full items-centerjustify-center gap-2 bg-transparent p-0 "
                       >
                         <span>
                           {flexRender(

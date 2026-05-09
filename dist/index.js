@@ -110,7 +110,7 @@ function Table({
               {
                 type: "button",
                 onClick: header.column.getToggleSortingHandler(),
-                className: "flex w-full items-center gap-2 bg-transparent p-0 text-left",
+                className: "flex w-full items-centerjustify-center gap-2 bg-transparent p-0 ",
                 children: [
                   /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: (0, import_react_table.flexRender)(
                     header.column.columnDef.header,
