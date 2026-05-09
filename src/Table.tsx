@@ -95,7 +95,7 @@ export function Table<TData extends object>({
   return (
     <div className="w-full overflow-hidden border-2 border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
       <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[1100px] border-collapse text-sm">
+        <table className="w-full border-collapse text-sm">
           <thead className="bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
