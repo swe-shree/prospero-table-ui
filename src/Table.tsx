@@ -37,75 +37,28 @@ export function Table<TData extends object>({
   });
 
   const pageIndex = table.getState().pagination.pageIndex;
-
   const currentPage = pageIndex + 1;
-
   const totalPages = table.getPageCount();
 
-  const showingFrom =
-    total === 0 ? 0 : pageIndex * pageSize + 1;
-
-  const showingTo = Math.min(
-    (pageIndex + 1) * pageSize,
-    total
-  );
+  const showingFrom = total === 0 ? 0 : pageIndex * pageSize + 1;
+  const showingTo = Math.min((pageIndex + 1) * pageSize, total);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        overflow: "hidden",
-        border: "1px solid #E5E7EB",
-        backgroundColor: "#FFFFFF",
-      }}
-    >
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          fontSize: "14px",
-        }}
-      >
-        <thead
-          style={{
-            backgroundColor: "#F8FAFC",
-          }}
-        >
+    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
+      <table className="w-full border-collapse text-sm">
+        <thead className="bg-[#F8FAFC]">
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr
-              key={headerGroup.id}
-              style={{
-                borderBottom: "1px solid #E5E7EB",
-              }}
-            >
+            <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  style={{
-                    padding: "10px 10px",
-                    textAlign: "center",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    color: "#475569",
-                  }}
+                  className="px-[10px] py-[10px] text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
                 >
                   {header.isPlaceholder ? null : (
                     <button
                       type="button"
                       onClick={header.column.getToggleSortingHandler()}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "8px",
-                        margin: "0 auto",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#475569",
-                      }}
+                      className="mx-auto flex cursor-pointer items-center justify-center gap-2 border-0 bg-transparent font-[Inter,sans-serif] text-[#64748B]"
                     >
                       <span>
                         {flexRender(
@@ -115,17 +68,10 @@ export function Table<TData extends object>({
                       </span>
 
                       {header.column.getCanSort() && (
-                        <span
-                          style={{
-                            fontSize: "11px",
-                            color: "#94A3B8",
-                          }}
-                        >
-                          {header.column.getIsSorted() ===
-                          "asc" ? (
+                        <span className="text-[11px] text-[#94A3B8]">
+                          {header.column.getIsSorted() === "asc" ? (
                             <FaSortUp />
-                          ) : header.column.getIsSorted() ===
-                            "desc" ? (
+                          ) : header.column.getIsSorted() === "desc" ? (
                             <FaSortDown />
                           ) : (
                             <FaSort />
@@ -145,32 +91,18 @@ export function Table<TData extends object>({
             <tr>
               <td
                 colSpan={columns.length}
-                style={{
-                  padding: "40px",
-                  textAlign: "center",
-                  color: "#6B7280",
-                }}
+                className="px-10 py-10 text-center text-[#6B7280]"
               >
                 No data found
               </td>
             </tr>
           ) : (
             table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                style={{
-                  borderBottom: "1px solid #E5E7EB",
-                }}
-              >
+              <tr key={row.id} className="border-b border-[#E5E7EB]">
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    style={{
-                    padding: "8px 10px",  
-                      textAlign: "center",
-                      color: "#1E293B",
-                      fontSize: "13px",
-                    }}
+                    className="px-[10px] py-2 text-center align-middle text-[12px] leading-[13.48px] tracking-[0px] text-[#1E293B]"
                   >
                     {flexRender(
                       cell.column.columnDef.cell,
@@ -184,94 +116,40 @@ export function Table<TData extends object>({
         </tbody>
       </table>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "16px 24px",
-          borderTop: "1px solid #E5E7EB",
-          backgroundColor: "#FFFFFF",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "14px",
-            color: "#6B7280",
-          }}
-        >
+      <div className="relative flex items-center justify-center border-t border-[#E5E7EB] bg-white px-6 py-4">
+        <p className="absolute left-6 text-sm text-[#6B7280]">
           Showing{" "}
-          <span
-            style={{
-              fontWeight: 700,
-              color: "#111827",
-            }}
-          >
-            {showingFrom}
-          </span>
+          <span className="font-boldtext-[#111827]">{showingFrom}</span>
           –
-          <span
-            style={{
-              fontWeight: 700,
-              color: "#111827",
-            }}
-          >
-            {showingTo}
-          </span>{" "}
+          <span className="font-bold text-[#111827]">{showingTo}</span>{" "}
           of{" "}
-          <span
-            style={{
-              fontWeight: 700,
-              color: "#111827",
-            }}
-          >
+          <span className="font-bold text-[#111827]">
             {total.toLocaleString()}
           </span>{" "}
           documents
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            color: "#6B7280",
-          }}
-        >
-          <button onClick={() => table.firstPage()}>
+        <div className="flex items-center gap-3 text-[#6B7280]">
+          <button type="button" onClick={() => table.firstPage()}>
             <MdKeyboardDoubleArrowLeft />
           </button>
 
-          <button onClick={() => table.previousPage()}>
+          <button type="button" onClick={() => table.previousPage()}>
             <MdArrowBackIosNew />
           </button>
 
-          <span>
+          <span className="text-sm text-[#6B7280]">
             Page{" "}
-            <span
-              style={{
-                fontWeight: 700,
-                color: "#111827",
-              }}
-            >
-              {currentPage}
-            </span>{" "}
+            <span className="font-medium text-[#111827]">{currentPage}</span>{" "}
             of{" "}
-            <span
-              style={{
-                fontWeight: 700,
-                color: "#111827",
-              }}
-            >
-              {totalPages}
-            </span>
+            <span className="font-medium text-[#111827]">{totalPages}</span>
           </span>
 
-          <button onClick={() => table.nextPage()}>
+          <button type="button" onClick={() => table.nextPage()}>
             <MdArrowForwardIos />
           </button>
 
-          <button onClick={() => table.lastPage()}>
+          <button type="button" onClick={() => table.lastPage()}>
             <MdKeyboardDoubleArrowRight />
           </button>
         </div>
