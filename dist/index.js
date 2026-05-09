@@ -38,18 +38,18 @@ function Table({
   total = data.length
 }) {
   const [selectedRows, setSelectedRows] = (0, import_react.useState)({});
+  const [pageIndex, setPageIndex] = (0, import_react.useState)(0);
   const table = (0, import_table_core.useTableCore)({
     data,
     columns,
     pagination: {
-      pageIndex: 0,
+      pageIndex,
       pageSize
     },
     enableSorting: true,
     enablePagination: true,
     enableSearching: true
   });
-  const pageIndex = table.getState().pagination.pageIndex;
   const currentPage = pageIndex + 1;
   const totalPages = table.getPageCount();
   const showingFrom = total === 0 ? 0 : pageIndex * pageSize + 1;
@@ -73,10 +73,26 @@ function Table({
       [rowId]: !prev[rowId]
     }));
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm font-[Inter,sans-serif]", children: [
+  function goToFirstPage() {
+    table.firstPage();
+    setPageIndex(0);
+  }
+  function goToPreviousPage() {
+    table.previousPage();
+    setPageIndex((prev) => Math.max(prev - 1, 0));
+  }
+  function goToNextPage() {
+    table.nextPage();
+    setPageIndex((prev) => Math.min(prev + 1, totalPages - 1));
+  }
+  function goToLastPage() {
+    table.lastPage();
+    setPageIndex(totalPages - 1);
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white font-[Inter,sans-serif] shadow-sm", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-[1100px] border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 border-r border-[#E5E7EB] px-3 py-4 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-3 py-4 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             type: "checkbox",
@@ -88,7 +104,7 @@ function Table({
         headerGroup.headers.map((header) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "th",
           {
-            className: "border-r border-[#E5E7EB] px-4 py-4 text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B] last:border-r-0",
+            className: "px-4 py-4 text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
             children: header.isPlaceholder ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
               "button",
               {
@@ -120,7 +136,7 @@ function Table({
         {
           className: "border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0",
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "border-r border-[#E5E7EB] px-3 py-3 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-3 py-3 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "input",
               {
                 type: "checkbox",
@@ -132,7 +148,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "border-r border-[#E5E7EB] px-4 py-3 align-middle text-[12px] font-normal leading-[18px] text-[#1E293B] last:border-r-0",
+                className: "px-4 py-3 align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()
@@ -166,8 +182,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !table.getCanPreviousPage(),
-            onClick: () => table.firstPage(),
+            disabled: pageIndex === 0,
+            onClick: goToFirstPage,
             className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40",
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowLeft, {})
           }
@@ -176,8 +192,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !table.getCanPreviousPage(),
-            onClick: () => table.previousPage(),
+            disabled: pageIndex === 0,
+            onClick: goToPreviousPage,
             className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40",
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowBackIosNew, {})
           }
@@ -195,8 +211,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !table.getCanNextPage(),
-            onClick: () => table.nextPage(),
+            disabled: pageIndex >= totalPages - 1,
+            onClick: goToNextPage,
             className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40",
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowForwardIos, {})
           }
@@ -205,8 +221,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !table.getCanNextPage(),
-            onClick: () => table.lastPage(),
+            disabled: pageIndex >= totalPages - 1,
+            onClick: goToLastPage,
             className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40",
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
           }

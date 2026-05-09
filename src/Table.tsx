@@ -26,12 +26,13 @@ export function Table<TData extends object>({
   total = data.length,
 }: TableProps<TData>) {
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
+  const [pageIndex, setPageIndex] = useState(0);
 
   const table = useTableCore({
     data,
     columns,
     pagination: {
-      pageIndex: 0,
+      pageIndex,
       pageSize,
     },
     enableSorting: true,
@@ -39,7 +40,6 @@ export function Table<TData extends object>({
     enableSearching: true,
   });
 
-  const pageIndex = table.getState().pagination.pageIndex;
   const currentPage = pageIndex + 1;
   const totalPages = table.getPageCount();
 
@@ -61,6 +61,7 @@ export function Table<TData extends object>({
     rows.forEach((row) => {
       next[row.id] = true;
     });
+
     setSelectedRows(next);
   }
 
@@ -71,14 +72,34 @@ export function Table<TData extends object>({
     }));
   }
 
+  function goToFirstPage() {
+    table.firstPage();
+    setPageIndex(0);
+  }
+
+  function goToPreviousPage() {
+    table.previousPage();
+    setPageIndex((prev) => Math.max(prev - 1, 0));
+  }
+
+  function goToNextPage() {
+    table.nextPage();
+    setPageIndex((prev) => Math.min(prev + 1, totalPages - 1));
+  }
+
+  function goToLastPage() {
+    table.lastPage();
+    setPageIndex(totalPages - 1);
+  }
+
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm font-[Inter,sans-serif]">
+    <div className="w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white font-[Inter,sans-serif] shadow-sm">
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[1100px] border-collapse text-sm">
           <thead className="bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
-                <th className="w-12 border-r border-[#E5E7EB] px-3 py-4 text-center">
+                <th className="w-12 px-3 py-4 text-center">
                   <input
                     type="checkbox"
                     checked={allSelected}
@@ -90,7 +111,7 @@ export function Table<TData extends object>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="border-r border-[#E5E7EB] px-4 py-4 text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B] last:border-r-0"
+                    className="px-4 py-4 text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
                   >
                     {header.isPlaceholder ? null : (
                       <button
@@ -140,7 +161,7 @@ export function Table<TData extends object>({
                   key={row.id}
                   className="border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0"
                 >
-                  <td className="border-r border-[#E5E7EB] px-3 py-3 text-center">
+                  <td className="px-3 py-3 text-center">
                     <input
                       type="checkbox"
                       checked={Boolean(selectedRows[row.id])}
@@ -152,7 +173,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="border-r border-[#E5E7EB] px-4 py-3 align-middle text-[12px] font-normal leading-[18px] text-[#1E293B] last:border-r-0"
+                      className="px-4 py-3 align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -183,8 +204,8 @@ export function Table<TData extends object>({
         <div className="flex items-center gap-3 text-sm text-[#64748B]">
           <button
             type="button"
-            disabled={!table.getCanPreviousPage()}
-            onClick={() => table.firstPage()}
+            disabled={pageIndex === 0}
+            onClick={goToFirstPage}
             className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
           >
             <MdKeyboardDoubleArrowLeft />
@@ -192,8 +213,8 @@ export function Table<TData extends object>({
 
           <button
             type="button"
-            disabled={!table.getCanPreviousPage()}
-            onClick={() => table.previousPage()}
+            disabled={pageIndex === 0}
+            onClick={goToPreviousPage}
             className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
           >
             <MdArrowBackIosNew />
@@ -208,8 +229,8 @@ export function Table<TData extends object>({
 
           <button
             type="button"
-            disabled={!table.getCanNextPage()}
-            onClick={() => table.nextPage()}
+            disabled={pageIndex >= totalPages - 1}
+            onClick={goToNextPage}
             className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
           >
             <MdArrowForwardIos />
@@ -217,8 +238,8 @@ export function Table<TData extends object>({
 
           <button
             type="button"
-            disabled={!table.getCanNextPage()}
-            onClick={() => table.lastPage()}
+            disabled={pageIndex >= totalPages - 1}
+            onClick={goToLastPage}
             className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
           >
             <MdKeyboardDoubleArrowRight />
