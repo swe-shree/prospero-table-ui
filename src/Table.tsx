@@ -93,7 +93,7 @@ export function Table<TData extends object>({
   }
 
   return (
-    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
+    <div className="w-full overflow-hidden border-2 border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[1100px] border-collapse text-sm">
           <thead className="bg-[#F8FAFC]">
@@ -117,7 +117,7 @@ export function Table<TData extends object>({
                       <button
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
-                        className="flex w-full items-center justify-between gap-2 bg-transparent p-0 text-left"
+                        className="flex w-full items-center gap-2 bg-transparent p-0 text-left"
                       >
                         <span>
                           {flexRender(

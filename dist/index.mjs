@@ -68,7 +68,7 @@ function Table({
     table.lastPage();
     setPageIndex(totalPages - 1);
   }
-  return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border-2 border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ jsx("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-[1100px] border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
         /* @__PURE__ */ jsx("th", { className: "w-12  px-[10px] py-[10px] text-center", children: /* @__PURE__ */ jsx(
@@ -89,7 +89,7 @@ function Table({
               {
                 type: "button",
                 onClick: header.column.getToggleSortingHandler(),
-                className: "flex w-full items-center justify-between gap-2 bg-transparent p-0 text-left",
+                className: "flex w-full items-center gap-2 bg-transparent p-0 text-left",
                 children: [
                   /* @__PURE__ */ jsx("span", { children: flexRender(
                     header.column.columnDef.header,
