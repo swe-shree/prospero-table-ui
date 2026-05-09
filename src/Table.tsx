@@ -8,6 +8,7 @@ import {
   MdKeyboardDoubleArrowLeft,
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
+
 import { useTableCore } from "@prospero/table-core";
 
 export type TableProps<TData extends object> = {
@@ -36,28 +37,75 @@ export function Table<TData extends object>({
   });
 
   const pageIndex = table.getState().pagination.pageIndex;
+
   const currentPage = pageIndex + 1;
+
   const totalPages = table.getPageCount();
 
-  const showingFrom = total === 0 ? 0 : pageIndex * pageSize + 1;
-  const showingTo = Math.min((pageIndex + 1) * pageSize, total);
+  const showingFrom =
+    total === 0 ? 0 : pageIndex * pageSize + 1;
+
+  const showingTo = Math.min(
+    (pageIndex + 1) * pageSize,
+    total
+  );
 
   return (
-    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white">
-      <table className="w-full border-collapse text-sm">
-        <thead className="bg-[#F8FAFC]">
+    <div
+      style={{
+        width: "100%",
+        overflow: "hidden",
+        border: "1px solid #E5E7EB",
+        backgroundColor: "#FFFFFF",
+      }}
+    >
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: "14px",
+        }}
+      >
+        <thead
+          style={{
+            backgroundColor: "#F8FAFC",
+          }}
+        >
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
+            <tr
+              key={headerGroup.id}
+              style={{
+                borderBottom: "1px solid #E5E7EB",
+              }}
+            >
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-10 py-5 text-center text-[12px] font-semibold uppercase tracking-wide text-[#475569]"
+                  style={{
+                    padding: "10px 10px",
+                    textAlign: "center",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    color: "#475569",
+                  }}
                 >
                   {header.isPlaceholder ? null : (
                     <button
                       type="button"
                       onClick={header.column.getToggleSortingHandler()}
-                      className="mx-auto flex items-center justify-center gap-2"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        margin: "0 auto",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#475569",
+                      }}
                     >
                       <span>
                         {flexRender(
@@ -67,10 +115,17 @@ export function Table<TData extends object>({
                       </span>
 
                       {header.column.getCanSort() && (
-                        <span className="text-[11px] text-[#94A3B8]">
-                          {header.column.getIsSorted() === "asc" ? (
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            color: "#94A3B8",
+                          }}
+                        >
+                          {header.column.getIsSorted() ===
+                          "asc" ? (
                             <FaSortUp />
-                          ) : header.column.getIsSorted() === "desc" ? (
+                          ) : header.column.getIsSorted() ===
+                            "desc" ? (
                             <FaSortDown />
                           ) : (
                             <FaSort />
@@ -90,7 +145,11 @@ export function Table<TData extends object>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-10 py-10 text-center text-sm text-[#6B7280]"
+                style={{
+                  padding: "40px",
+                  textAlign: "center",
+                  color: "#6B7280",
+                }}
               >
                 No data found
               </td>
@@ -99,14 +158,24 @@ export function Table<TData extends object>({
             table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                className="border-b border-[#E5E7EB] transition hover:bg-[#F9FAFB]"
+                style={{
+                  borderBottom: "1px solid #E5E7EB",
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-10 py-5 text-center text-[13px] font-normal text-[#1E293B]"
+                    style={{
+                    padding: "8px 10px",  
+                      textAlign: "center",
+                      color: "#1E293B",
+                      fontSize: "13px",
+                    }}
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
                   </td>
                 ))}
               </tr>
@@ -115,58 +184,94 @@ export function Table<TData extends object>({
         </tbody>
       </table>
 
-      <div className="flex items-center justify-between border-t border-[#E5E7EB] bg-white px-6 py-4">
-        <p className="text-sm text-[#6B7280]">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "16px 24px",
+          borderTop: "1px solid #E5E7EB",
+          backgroundColor: "#FFFFFF",
+        }}
+      >
+        <p
+          style={{
+            fontSize: "14px",
+            color: "#6B7280",
+          }}
+        >
           Showing{" "}
-          <span className="font-bold text-[#111827]">{showingFrom}</span>
-          <span className="font-bold text-[#111827]">–</span>
-          <span className="font-bold text-[#111827]">{showingTo}</span> of{" "}
-          <span className="font-bold text-[#111827]">
+          <span
+            style={{
+              fontWeight: 700,
+              color: "#111827",
+            }}
+          >
+            {showingFrom}
+          </span>
+          –
+          <span
+            style={{
+              fontWeight: 700,
+              color: "#111827",
+            }}
+          >
+            {showingTo}
+          </span>{" "}
+          of{" "}
+          <span
+            style={{
+              fontWeight: 700,
+              color: "#111827",
+            }}
+          >
             {total.toLocaleString()}
           </span>{" "}
           documents
         </p>
 
-        <div className="flex items-center gap-3 text-sm text-[#6B7280]">
-          <button
-            type="button"
-            onClick={() => table.firstPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-[#475569] hover:bg-[#F1F5F9] disabled:cursor-not-allowed disabled:opacity-40"
-          >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            color: "#6B7280",
+          }}
+        >
+          <button onClick={() => table.firstPage()}>
             <MdKeyboardDoubleArrowLeft />
           </button>
 
-          <button
-            type="button"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-[#475569] hover:bg-[#F1F5F9] disabled:cursor-not-allowed disabled:opacity-40"
-          >
+          <button onClick={() => table.previousPage()}>
             <MdArrowBackIosNew />
           </button>
 
-          <span className="text-sm text-[#6B7280]">
+          <span>
             Page{" "}
-            <span className="font-bold text-[#111827]">{currentPage}</span> of{" "}
-            <span className="font-bold text-[#111827]">{totalPages}</span>
+            <span
+              style={{
+                fontWeight: 700,
+                color: "#111827",
+              }}
+            >
+              {currentPage}
+            </span>{" "}
+            of{" "}
+            <span
+              style={{
+                fontWeight: 700,
+                color: "#111827",
+              }}
+            >
+              {totalPages}
+            </span>
           </span>
 
-          <button
-            type="button"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-[#475569] hover:bg-[#F1F5F9] disabled:cursor-not-allowed disabled:opacity-40"
-          >
+          <button onClick={() => table.nextPage()}>
             <MdArrowForwardIos />
           </button>
 
-          <button
-            type="button"
-            onClick={() => table.lastPage()}
-            disabled={!table.getCanNextPage()}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-[#475569] hover:bg-[#F1F5F9] disabled:cursor-not-allowed disabled:opacity-40"
-          >
+          <button onClick={() => table.lastPage()}>
             <MdKeyboardDoubleArrowRight />
           </button>
         </div>
