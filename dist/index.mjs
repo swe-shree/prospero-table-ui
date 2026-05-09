@@ -89,7 +89,7 @@ function Table({
               {
                 type: "button",
                 onClick: header.column.getToggleSortingHandler(),
-                className: "flex w-full items-centerjustify-center gap-2 bg-transparent p-0 ",
+                className: "flex w-full items-center justify-center gap-2 bg-transparent p-0 ",
                 children: [
                   /* @__PURE__ */ jsx("span", { children: flexRender(
                     header.column.columnDef.header,
