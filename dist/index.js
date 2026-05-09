@@ -104,7 +104,7 @@ function Table({
         headerGroup.headers.map((header) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "th",
           {
-            className: "px-[10px] py-[10px] text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
+            className: "px-[10px] py-[10px] text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
             children: header.isPlaceholder ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
               "button",
               {
@@ -148,7 +148,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "px-[10px] py-[8px] align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
+                className: "px-[10px] py-[8px] text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()

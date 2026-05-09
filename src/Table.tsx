@@ -111,7 +111,7 @@ export function Table<TData extends object>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-[10px] py-[10px] text-left align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
+                    className="px-[10px] py-[10px] text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
                   >
                     {header.isPlaceholder ? null : (
                       <button
@@ -173,7 +173,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-[10px] py-[8px] align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
+                      className="px-[10px] py-[8px] text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
