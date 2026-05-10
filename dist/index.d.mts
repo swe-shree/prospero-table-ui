@@ -6,7 +6,10 @@ type TableProps<TData extends object> = {
     columns: ColumnDef<TData>[];
     pageSize?: number;
     total?: number;
+    pageIndex?: number;
+    onPageChange?: (nextPageIndex: number) => void;
+    rowLabel?: string;
 };
-declare function Table<TData extends object>({ data, columns, pageSize, total, }: TableProps<TData>): react_jsx_runtime.JSX.Element;
+declare function Table<TData extends object>({ data, columns, pageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, }: TableProps<TData>): react_jsx_runtime.JSX.Element;
 
 export { Table, type TableProps };
