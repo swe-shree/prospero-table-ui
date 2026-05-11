@@ -170,7 +170,7 @@ export function Table<TData extends object>({
   const goToLastPage = () => setPage(totalPages - 1);
 
   return (
-    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
+    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]" >
       <div className="w-full overflow-auto max-h-[500px]">
         <table className="w-full border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
