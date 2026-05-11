@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@prospero/table-core':
-        specifier: github:swe-shree/prospero-table-core
-        version: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/5bf73e3be993c7579a13e16cab5727411dff126a(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: github:swe-shree/prospero-table-core#master
+        version: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@prospero/table-ui':
         specifier: 'link:'
         version: 'link:'
@@ -211,8 +211,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/5bf73e3be993c7579a13e16cab5727411dff126a':
-    resolution: {tarball: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/5bf73e3be993c7579a13e16cab5727411dff126a}
+  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde':
+    resolution: {tarball: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde}
     version: 1.0.0
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
@@ -692,7 +692,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/5bf73e3be993c7579a13e16cab5727411dff126a(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@tanstack/react-table': 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react: 19.2.6

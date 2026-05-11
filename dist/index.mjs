@@ -27,6 +27,7 @@ function Table({
   const [hasMounted, setHasMounted] = useState(false);
   const [internalPageIndex, setInternalPageIndex] = useState(0);
   const [sorting, setSorting] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
   const getPageIndexFromUrl = () => {
     if (!enableQueryParams || typeof window === "undefined") {
       return 0;
@@ -51,10 +52,7 @@ function Table({
   }, [enableQueryParams, isControlled, pageQueryKey]);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const totalRows = total ?? data.length;
-  const totalPages = Math.max(
-    1,
-    Math.ceil(totalRows / controlledPageSize)
-  );
+  const totalPages = Math.max(1, Math.ceil(totalRows / controlledPageSize));
   const safePageIndex = Math.min(pageIndex, totalPages - 1);
   const updateUrlPage = useCallback(
     (next) => {
@@ -94,6 +92,9 @@ function Table({
       }) : updater;
       setPage(next.pageIndex);
     },
+    rowSelection,
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
     enableSorting: true,
     enablePagination: true,
     enableSearching: false
@@ -114,7 +115,7 @@ function Table({
   const goToNextPage = () => canNext && setPage(safePageIndex + 1);
   const goToLastPage = () => setPage(totalPages - 1);
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
-    /* @__PURE__ */ jsx("div", { className: "w-full overflow-auto max-h-[500px]", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
+    /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
         /* @__PURE__ */ jsx("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ jsx(
           "input",
@@ -234,8 +235,7 @@ function Table({
           " ",
           /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: safePageIndex + 1 }),
           " ",
-          "of",
-          " ",
+          "of ",
           /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: totalPages })
         ] }),
         /* @__PURE__ */ jsx(
