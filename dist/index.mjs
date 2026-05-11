@@ -26,7 +26,10 @@ function Table({
   pageQueryKey = "page"
 }) {
   const isControlled = controlledPageIndex !== void 0 && onPageChange !== void 0;
+  const [hasMounted, setHasMounted] = useState(false);
+  const [internalPageIndex, setInternalPageIndex] = useState(0);
   const [internalPageSize, setInternalPageSize] = useState(controlledPageSize);
+  const [sorting, setSorting] = useState([]);
   const currentPageSize = internalPageSize;
   const getPageIndexFromUrl = () => {
     if (!enableQueryParams || typeof window === "undefined") {
@@ -36,14 +39,21 @@ function Table({
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
-  const [hasMounted, setHasMounted] = useState(false);
-  const [internalPageIndex, setInternalPageIndex] = useState(0);
   useEffect(() => {
     setInternalPageIndex(getPageIndexFromUrl());
     setHasMounted(true);
   }, []);
+  useEffect(() => {
+    if (!enableQueryParams || isControlled) return;
+    const handlePopState = () => {
+      setInternalPageIndex(getPageIndexFromUrl());
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [enableQueryParams, isControlled, pageQueryKey]);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
-  const [sorting, setSorting] = useState([]);
   const totalRows = total ?? data.length;
   const totalPages = Math.max(1, Math.ceil(totalRows / currentPageSize));
   const safePageIndex = Math.min(pageIndex, totalPages - 1);
@@ -69,16 +79,6 @@ function Table({
     },
     [isControlled, onPageChange, totalPages, updateUrlPage]
   );
-  useEffect(() => {
-    if (!enableQueryParams || isControlled) return;
-    const handlePopState = () => {
-      setInternalPageIndex(getPageIndexFromUrl());
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [enableQueryParams, isControlled, pageQueryKey]);
   const table = useTableCore({
     data,
     columns,
@@ -89,7 +89,10 @@ function Table({
       pageSize: currentPageSize
     },
     onPaginationChange: (updater) => {
-      const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize: currentPageSize }) : updater;
+      const next = typeof updater === "function" ? updater({
+        pageIndex: safePageIndex,
+        pageSize: currentPageSize
+      }) : updater;
       setPage(next.pageIndex);
     },
     enableSorting: true,

@@ -51,8 +51,11 @@ export function Table<TData extends object>({
   const isControlled =
     controlledPageIndex !== undefined && onPageChange !== undefined;
 
+  const [hasMounted, setHasMounted] = useState(false);
+  const [internalPageIndex, setInternalPageIndex] = useState(0);
   const [internalPageSize, setInternalPageSize] =
     useState(controlledPageSize);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const currentPageSize = internalPageSize;
 
@@ -67,18 +70,26 @@ export function Table<TData extends object>({
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
 
-  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setInternalPageIndex(getPageIndexFromUrl());
+    setHasMounted(true);
+  }, []);
 
-const [internalPageIndex, setInternalPageIndex] = useState(0);
+  useEffect(() => {
+    if (!enableQueryParams || isControlled) return;
 
-useEffect(() => {
-  setInternalPageIndex(getPageIndexFromUrl());
-  setHasMounted(true);
-}, []);
+    const handlePopState = () => {
+      setInternalPageIndex(getPageIndexFromUrl());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [enableQueryParams, isControlled, pageQueryKey]);
 
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
-
-  const [sorting, setSorting] = useState<SortingState>([]);
 
   const totalRows = total ?? data.length;
 
@@ -114,20 +125,6 @@ useEffect(() => {
     [isControlled, onPageChange, totalPages, updateUrlPage]
   );
 
-  useEffect(() => {
-    if (!enableQueryParams || isControlled) return;
-
-    const handlePopState = () => {
-      setInternalPageIndex(getPageIndexFromUrl());
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [enableQueryParams, isControlled, pageQueryKey]);
-
   const table = useTableCore({
     data,
     columns,
@@ -143,7 +140,10 @@ useEffect(() => {
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
-          ? updater({ pageIndex: safePageIndex, pageSize: currentPageSize })
+          ? updater({
+              pageIndex: safePageIndex,
+              pageSize: currentPageSize,
+            })
           : updater;
 
       setPage(next.pageIndex);
@@ -180,19 +180,18 @@ useEffect(() => {
   const goToLastPage = () => setPage(totalPages - 1);
 
   const handlePageSizeChange = (
-  e: React.ChangeEvent<HTMLSelectElement>
-) => {
-  const nextPageSize = Number(e.target.value);
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const nextPageSize = Number(e.target.value);
 
-  setInternalPageSize(nextPageSize);
-  onPageSizeChange?.(nextPageSize);
-  setPage(0);
-};
+    setInternalPageSize(nextPageSize);
+    onPageSizeChange?.(nextPageSize);
+    setPage(0);
+  };
 
-if (!hasMounted) {
-  return null;
-}
-
+  if (!hasMounted) {
+    return null;
+  }
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">

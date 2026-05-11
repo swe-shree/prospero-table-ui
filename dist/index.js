@@ -45,7 +45,10 @@ function Table({
   pageQueryKey = "page"
 }) {
   const isControlled = controlledPageIndex !== void 0 && onPageChange !== void 0;
+  const [hasMounted, setHasMounted] = (0, import_react.useState)(false);
+  const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(0);
   const [internalPageSize, setInternalPageSize] = (0, import_react.useState)(controlledPageSize);
+  const [sorting, setSorting] = (0, import_react.useState)([]);
   const currentPageSize = internalPageSize;
   const getPageIndexFromUrl = () => {
     if (!enableQueryParams || typeof window === "undefined") {
@@ -55,14 +58,21 @@ function Table({
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
-  const [hasMounted, setHasMounted] = (0, import_react.useState)(false);
-  const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(0);
   (0, import_react.useEffect)(() => {
     setInternalPageIndex(getPageIndexFromUrl());
     setHasMounted(true);
   }, []);
+  (0, import_react.useEffect)(() => {
+    if (!enableQueryParams || isControlled) return;
+    const handlePopState = () => {
+      setInternalPageIndex(getPageIndexFromUrl());
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [enableQueryParams, isControlled, pageQueryKey]);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
-  const [sorting, setSorting] = (0, import_react.useState)([]);
   const totalRows = total ?? data.length;
   const totalPages = Math.max(1, Math.ceil(totalRows / currentPageSize));
   const safePageIndex = Math.min(pageIndex, totalPages - 1);
@@ -88,16 +98,6 @@ function Table({
     },
     [isControlled, onPageChange, totalPages, updateUrlPage]
   );
-  (0, import_react.useEffect)(() => {
-    if (!enableQueryParams || isControlled) return;
-    const handlePopState = () => {
-      setInternalPageIndex(getPageIndexFromUrl());
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [enableQueryParams, isControlled, pageQueryKey]);
   const table = (0, import_table_core.useTableCore)({
     data,
     columns,
@@ -108,7 +108,10 @@ function Table({
       pageSize: currentPageSize
     },
     onPaginationChange: (updater) => {
-      const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize: currentPageSize }) : updater;
+      const next = typeof updater === "function" ? updater({
+        pageIndex: safePageIndex,
+        pageSize: currentPageSize
+      }) : updater;
       setPage(next.pageIndex);
     },
     enableSorting: true,
