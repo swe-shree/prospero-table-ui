@@ -23,13 +23,9 @@ export type TableProps<TData extends object> = {
   pageSize?: number;
   total?: number;
   pageIndex?: number;
-
   onPageChange?: (nextPageIndex: number) => void;
 
   rowLabel?: string;
-
-  pageSizeOptions?: number[];
-  onPageSizeChange?: (nextPageSize: number) => void;
 
   enableQueryParams?: boolean;
   pageQueryKey?: string;
@@ -43,8 +39,6 @@ export function Table<TData extends object>({
   pageIndex: controlledPageIndex,
   onPageChange,
   rowLabel = "documents",
-  pageSizeOptions = [10, 20, 30],
-  onPageSizeChange,
   enableQueryParams = true,
   pageQueryKey = "page",
 }: TableProps<TData>) {
@@ -53,11 +47,7 @@ export function Table<TData extends object>({
 
   const [hasMounted, setHasMounted] = useState(false);
   const [internalPageIndex, setInternalPageIndex] = useState(0);
-  const [internalPageSize, setInternalPageSize] =
-    useState(controlledPageSize);
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  const currentPageSize = internalPageSize;
 
   const getPageIndexFromUrl = () => {
     if (!enableQueryParams || typeof window === "undefined") {
@@ -93,7 +83,10 @@ export function Table<TData extends object>({
 
   const totalRows = total ?? data.length;
 
-  const totalPages = Math.max(1, Math.ceil(totalRows / currentPageSize));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalRows / controlledPageSize)
+  );
 
   const safePageIndex = Math.min(pageIndex, totalPages - 1);
 
@@ -134,7 +127,7 @@ export function Table<TData extends object>({
 
     pagination: {
       pageIndex: safePageIndex,
-      pageSize: currentPageSize,
+      pageSize: controlledPageSize,
     },
 
     onPaginationChange: (updater) => {
@@ -142,7 +135,7 @@ export function Table<TData extends object>({
         typeof updater === "function"
           ? updater({
               pageIndex: safePageIndex,
-              pageSize: currentPageSize,
+              pageSize: controlledPageSize,
             })
           : updater;
 
@@ -154,11 +147,15 @@ export function Table<TData extends object>({
     enableSearching: false,
   });
 
+  if (!hasMounted) {
+    return null;
+  }
+
   const showingFrom =
-    totalRows === 0 ? 0 : safePageIndex * currentPageSize + 1;
+    totalRows === 0 ? 0 : safePageIndex * controlledPageSize + 1;
 
   const showingTo = Math.min(
-    (safePageIndex + 1) * currentPageSize,
+    (safePageIndex + 1) * controlledPageSize,
     totalRows
   );
 
@@ -168,36 +165,15 @@ export function Table<TData extends object>({
   const canNext = safePageIndex < totalPages - 1;
 
   const goToFirstPage = () => setPage(0);
-
-  const goToPreviousPage = () => {
-    if (canPrev) setPage(safePageIndex - 1);
-  };
-
-  const goToNextPage = () => {
-    if (canNext) setPage(safePageIndex + 1);
-  };
-
+  const goToPreviousPage = () => canPrev && setPage(safePageIndex - 1);
+  const goToNextPage = () => canNext && setPage(safePageIndex + 1);
   const goToLastPage = () => setPage(totalPages - 1);
-
-  const handlePageSizeChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const nextPageSize = Number(e.target.value);
-
-    setInternalPageSize(nextPageSize);
-    onPageSizeChange?.(nextPageSize);
-    setPage(0);
-  };
-
-  if (!hasMounted) {
-    return null;
-  }
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-auto max-h-[500px]">
         <table className="w-full border-collapse text-sm">
-          <thead className="bg-[#F8FAFC]">
+          <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
                 <th className="w-12 px-[10px] py-[10px] text-center">
@@ -356,22 +332,6 @@ export function Table<TData extends object>({
           >
             <MdKeyboardDoubleArrowRight />
           </button>
-        </div>
-
-        <div className="ml-auto flex items-center gap-2 text-sm text-[#64748B]">
-          <span>Rows per page</span>
-
-          <select
-            value={currentPageSize}
-            onChange={handlePageSizeChange}
-            className="h-9 rounded-md border border-[#E5E7EB] bg-white px-3 text-sm font-medium text-[#111827] outline-none"
-          >
-            {pageSizeOptions.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
     </div>

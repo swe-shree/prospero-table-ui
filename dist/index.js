@@ -39,17 +39,13 @@ function Table({
   pageIndex: controlledPageIndex,
   onPageChange,
   rowLabel = "documents",
-  pageSizeOptions = [10, 20, 30],
-  onPageSizeChange,
   enableQueryParams = true,
   pageQueryKey = "page"
 }) {
   const isControlled = controlledPageIndex !== void 0 && onPageChange !== void 0;
   const [hasMounted, setHasMounted] = (0, import_react.useState)(false);
   const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(0);
-  const [internalPageSize, setInternalPageSize] = (0, import_react.useState)(controlledPageSize);
   const [sorting, setSorting] = (0, import_react.useState)([]);
-  const currentPageSize = internalPageSize;
   const getPageIndexFromUrl = () => {
     if (!enableQueryParams || typeof window === "undefined") {
       return 0;
@@ -74,7 +70,10 @@ function Table({
   }, [enableQueryParams, isControlled, pageQueryKey]);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const totalRows = total ?? data.length;
-  const totalPages = Math.max(1, Math.ceil(totalRows / currentPageSize));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalRows / controlledPageSize)
+  );
   const safePageIndex = Math.min(pageIndex, totalPages - 1);
   const updateUrlPage = (0, import_react.useCallback)(
     (next) => {
@@ -105,12 +104,12 @@ function Table({
     onSortingChange: setSorting,
     pagination: {
       pageIndex: safePageIndex,
-      pageSize: currentPageSize
+      pageSize: controlledPageSize
     },
     onPaginationChange: (updater) => {
       const next = typeof updater === "function" ? updater({
         pageIndex: safePageIndex,
-        pageSize: currentPageSize
+        pageSize: controlledPageSize
       }) : updater;
       setPage(next.pageIndex);
     },
@@ -118,34 +117,24 @@ function Table({
     enablePagination: true,
     enableSearching: false
   });
-  const showingFrom = totalRows === 0 ? 0 : safePageIndex * currentPageSize + 1;
+  if (!hasMounted) {
+    return null;
+  }
+  const showingFrom = totalRows === 0 ? 0 : safePageIndex * controlledPageSize + 1;
   const showingTo = Math.min(
-    (safePageIndex + 1) * currentPageSize,
+    (safePageIndex + 1) * controlledPageSize,
     totalRows
   );
   const rows = table.getRowModel().rows;
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
   const goToFirstPage = () => setPage(0);
-  const goToPreviousPage = () => {
-    if (canPrev) setPage(safePageIndex - 1);
-  };
-  const goToNextPage = () => {
-    if (canNext) setPage(safePageIndex + 1);
-  };
+  const goToPreviousPage = () => canPrev && setPage(safePageIndex - 1);
+  const goToNextPage = () => canNext && setPage(safePageIndex + 1);
   const goToLastPage = () => setPage(totalPages - 1);
-  const handlePageSizeChange = (e) => {
-    const nextPageSize = Number(e.target.value);
-    setInternalPageSize(nextPageSize);
-    onPageSizeChange?.(nextPageSize);
-    setPage(0);
-  };
-  if (!hasMounted) {
-    return null;
-  }
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-full overflow-auto max-h-[500px]", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
@@ -286,18 +275,6 @@ function Table({
             onClick: goToLastPage,
             className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40",
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
-          }
-        )
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "ml-auto flex items-center gap-2 text-sm text-[#64748B]", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rows per page" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-          "select",
-          {
-            value: currentPageSize,
-            onChange: handlePageSizeChange,
-            className: "h-9 rounded-md border border-[#E5E7EB] bg-white px-3 text-sm font-medium text-[#111827] outline-none",
-            children: pageSizeOptions.map((size) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: size, children: size }, size))
           }
         )
       ] })
