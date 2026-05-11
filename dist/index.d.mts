@@ -9,7 +9,11 @@ type TableProps<TData extends object> = {
     pageIndex?: number;
     onPageChange?: (nextPageIndex: number) => void;
     rowLabel?: string;
+    pageSizeOptions?: number[];
+    onPageSizeChange?: (nextPageSize: number) => void;
+    enableQueryParams?: boolean;
+    pageQueryKey?: string;
 };
-declare function Table<TData extends object>({ data, columns, pageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, }: TableProps<TData>): react_jsx_runtime.JSX.Element;
+declare function Table<TData extends object>({ data, columns, pageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, pageSizeOptions, onPageSizeChange, enableQueryParams, pageQueryKey, }: TableProps<TData>): react_jsx_runtime.JSX.Element;
 
 export { Table, type TableProps };
