@@ -36,7 +36,12 @@ function Table({
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
-  const [internalPageIndex, setInternalPageIndex] = useState(getPageIndexFromUrl);
+  const [hasMounted, setHasMounted] = useState(false);
+  const [internalPageIndex, setInternalPageIndex] = useState(0);
+  useEffect(() => {
+    setInternalPageIndex(getPageIndexFromUrl());
+    setHasMounted(true);
+  }, []);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const [sorting, setSorting] = useState([]);
   const totalRows = total ?? data.length;
@@ -113,6 +118,9 @@ function Table({
     onPageSizeChange?.(nextPageSize);
     setPage(0);
   };
+  if (!hasMounted) {
+    return null;
+  }
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ jsx("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [

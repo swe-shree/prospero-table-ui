@@ -67,8 +67,14 @@ export function Table<TData extends object>({
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
 
-  const [internalPageIndex, setInternalPageIndex] =
-    useState(getPageIndexFromUrl);
+  const [hasMounted, setHasMounted] = useState(false);
+
+const [internalPageIndex, setInternalPageIndex] = useState(0);
+
+useEffect(() => {
+  setInternalPageIndex(getPageIndexFromUrl());
+  setHasMounted(true);
+}, []);
 
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
 
@@ -173,13 +179,20 @@ export function Table<TData extends object>({
 
   const goToLastPage = () => setPage(totalPages - 1);
 
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const nextPageSize = Number(e.target.value);
+  const handlePageSizeChange = (
+  e: React.ChangeEvent<HTMLSelectElement>
+) => {
+  const nextPageSize = Number(e.target.value);
 
-    setInternalPageSize(nextPageSize);
-    onPageSizeChange?.(nextPageSize);
-    setPage(0);
-  };
+  setInternalPageSize(nextPageSize);
+  onPageSizeChange?.(nextPageSize);
+  setPage(0);
+};
+
+if (!hasMounted) {
+  return null;
+}
+
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">

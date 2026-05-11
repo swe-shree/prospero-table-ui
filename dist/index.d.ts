@@ -14,6 +14,6 @@ type TableProps<TData extends object> = {
     enableQueryParams?: boolean;
     pageQueryKey?: string;
 };
-declare function Table<TData extends object>({ data, columns, pageSize: controlledPageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, pageSizeOptions, onPageSizeChange, enableQueryParams, pageQueryKey, }: TableProps<TData>): react_jsx_runtime.JSX.Element;
+declare function Table<TData extends object>({ data, columns, pageSize: controlledPageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, pageSizeOptions, onPageSizeChange, enableQueryParams, pageQueryKey, }: TableProps<TData>): react_jsx_runtime.JSX.Element | null;
 
 export { Table, type TableProps };

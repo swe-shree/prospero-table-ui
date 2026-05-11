@@ -55,7 +55,12 @@ function Table({
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
-  const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(getPageIndexFromUrl);
+  const [hasMounted, setHasMounted] = (0, import_react.useState)(false);
+  const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(0);
+  (0, import_react.useEffect)(() => {
+    setInternalPageIndex(getPageIndexFromUrl());
+    setHasMounted(true);
+  }, []);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const [sorting, setSorting] = (0, import_react.useState)([]);
   const totalRows = total ?? data.length;
@@ -132,6 +137,9 @@ function Table({
     onPageSizeChange?.(nextPageSize);
     setPage(0);
   };
+  if (!hasMounted) {
+    return null;
+  }
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
