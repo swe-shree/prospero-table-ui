@@ -34,7 +34,7 @@ var import_jsx_runtime = require("react/jsx-runtime");
 function Table({
   data,
   columns,
-  pageSize = 10,
+  pageSize: controlledPageSize = 10,
   total,
   pageIndex: controlledPageIndex,
   onPageChange,
@@ -45,6 +45,8 @@ function Table({
   pageQueryKey = "page"
 }) {
   const isControlled = controlledPageIndex !== void 0 && onPageChange !== void 0;
+  const [internalPageSize, setInternalPageSize] = (0, import_react.useState)(controlledPageSize);
+  const currentPageSize = internalPageSize;
   const getPageIndexFromUrl = () => {
     if (!enableQueryParams || typeof window === "undefined") {
       return 0;
@@ -53,19 +55,15 @@ function Table({
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
   };
-  const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(
-    getPageIndexFromUrl
-  );
+  const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(getPageIndexFromUrl);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const [sorting, setSorting] = (0, import_react.useState)([]);
   const totalRows = total ?? data.length;
-  const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+  const totalPages = Math.max(1, Math.ceil(totalRows / currentPageSize));
   const safePageIndex = Math.min(pageIndex, totalPages - 1);
   const updateUrlPage = (0, import_react.useCallback)(
     (next) => {
-      if (!enableQueryParams || typeof window === "undefined") {
-        return;
-      }
+      if (!enableQueryParams || typeof window === "undefined") return;
       const params = new URLSearchParams(window.location.search);
       params.set(pageQueryKey, String(next + 1));
       const newUrl = `${window.location.pathname}?${params.toString()}`;
@@ -102,35 +100,35 @@ function Table({
     onSortingChange: setSorting,
     pagination: {
       pageIndex: safePageIndex,
-      pageSize
+      pageSize: currentPageSize
     },
     onPaginationChange: (updater) => {
-      const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize }) : updater;
+      const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize: currentPageSize }) : updater;
       setPage(next.pageIndex);
     },
     enableSorting: true,
     enablePagination: true,
     enableSearching: false
   });
-  const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
-  const showingTo = Math.min((safePageIndex + 1) * pageSize, totalRows);
+  const showingFrom = totalRows === 0 ? 0 : safePageIndex * currentPageSize + 1;
+  const showingTo = Math.min(
+    (safePageIndex + 1) * currentPageSize,
+    totalRows
+  );
   const rows = table.getRowModel().rows;
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
   const goToFirstPage = () => setPage(0);
   const goToPreviousPage = () => {
-    if (canPrev) {
-      setPage(safePageIndex - 1);
-    }
+    if (canPrev) setPage(safePageIndex - 1);
   };
   const goToNextPage = () => {
-    if (canNext) {
-      setPage(safePageIndex + 1);
-    }
+    if (canNext) setPage(safePageIndex + 1);
   };
   const goToLastPage = () => setPage(totalPages - 1);
   const handlePageSizeChange = (e) => {
     const nextPageSize = Number(e.target.value);
+    setInternalPageSize(nextPageSize);
     onPageSizeChange?.(nextPageSize);
     setPage(0);
   };
@@ -279,19 +277,19 @@ function Table({
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
           }
         )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "ml-auto flex items-center gap-2 text-sm text-[#64748B]", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rows per page" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "select",
+          {
+            value: currentPageSize,
+            onChange: handlePageSizeChange,
+            className: "h-9 rounded-md border border-[#E5E7EB] bg-white px-3 text-sm font-medium text-[#111827] outline-none",
+            children: pageSizeOptions.map((size) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: size, children: size }, size))
+          }
+        )
       ] })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "ml-auto flex items-center gap-2 text-sm text-[#64748B]", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rows per page" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        "select",
-        {
-          value: pageSize,
-          onChange: handlePageSizeChange,
-          className: "h-9 rounded-md border border-[#E5E7EB] bg-white px-3 text-sm font-medium text-[#111827] outline-none",
-          children: pageSizeOptions.map((size) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: size, children: size }, size))
-        }
-      )
     ] })
   ] });
 }
