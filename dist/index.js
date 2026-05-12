@@ -95,7 +95,10 @@ function Table({
     columns,
     sorting,
     onSortingChange: setSorting,
-    pagination: { pageIndex: safePageIndex, pageSize: controlledPageSize },
+    pagination: {
+      pageIndex: isControlled ? 0 : safePageIndex,
+      pageSize: controlledPageSize
+    },
     onPaginationChange: (updater) => {
       const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize: controlledPageSize }) : updater;
       setPage(next.pageIndex);
@@ -104,8 +107,8 @@ function Table({
     onRowSelectionChange: setRowSelection,
     enableRowSelection,
     enableSorting: true,
-    enablePagination: true,
-    enableSearching: false
+    enableSearching: false,
+    enablePagination: !isControlled
   });
   const showingFrom = totalRows === 0 ? 0 : safePageIndex * controlledPageSize + 1;
   const showingTo = Math.min((safePageIndex + 1) * controlledPageSize, totalRows);
