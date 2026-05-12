@@ -122,9 +122,9 @@ export function Table<TData extends object>({
     onSortingChange: setSorting,
 
     pagination: {
-      pageIndex: safePageIndex,
-      pageSize: controlledPageSize,
-    },
+    pageIndex: isControlled ? 0 : safePageIndex,
+    pageSize: controlledPageSize,
+},
 
     onPaginationChange: (updater) => {
       const next =
@@ -143,7 +143,7 @@ export function Table<TData extends object>({
     enableRowSelection: true,
 
     enableSorting: true,
-    enablePagination: true,
+    enablePagination: !isControlled,
     enableSearching: false,
   });
 

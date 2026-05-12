@@ -101,7 +101,7 @@ function Table({
     sorting,
     onSortingChange: setSorting,
     pagination: {
-      pageIndex: safePageIndex,
+      pageIndex: isControlled ? 0 : safePageIndex,
       pageSize: controlledPageSize
     },
     onPaginationChange: (updater) => {
@@ -115,7 +115,7 @@ function Table({
     onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
     enableSorting: true,
-    enablePagination: true,
+    enablePagination: !isControlled,
     enableSearching: false
   });
   if (!hasMounted) {
