@@ -38,33 +38,37 @@ function Table({
   total,
   pageIndex: controlledPageIndex,
   onPageChange,
-  enableRowSelection = true,
-  enablePagination = true,
   rowLabel = "documents",
-  emptyState,
-  isLoading = false,
   enableQueryParams = true,
   pageQueryKey = "page"
 }) {
   const isControlled = controlledPageIndex !== void 0 && onPageChange !== void 0;
+  const [hasMounted, setHasMounted] = (0, import_react.useState)(false);
   const [internalPageIndex, setInternalPageIndex] = (0, import_react.useState)(0);
   const [sorting, setSorting] = (0, import_react.useState)([]);
   const [rowSelection, setRowSelection] = (0, import_react.useState)({});
-  const getPageIndexFromUrl = (0, import_react.useCallback)(() => {
-    if (!enableQueryParams || typeof window === "undefined") return 0;
+  const getPageIndexFromUrl = () => {
+    if (!enableQueryParams || typeof window === "undefined") {
+      return 0;
+    }
     const params = new URLSearchParams(window.location.search);
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
-  }, [enableQueryParams, pageQueryKey]);
+  };
   (0, import_react.useEffect)(() => {
     setInternalPageIndex(getPageIndexFromUrl());
-  }, [getPageIndexFromUrl]);
+    setHasMounted(true);
+  }, []);
   (0, import_react.useEffect)(() => {
     if (!enableQueryParams || isControlled) return;
-    const handlePopState = () => setInternalPageIndex(getPageIndexFromUrl());
+    const handlePopState = () => {
+      setInternalPageIndex(getPageIndexFromUrl());
+    };
     window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [enableQueryParams, isControlled, getPageIndexFromUrl]);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [enableQueryParams, isControlled, pageQueryKey]);
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const totalRows = total ?? data.length;
   const totalPages = Math.max(1, Math.ceil(totalRows / controlledPageSize));
@@ -74,7 +78,8 @@ function Table({
       if (!enableQueryParams || typeof window === "undefined") return;
       const params = new URLSearchParams(window.location.search);
       params.set(pageQueryKey, String(next + 1));
-      window.history.pushState({}, "", `${window.location.pathname}?${params}`);
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.pushState({}, "", newUrl);
     },
     [enableQueryParams, pageQueryKey]
   );
@@ -96,22 +101,31 @@ function Table({
     sorting,
     onSortingChange: setSorting,
     pagination: {
-      pageIndex: isControlled ? 0 : safePageIndex,
+      pageIndex: safePageIndex,
       pageSize: controlledPageSize
     },
     onPaginationChange: (updater) => {
-      const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize: controlledPageSize }) : updater;
+      const next = typeof updater === "function" ? updater({
+        pageIndex: safePageIndex,
+        pageSize: controlledPageSize
+      }) : updater;
       setPage(next.pageIndex);
     },
     rowSelection,
     onRowSelectionChange: setRowSelection,
-    enableRowSelection,
+    enableRowSelection: true,
     enableSorting: true,
-    enableSearching: false,
-    enablePagination: !isControlled
+    enablePagination: true,
+    enableSearching: false
   });
+  if (!hasMounted) {
+    return null;
+  }
   const showingFrom = totalRows === 0 ? 0 : safePageIndex * controlledPageSize + 1;
-  const showingTo = Math.min((safePageIndex + 1) * controlledPageSize, totalRows);
+  const showingTo = Math.min(
+    (safePageIndex + 1) * controlledPageSize,
+    totalRows
+  );
   const rows = table.getRowModel().rows;
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
@@ -119,32 +133,18 @@ function Table({
   const goToPreviousPage = () => canPrev && setPage(safePageIndex - 1);
   const goToNextPage = () => canNext && setPage(safePageIndex + 1);
   const goToLastPage = () => setPage(totalPages - 1);
-  if (isLoading) {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
-        enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-[10px] py-[10px]" }),
-        columns.map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "px-[10px] py-[10px]" }, i))
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        "td",
-        {
-          colSpan: columns.length + (enableRowSelection ? 1 : 0),
-          className: "px-4 py-10 text-center text-sm text-[#64748B]",
-          children: "Loading..."
-        }
-      ) }) })
-    ] }) }) });
-  }
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
-        enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             type: "checkbox",
             checked: table.getIsAllPageRowsSelected(),
             ref: (el) => {
-              if (el) el.indeterminate = table.getIsSomePageRowsSelected();
+              if (el) {
+                el.indeterminate = table.getIsSomePageRowsSelected();
+              }
             },
             onChange: table.getToggleAllPageRowsSelectedHandler(),
             className: "h-4 w-4 rounded border-[#CBD5E1]"
@@ -177,16 +177,16 @@ function Table({
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: rows.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
-          colSpan: columns.length + (enableRowSelection ? 1 : 0),
+          colSpan: columns.length + 1,
           className: "px-4 py-10 text-center text-sm text-[#64748B]",
-          children: emptyState ?? "No data found"
+          children: "No data found"
         }
       ) }) : rows.map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
         "tr",
         {
           className: "border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0",
           children: [
-            enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-[10px] py-[8px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-[10px] py-[8px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "input",
               {
                 type: "checkbox",
@@ -212,7 +212,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",

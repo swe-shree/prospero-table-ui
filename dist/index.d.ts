@@ -8,14 +8,10 @@ type TableProps<TData extends object> = {
     total?: number;
     pageIndex?: number;
     onPageChange?: (nextPageIndex: number) => void;
-    enableRowSelection?: boolean;
-    enablePagination?: boolean;
     rowLabel?: string;
-    emptyState?: React.ReactNode;
-    isLoading?: boolean;
     enableQueryParams?: boolean;
     pageQueryKey?: string;
 };
-declare function Table<TData extends object>({ data, columns, pageSize: controlledPageSize, total, pageIndex: controlledPageIndex, onPageChange, enableRowSelection, enablePagination, rowLabel, emptyState, isLoading, enableQueryParams, pageQueryKey, }: TableProps<TData>): react_jsx_runtime.JSX.Element;
+declare function Table<TData extends object>({ data, columns, pageSize: controlledPageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, enableQueryParams, pageQueryKey, }: TableProps<TData>): react_jsx_runtime.JSX.Element | null;
 
 export { Table, type TableProps };
