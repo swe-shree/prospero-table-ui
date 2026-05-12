@@ -21,13 +21,22 @@ export type TableProps<TData extends object> = {
   data: TData[];
   columns: ColumnDef<TData>[];
 
+  // Pagination
   pageSize?: number;
   total?: number;
   pageIndex?: number;
   onPageChange?: (nextPageIndex: number) => void;
 
-  rowLabel?: string;
+  // New: Feature toggles
+  enableRowSelection?: boolean;
+  enablePagination?: boolean;
 
+  // Display
+  rowLabel?: string;
+  emptyState?: React.ReactNode;
+  isLoading?: boolean;
+
+  // URL Sync
   enableQueryParams?: boolean;
   pageQueryKey?: string;
 };
@@ -35,51 +44,49 @@ export type TableProps<TData extends object> = {
 export function Table<TData extends object>({
   data,
   columns,
+
   pageSize: controlledPageSize = 10,
   total,
   pageIndex: controlledPageIndex,
   onPageChange,
+
+  enableRowSelection = true,
+  enablePagination = true,
+
   rowLabel = "documents",
+  emptyState,
+  isLoading = false,
+
   enableQueryParams = true,
   pageQueryKey = "page",
 }: TableProps<TData>) {
   const isControlled =
     controlledPageIndex !== undefined && onPageChange !== undefined;
 
-  const [hasMounted, setHasMounted] = useState(false);
   const [internalPageIndex, setInternalPageIndex] = useState(0);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const getPageIndexFromUrl = () => {
-    if (!enableQueryParams || typeof window === "undefined") {
-      return 0;
-    }
+  // Memoized to prevent unnecessary re-renders
+  const getPageIndexFromUrl = useCallback(() => {
+    if (!enableQueryParams || typeof window === "undefined") return 0;
 
     const params = new URLSearchParams(window.location.search);
     const pageFromUrl = Number(params.get(pageQueryKey) || "1");
-
     return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
-  };
+  }, [enableQueryParams, pageQueryKey]);
 
   useEffect(() => {
     setInternalPageIndex(getPageIndexFromUrl());
-    setHasMounted(true);
-  }, []);
+  }, [getPageIndexFromUrl]);
 
   useEffect(() => {
     if (!enableQueryParams || isControlled) return;
 
-    const handlePopState = () => {
-      setInternalPageIndex(getPageIndexFromUrl());
-    };
-
+    const handlePopState = () => setInternalPageIndex(getPageIndexFromUrl());
     window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [enableQueryParams, isControlled, pageQueryKey]);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [enableQueryParams, isControlled, getPageIndexFromUrl]);
 
   const pageIndex = isControlled ? controlledPageIndex : internalPageIndex;
   const totalRows = total ?? data.length;
@@ -89,12 +96,9 @@ export function Table<TData extends object>({
   const updateUrlPage = useCallback(
     (next: number) => {
       if (!enableQueryParams || typeof window === "undefined") return;
-
       const params = new URLSearchParams(window.location.search);
       params.set(pageQueryKey, String(next + 1));
-
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      window.history.pushState({}, "", newUrl);
+      window.history.pushState({}, "", `${window.location.pathname}?${params}`);
     },
     [enableQueryParams, pageQueryKey]
   );
@@ -102,7 +106,6 @@ export function Table<TData extends object>({
   const setPage = useCallback(
     (next: number) => {
       const nextPageIndex = Math.max(0, Math.min(next, totalPages - 1));
-
       updateUrlPage(nextPageIndex);
 
       if (isControlled) {
@@ -117,47 +120,26 @@ export function Table<TData extends object>({
   const table = useTableCore({
     data,
     columns,
-
     sorting,
     onSortingChange: setSorting,
-
-    pagination: {
-      pageIndex: safePageIndex,
-      pageSize: controlledPageSize,
-    },
-
+    pagination: { pageIndex: safePageIndex, pageSize: controlledPageSize },
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
-          ? updater({
-              pageIndex: safePageIndex,
-              pageSize: controlledPageSize,
-            })
+          ? updater({ pageIndex: safePageIndex, pageSize: controlledPageSize })
           : updater;
-
       setPage(next.pageIndex);
     },
-
     rowSelection,
     onRowSelectionChange: setRowSelection,
-    enableRowSelection: true,
-
+    enableRowSelection,
     enableSorting: true,
     enablePagination: true,
     enableSearching: false,
   });
 
-  if (!hasMounted) {
-    return null;
-  }
-
-  const showingFrom =
-    totalRows === 0 ? 0 : safePageIndex * controlledPageSize + 1;
-
-  const showingTo = Math.min(
-    (safePageIndex + 1) * controlledPageSize,
-    totalRows
-  );
+  const showingFrom = totalRows === 0 ? 0 : safePageIndex * controlledPageSize + 1;
+  const showingTo = Math.min((safePageIndex + 1) * controlledPageSize, totalRows);
 
   const rows = table.getRowModel().rows;
 
@@ -169,6 +151,37 @@ export function Table<TData extends object>({
   const goToNextPage = () => canNext && setPage(safePageIndex + 1);
   const goToLastPage = () => setPage(totalPages - 1);
 
+  // Show loading state if requested
+  if (isLoading) {
+    return (
+      <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
+        <div className="max-h-[500px] w-full overflow-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
+              {/* Keep same structure for consistent layout */}
+              <tr className="border-b border-[#E5E7EB]">
+                {enableRowSelection && <th className="w-12 px-[10px] py-[10px]" />}
+                {columns.map((_, i) => (
+                  <th key={i} className="px-[10px] py-[10px]" />
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  colSpan={columns.length + (enableRowSelection ? 1 : 0)}
+                  className="px-4 py-10 text-center text-sm text-[#64748B]"
+                >
+                  Loading...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
       <div className="max-h-[500px] w-full overflow-auto">
@@ -176,19 +189,20 @@ export function Table<TData extends object>({
           <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
-                <th className="w-12 px-[10px] py-[10px] text-center">
-                  <input
-                    type="checkbox"
-                    checked={table.getIsAllPageRowsSelected()}
-                    ref={(el) => {
-                      if (el) {
-                        el.indeterminate = table.getIsSomePageRowsSelected();
-                      }
-                    }}
-                    onChange={table.getToggleAllPageRowsSelectedHandler()}
-                    className="h-4 w-4 rounded border-[#CBD5E1]"
-                  />
-                </th>
+                {/* Conditional Checkbox Column */}
+                {enableRowSelection && (
+                  <th className="w-12 px-[10px] py-[10px] text-center">
+                    <input
+                      type="checkbox"
+                      checked={table.getIsAllPageRowsSelected()}
+                      ref={(el) => {
+                        if (el) el.indeterminate = table.getIsSomePageRowsSelected();
+                      }}
+                      onChange={table.getToggleAllPageRowsSelectedHandler()}
+                      className="h-4 w-4 rounded border-[#CBD5E1]"
+                    />
+                  </th>
+                )}
 
                 {headerGroup.headers.map((header) => (
                   <th
@@ -208,7 +222,6 @@ export function Table<TData extends object>({
                             header.getContext()
                           )}
                         </span>
-
                         {header.column.getCanSort() && (
                           <span className="shrink-0 text-[11px] text-[#94A3B8]">
                             {header.column.getIsSorted() === "asc" ? (
@@ -232,10 +245,10 @@ export function Table<TData extends object>({
             {rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length + 1}
+                  colSpan={columns.length + (enableRowSelection ? 1 : 0)}
                   className="px-4 py-10 text-center text-sm text-[#64748B]"
                 >
-                  No data found
+                  {emptyState ?? "No data found"}
                 </td>
               </tr>
             ) : (
@@ -244,15 +257,17 @@ export function Table<TData extends object>({
                   key={row.id}
                   className="border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0"
                 >
-                  <td className="px-[10px] py-[8px] text-center">
-                    <input
-                      type="checkbox"
-                      checked={row.getIsSelected()}
-                      disabled={!row.getCanSelect()}
-                      onChange={row.getToggleSelectedHandler()}
-                      className="h-4 w-4 rounded border-[#CBD5E1] disabled:opacity-40"
-                    />
-                  </td>
+                  {enableRowSelection && (
+                    <td className="px-[10px] py-[8px] text-center">
+                      <input
+                        type="checkbox"
+                        checked={row.getIsSelected()}
+                        disabled={!row.getCanSelect()}
+                        onChange={row.getToggleSelectedHandler()}
+                        className="h-4 w-4 rounded border-[#CBD5E1] disabled:opacity-40"
+                      />
+                    </td>
+                  )}
 
                   {row.getVisibleCells().map((cell) => (
                     <td
@@ -272,65 +287,68 @@ export function Table<TData extends object>({
         </table>
       </div>
 
-      <div className="relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
-        <p className="text-sm text-[#64748B]">
-          Showing{" "}
-          <span className="font-bold text-[#111827]">
-            {showingFrom}–{showingTo}
-          </span>{" "}
-          of{" "}
-          <span className="font-bold text-[#111827]">
-            {totalRows.toLocaleString()}
-          </span>{" "}
-          {rowLabel}
-        </p>
-
-        <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
-          <button
-            type="button"
-            disabled={!canPrev}
-            onClick={goToFirstPage}
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
-          >
-            <MdKeyboardDoubleArrowLeft />
-          </button>
-
-          <button
-            type="button"
-            disabled={!canPrev}
-            onClick={goToPreviousPage}
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
-          >
-            <MdArrowBackIosNew />
-          </button>
-
-          <p>
-            Page{" "}
+      {/* Conditional Pagination */}
+      {enablePagination && (
+        <div className="relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
+          <p className="text-sm text-[#64748B]">
+            Showing{" "}
             <span className="font-bold text-[#111827]">
-              {safePageIndex + 1}
+              {showingFrom}–{showingTo}
             </span>{" "}
-            of <span className="font-bold text-[#111827]">{totalPages}</span>
+            of{" "}
+            <span className="font-bold text-[#111827]">
+              {totalRows.toLocaleString()}
+            </span>{" "}
+            {rowLabel}
           </p>
 
-          <button
-            type="button"
-            disabled={!canNext}
-            onClick={goToNextPage}
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
-          >
-            <MdArrowForwardIos />
-          </button>
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
+            <button
+              type="button"
+              disabled={!canPrev}
+              onClick={goToFirstPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
+            >
+              <MdKeyboardDoubleArrowLeft />
+            </button>
 
-          <button
-            type="button"
-            disabled={!canNext}
-            onClick={goToLastPage}
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
-          >
-            <MdKeyboardDoubleArrowRight />
-          </button>
+            <button
+              type="button"
+              disabled={!canPrev}
+              onClick={goToPreviousPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
+            >
+              <MdArrowBackIosNew />
+            </button>
+
+            <p>
+              Page{" "}
+              <span className="font-bold text-[#111827]">
+                {safePageIndex + 1}
+              </span>{" "}
+              of <span className="font-bold text-[#111827]">{totalPages}</span>
+            </p>
+
+            <button
+              type="button"
+              disabled={!canNext}
+              onClick={goToNextPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
+            >
+              <MdArrowForwardIos />
+            </button>
+
+            <button
+              type="button"
+              disabled={!canNext}
+              onClick={goToLastPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:opacity-40"
+            >
+              <MdKeyboardDoubleArrowRight />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
