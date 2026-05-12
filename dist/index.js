@@ -115,7 +115,7 @@ function Table({
     onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
     enableSorting: true,
-    enablePagination: !isControlled,
+    enablePagination: true,
     enableSearching: false
   });
   if (!hasMounted) {

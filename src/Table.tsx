@@ -143,7 +143,7 @@ export function Table<TData extends object>({
     enableRowSelection: true,
 
     enableSorting: true,
-    enablePagination: !isControlled,
+    enablePagination: true,
     enableSearching: false,
   });
 
