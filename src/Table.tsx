@@ -8,6 +8,7 @@ import {
   type SortingState,
   type OnChangeFn,
 } from "@tanstack/react-table";
+
 import { useTableCore } from "@prospero/table-core";
 
 export type TableProps<TData extends object> = {
@@ -43,6 +44,7 @@ export function Table<TData extends object>({
     pageIndex: 0,
     pageSize: 10,
   },
+
   onPaginationChange,
 
   rowSelection = {},
@@ -59,21 +61,26 @@ export function Table<TData extends object>({
   const table = useTableCore({
     data,
     columns,
+
     sorting,
     onSortingChange,
+
     pagination,
     onPaginationChange,
+
     rowSelection,
     onRowSelectionChange,
+
     enableSorting,
     enablePagination,
     enableRowSelection,
+
     manualPagination,
     pageCount,
   });
 
-  const pageIndex = table.getState().pagination.pageIndex;
-  const pageSize = table.getState().pagination.pageSize;
+  const pageIndex = pagination.pageIndex;
+  const pageSize = pagination.pageSize;
 
   const totalCount = total ?? data.length;
 
@@ -82,17 +89,17 @@ export function Table<TData extends object>({
 
   const currentPage = pageIndex + 1;
 
-  const canPreviousPage = pageIndex > 0;
-  const canNextPage = pageIndex + 1 < totalPages;
+  const canPreviousPage = currentPage > 1;
+  const canNextPage = currentPage < totalPages;
 
-  const goToPage = (nextPageIndex: number) => {
-    const safePageIndex = Math.max(
+  const updatePage = (nextPageIndex: number) => {
+    const safePage = Math.max(
       0,
       Math.min(nextPageIndex, totalPages - 1)
     );
 
     onPaginationChange?.({
-      pageIndex: safePageIndex,
+      pageIndex: safePage,
       pageSize,
     });
   };
@@ -122,7 +129,7 @@ export function Table<TData extends object>({
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
                         disabled={!header.column.getCanSort()}
-                        className="flex w-full items-center justify-center gap-1 bg-transparent p-0 text-center disabled:cursor-default"
+                        className="flex w-full items-center justify-center gap-1 bg-transparent p-0"
                       >
                         <span>
                           {flexRender(
@@ -199,18 +206,18 @@ export function Table<TData extends object>({
           <div className="flex flex-1 items-center justify-center gap-2">
             <button
               type="button"
-              onClick={() => goToPage(0)}
+              onClick={() => updatePage(0)}
               disabled={!canPreviousPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
             >
               {"<<"}
             </button>
 
             <button
               type="button"
-              onClick={() => goToPage(pageIndex - 1)}
+              onClick={() => updatePage(pageIndex - 1)}
               disabled={!canPreviousPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
             >
               {"<"}
             </button>
@@ -228,18 +235,18 @@ export function Table<TData extends object>({
 
             <button
               type="button"
-              onClick={() => goToPage(pageIndex + 1)}
+              onClick={() => updatePage(pageIndex + 1)}
               disabled={!canNextPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
             >
               {">"}
             </button>
 
             <button
               type="button"
-              onClick={() => goToPage(totalPages - 1)}
+              onClick={() => updatePage(totalPages - 1)}
               disabled={!canNextPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
             >
               {">>"}
             </button>

@@ -62,20 +62,20 @@ function Table({
     manualPagination,
     pageCount
   });
-  const pageIndex = table.getState().pagination.pageIndex;
-  const pageSize = table.getState().pagination.pageSize;
+  const pageIndex = pagination.pageIndex;
+  const pageSize = pagination.pageSize;
   const totalCount = total ?? data.length;
   const totalPages = pageCount ?? Math.max(1, Math.ceil(totalCount / pageSize));
   const currentPage = pageIndex + 1;
-  const canPreviousPage = pageIndex > 0;
-  const canNextPage = pageIndex + 1 < totalPages;
-  const goToPage = (nextPageIndex) => {
-    const safePageIndex = Math.max(
+  const canPreviousPage = currentPage > 1;
+  const canNextPage = currentPage < totalPages;
+  const updatePage = (nextPageIndex) => {
+    const safePage = Math.max(
       0,
       Math.min(nextPageIndex, totalPages - 1)
     );
     onPaginationChange?.({
-      pageIndex: safePageIndex,
+      pageIndex: safePage,
       pageSize
     });
   };
@@ -93,7 +93,7 @@ function Table({
               type: "button",
               onClick: header.column.getToggleSortingHandler(),
               disabled: !header.column.getCanSort(),
-              className: "flex w-full items-center justify-center gap-1 bg-transparent p-0 text-center disabled:cursor-default",
+              className: "flex w-full items-center justify-center gap-1 bg-transparent p-0",
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: (0, import_react_table.flexRender)(
                   header.column.columnDef.header,
@@ -142,9 +142,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => goToPage(0),
+            onClick: () => updatePage(0),
             disabled: !canPreviousPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
             children: "<<"
           }
         ),
@@ -152,9 +152,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => goToPage(pageIndex - 1),
+            onClick: () => updatePage(pageIndex - 1),
             disabled: !canPreviousPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
             children: "<"
           }
         ),
@@ -171,9 +171,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => goToPage(pageIndex + 1),
+            onClick: () => updatePage(pageIndex + 1),
             disabled: !canNextPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
             children: ">"
           }
         ),
@@ -181,9 +181,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => goToPage(totalPages - 1),
+            onClick: () => updatePage(totalPages - 1),
             disabled: !canNextPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
             children: ">>"
           }
         )
