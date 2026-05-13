@@ -133,21 +133,26 @@ function Table({
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
   const goToFirstPage = (0, import_react.useCallback)(() => {
-    if (canPrev) setPage(0);
+    if (!canPrev) return;
+    setPage(0);
   }, [canPrev, setPage]);
   const goToPreviousPage = (0, import_react.useCallback)(() => {
-    if (canPrev) setPage(safePageIndex - 1);
+    if (!canPrev) return;
+    setPage(safePageIndex - 1);
   }, [canPrev, safePageIndex, setPage]);
   const goToNextPage = (0, import_react.useCallback)(() => {
-    if (canNext) setPage(safePageIndex + 1);
+    if (!canNext) return;
+    setPage(safePageIndex + 1);
   }, [canNext, safePageIndex, setPage]);
   const goToLastPage = (0, import_react.useCallback)(() => {
-    if (canNext) setPage(totalPages - 1);
+    if (!canNext) return;
+    setPage(totalPages - 1);
   }, [canNext, setPage, totalPages]);
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] enabled:hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:bg-[#F8FAFC] disabled:text-[#CBD5E1]";
+  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] hover:bg-[#F8FAFC]";
+  const inactivePaginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#94A3B8]";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
@@ -248,9 +253,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !canPrev,
             onClick: goToFirstPage,
-            className: paginationButtonClass,
+            className: canPrev ? paginationButtonClass : inactivePaginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowLeft, {})
           }
         ),
@@ -258,9 +262,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !canPrev,
             onClick: goToPreviousPage,
-            className: paginationButtonClass,
+            className: canPrev ? paginationButtonClass : inactivePaginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowBackIosNew, {})
           }
         ),
@@ -277,9 +280,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !canNext,
             onClick: goToNextPage,
-            className: paginationButtonClass,
+            className: canNext ? paginationButtonClass : inactivePaginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowForwardIos, {})
           }
         ),
@@ -287,9 +289,8 @@ function Table({
           "button",
           {
             type: "button",
-            disabled: !canNext,
             onClick: goToLastPage,
-            className: paginationButtonClass,
+            className: canNext ? paginationButtonClass : inactivePaginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
           }
         )

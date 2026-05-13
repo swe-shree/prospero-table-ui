@@ -191,19 +191,23 @@ export function Table<TData extends object>({
   const canNext = safePageIndex < totalPages - 1;
 
   const goToFirstPage = useCallback(() => {
-    if (canPrev) setPage(0);
+    if (!canPrev) return;
+    setPage(0);
   }, [canPrev, setPage]);
 
   const goToPreviousPage = useCallback(() => {
-    if (canPrev) setPage(safePageIndex - 1);
+    if (!canPrev) return;
+    setPage(safePageIndex - 1);
   }, [canPrev, safePageIndex, setPage]);
 
   const goToNextPage = useCallback(() => {
-    if (canNext) setPage(safePageIndex + 1);
+    if (!canNext) return;
+    setPage(safePageIndex + 1);
   }, [canNext, safePageIndex, setPage]);
 
   const goToLastPage = useCallback(() => {
-    if (canNext) setPage(totalPages - 1);
+    if (!canNext) return;
+    setPage(totalPages - 1);
   }, [canNext, setPage, totalPages]);
 
   if (!hasMounted) {
@@ -211,7 +215,10 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] enabled:hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:bg-[#F8FAFC] disabled:text-[#CBD5E1]";
+    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] hover:bg-[#F8FAFC]";
+
+  const inactivePaginationButtonClass =
+    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#94A3B8]";
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
@@ -341,18 +348,24 @@ export function Table<TData extends object>({
           <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
             <button
               type="button"
-              disabled={!canPrev}
               onClick={goToFirstPage}
-              className={paginationButtonClass}
+              className={
+                canPrev
+                  ? paginationButtonClass
+                  : inactivePaginationButtonClass
+              }
             >
               <MdKeyboardDoubleArrowLeft />
             </button>
 
             <button
               type="button"
-              disabled={!canPrev}
               onClick={goToPreviousPage}
-              className={paginationButtonClass}
+              className={
+                canPrev
+                  ? paginationButtonClass
+                  : inactivePaginationButtonClass
+              }
             >
               <MdArrowBackIosNew />
             </button>
@@ -368,18 +381,24 @@ export function Table<TData extends object>({
 
             <button
               type="button"
-              disabled={!canNext}
               onClick={goToNextPage}
-              className={paginationButtonClass}
+              className={
+                canNext
+                  ? paginationButtonClass
+                  : inactivePaginationButtonClass
+              }
             >
               <MdArrowForwardIos />
             </button>
 
             <button
               type="button"
-              disabled={!canNext}
               onClick={goToLastPage}
-              className={paginationButtonClass}
+              className={
+                canNext
+                  ? paginationButtonClass
+                  : inactivePaginationButtonClass
+              }
             >
               <MdKeyboardDoubleArrowRight />
             </button>
