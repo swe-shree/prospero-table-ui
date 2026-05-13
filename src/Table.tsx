@@ -8,7 +8,6 @@ import {
   type SortingState,
   type OnChangeFn,
 } from "@tanstack/react-table";
-
 import { useTableCore } from "@prospero/table-core";
 
 export type TableProps<TData extends object> = {
@@ -57,13 +56,13 @@ export function Table<TData extends object>({
   pageCount,
   total,
 }: TableProps<TData>) {
-  const isServerPagination =
-    manualPagination || total !== undefined || pageCount !== undefined;
-
   const totalCount = total ?? data.length;
 
   const totalPages =
     pageCount ?? Math.max(1, Math.ceil(totalCount / pagination.pageSize));
+
+  const isServerPagination =
+    manualPagination || total !== undefined || pageCount !== undefined;
 
   const table = useTableCore({
     data,
@@ -113,6 +112,23 @@ export function Table<TData extends object>({
           <thead className="sticky top-0 z-10 bg-white">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
+                {enableRowSelection && (
+                  <th className="w-[48px] px-[10px] py-[10px] text-center align-middle">
+                    <input
+                      type="checkbox"
+                      checked={table.getIsAllPageRowsSelected()}
+                      ref={(input) => {
+                        if (input) {
+                          input.indeterminate =
+                            table.getIsSomePageRowsSelected();
+                        }
+                      }}
+                      onChange={table.getToggleAllPageRowsSelectedHandler()}
+                      className="h-4 w-4 cursor-pointer"
+                    />
+                  </th>
+                )}
+
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
@@ -153,7 +169,7 @@ export function Table<TData extends object>({
             {rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length}
+                  colSpan={columns.length + (enableRowSelection ? 1 : 0)}
                   className="px-4 py-10 text-center text-sm text-[#64748B]"
                 >
                   No data found
@@ -162,6 +178,18 @@ export function Table<TData extends object>({
             ) : (
               rows.map((row) => (
                 <tr key={row.id} className="border-b border-[#F1F5F9]">
+                  {enableRowSelection && (
+                    <td className="w-[48px] px-[10px] py-[8px] text-center align-middle">
+                      <input
+                        type="checkbox"
+                        checked={row.getIsSelected()}
+                        disabled={!row.getCanSelect()}
+                        onChange={row.getToggleSelectedHandler()}
+                        className="h-4 w-4 cursor-pointer"
+                      />
+                    </td>
+                  )}
+
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
