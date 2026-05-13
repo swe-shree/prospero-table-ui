@@ -40,11 +40,12 @@ function Table({
   });
   const currentPage = table.getState().pagination.pageIndex + 1;
   const totalPages = table.getPageCount();
-  const pageIndex = pagination.pageIndex;
-  const pageSize = pagination.pageSize;
-  const updatePage = (nextPageIndex) => {
+  const pageIndex = table.getState().pagination.pageIndex;
+  const pageSize = table.getState().pagination.pageSize;
+  const goToPage = (nextPageIndex) => {
+    const safePageIndex = Math.max(0, Math.min(nextPageIndex, totalPages - 1));
     onPaginationChange?.({
-      pageIndex: nextPageIndex,
+      pageIndex: safePageIndex,
       pageSize
     });
   };
@@ -112,7 +113,7 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(0),
+            onClick: () => goToPage(0),
             disabled: !table.getCanPreviousPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: "<<"
@@ -122,7 +123,7 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(pageIndex - 1),
+            onClick: () => goToPage(pageIndex - 1),
             disabled: !table.getCanPreviousPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: "<"
@@ -141,7 +142,7 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(pageIndex + 1),
+            onClick: () => goToPage(pageIndex + 1),
             disabled: !table.getCanNextPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: ">"
@@ -151,7 +152,7 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(totalPages - 1),
+            onClick: () => goToPage(totalPages - 1),
             disabled: !table.getCanNextPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: ">>"
