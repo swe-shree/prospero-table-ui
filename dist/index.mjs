@@ -1,76 +1,155 @@
 // src/Table.tsx
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   flexRender
 } from "@tanstack/react-table";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import {
+  MdArrowBackIosNew,
+  MdArrowForwardIos,
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight
+} from "react-icons/md";
 import { useTableCore } from "@prospero/table-core";
 import { jsx, jsxs } from "react/jsx-runtime";
 function Table({
   data,
   columns,
-  sorting = [],
-  onSortingChange,
-  pagination = {
-    pageIndex: 0,
-    pageSize: 10
-  },
-  onPaginationChange,
-  rowSelection = {},
-  onRowSelectionChange,
+  pageSize = 10,
+  total,
+  pageIndex: controlledPageIndex,
+  onPageChange,
+  rowLabel = "documents",
+  enableQueryParams = true,
+  pageQueryKey = "page",
   enableSorting = true,
+  enableRowSelection = true,
   enablePagination = true,
-  enableRowSelection = false,
-  manualPagination = false,
-  pageCount,
-  total
+  emptyMessage = "No data found"
 }) {
-  const totalCount = total ?? data.length;
-  const totalPages = pageCount ?? Math.max(1, Math.ceil(totalCount / pagination.pageSize));
-  const isServerPagination = manualPagination || total !== void 0 || pageCount !== void 0;
+  const isControlled = controlledPageIndex !== void 0 && onPageChange !== void 0;
+  const [hasMounted, setHasMounted] = useState(false);
+  const [internalPageIndex, setInternalPageIndex] = useState(0);
+  const [sorting, setSorting] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const getPageIndexFromUrl = useCallback(() => {
+    if (!enableQueryParams || typeof window === "undefined") {
+      return 0;
+    }
+    const params = new URLSearchParams(window.location.search);
+    const pageFromUrl = Number(params.get(pageQueryKey) || "1");
+    return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
+  }, [enableQueryParams, pageQueryKey]);
+  useEffect(() => {
+    setInternalPageIndex(getPageIndexFromUrl());
+    setHasMounted(true);
+  }, [getPageIndexFromUrl]);
+  useEffect(() => {
+    if (!enableQueryParams || isControlled) return;
+    const handlePopState = () => {
+      setInternalPageIndex(getPageIndexFromUrl());
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [enableQueryParams, getPageIndexFromUrl, isControlled]);
+  const rawPageIndex = isControlled ? controlledPageIndex ?? 0 : internalPageIndex;
+  const totalRows = total ?? data.length;
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(totalRows / pageSize));
+  }, [totalRows, pageSize]);
+  const safePageIndex = Math.max(
+    0,
+    Math.min(rawPageIndex, totalPages - 1)
+  );
+  const updateUrlPage = useCallback(
+    (nextPageIndex) => {
+      if (!enableQueryParams || typeof window === "undefined") return;
+      const params = new URLSearchParams(window.location.search);
+      params.set(pageQueryKey, String(nextPageIndex + 1));
+      const queryString = params.toString();
+      const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+      window.history.pushState({}, "", newUrl);
+    },
+    [enableQueryParams, pageQueryKey]
+  );
+  const setPage = useCallback(
+    (nextPageIndex) => {
+      const safeNextPageIndex = Math.max(
+        0,
+        Math.min(nextPageIndex, totalPages - 1)
+      );
+      updateUrlPage(safeNextPageIndex);
+      if (isControlled) {
+        onPageChange?.(safeNextPageIndex);
+      } else {
+        setInternalPageIndex(safeNextPageIndex);
+      }
+      setRowSelection({});
+    },
+    [isControlled, onPageChange, totalPages, updateUrlPage]
+  );
   const table = useTableCore({
     data,
     columns,
     sorting,
-    onSortingChange,
-    pagination,
-    onPaginationChange,
-    rowSelection,
-    onRowSelectionChange,
-    enableSorting,
-    enablePagination,
-    enableRowSelection,
-    manualPagination: isServerPagination,
-    pageCount: totalPages
-  });
-  const pageIndex = pagination.pageIndex;
-  const pageSize = pagination.pageSize;
-  const currentPage = pageIndex + 1;
-  const canPreviousPage = pageIndex > 0;
-  const canNextPage = pageIndex + 1 < totalPages;
-  const goToPage = (nextPageIndex) => {
-    const safePageIndex = Math.max(0, Math.min(nextPageIndex, totalPages - 1));
-    onPaginationChange?.({
+    onSortingChange: setSorting,
+    pagination: {
       pageIndex: safePageIndex,
       pageSize
-    });
-  };
+    },
+    onPaginationChange: (updater) => {
+      const next = typeof updater === "function" ? updater({
+        pageIndex: safePageIndex,
+        pageSize
+      }) : updater;
+      setPage(next.pageIndex);
+    },
+    rowSelection,
+    onRowSelectionChange: setRowSelection,
+    enableSorting,
+    enableRowSelection
+  });
   const rows = table.getRowModel().rows;
-  const showingFrom = totalCount === 0 ? 0 : pageIndex * pageSize + 1;
-  const showingTo = totalCount === 0 ? 0 : Math.min(showingFrom + data.length - 1, totalCount);
+  const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
+  const showingTo = totalRows === 0 ? 0 : Math.min(showingFrom + data.length - 1, totalRows);
+  const canPrev = safePageIndex > 0;
+  const canNext = safePageIndex < totalPages - 1;
+  const goToFirstPage = useCallback(() => {
+    setPage(0);
+  }, [setPage]);
+  const goToPreviousPage = useCallback(() => {
+    if (canPrev) {
+      setPage(safePageIndex - 1);
+    }
+  }, [canPrev, safePageIndex, setPage]);
+  const goToNextPage = useCallback(() => {
+    if (canNext) {
+      setPage(safePageIndex + 1);
+    }
+  }, [canNext, safePageIndex, setPage]);
+  const goToLastPage = useCallback(() => {
+    setPage(totalPages - 1);
+  }, [setPage, totalPages]);
+  if (!hasMounted) {
+    return null;
+  }
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
-    /* @__PURE__ */ jsx("div", { className: "max-h-[500px] overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
-      /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-white", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
-        enableRowSelection && /* @__PURE__ */ jsx("th", { className: "w-[48px] px-[10px] py-[10px] text-center align-middle", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
+      /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
+        enableRowSelection && /* @__PURE__ */ jsx("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ jsx(
           "input",
           {
             type: "checkbox",
             checked: table.getIsAllPageRowsSelected(),
-            ref: (input) => {
-              if (input) {
-                input.indeterminate = table.getIsSomePageRowsSelected();
+            ref: (el) => {
+              if (el) {
+                el.indeterminate = table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected();
               }
             },
             onChange: table.getToggleAllPageRowsSelectedHandler(),
-            className: "h-4 w-4 cursor-pointer"
+            className: "h-4 w-4 cursor-pointer rounded border-[#CBD5E1]"
           }
         ) }),
         headerGroup.headers.map((header) => /* @__PURE__ */ jsx(
@@ -82,14 +161,14 @@ function Table({
               {
                 type: "button",
                 onClick: header.column.getToggleSortingHandler(),
-                disabled: !header.column.getCanSort(),
-                className: "flex w-full items-center justify-center gap-1 bg-transparent p-0 text-center disabled:cursor-default",
+                disabled: !enableSorting || !header.column.getCanSort(),
+                className: "flex w-full items-center justify-center gap-2 bg-transparent p-0 disabled:cursor-default",
                 children: [
                   /* @__PURE__ */ jsx("span", { children: flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   ) }),
-                  header.column.getCanSort() && /* @__PURE__ */ jsx("span", { className: "text-[10px] text-[#94A3B8]", children: header.column.getIsSorted() === "asc" ? "\u25B2" : header.column.getIsSorted() === "desc" ? "\u25BC" : "\u2195" })
+                  enableSorting && header.column.getCanSort() && /* @__PURE__ */ jsx("span", { className: "shrink-0 text-[11px] text-[#94A3B8]", children: header.column.getIsSorted() === "asc" ? /* @__PURE__ */ jsx(FaSortUp, {}) : header.column.getIsSorted() === "desc" ? /* @__PURE__ */ jsx(FaSortDown, {}) : /* @__PURE__ */ jsx(FaSort, {}) })
                 ]
               }
             )
@@ -102,92 +181,103 @@ function Table({
         {
           colSpan: columns.length + (enableRowSelection ? 1 : 0),
           className: "px-4 py-10 text-center text-sm text-[#64748B]",
-          children: "No data found"
+          children: emptyMessage
         }
-      ) }) : rows.map((row) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#F1F5F9]", children: [
-        enableRowSelection && /* @__PURE__ */ jsx("td", { className: "w-[48px] px-[10px] py-[8px] text-center align-middle", children: /* @__PURE__ */ jsx(
-          "input",
-          {
-            type: "checkbox",
-            checked: row.getIsSelected(),
-            disabled: !row.getCanSelect(),
-            onChange: row.getToggleSelectedHandler(),
-            className: "h-4 w-4 cursor-pointer"
-          }
-        ) }),
-        row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx(
-          "td",
-          {
-            className: "px-[10px] py-[8px] text-center align-middle text-[12px] font-medium leading-[13.48px] tracking-[0.51px] text-[#1E293B]",
-            children: flexRender(
-              cell.column.columnDef.cell,
-              cell.getContext()
-            )
-          },
-          cell.id
-        ))
-      ] }, row.id)) })
+      ) }) : rows.map((row) => /* @__PURE__ */ jsxs(
+        "tr",
+        {
+          className: "border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0",
+          children: [
+            enableRowSelection && /* @__PURE__ */ jsx("td", { className: "px-[10px] py-[8px] text-center", children: /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "checkbox",
+                checked: row.getIsSelected(),
+                disabled: !row.getCanSelect(),
+                onChange: row.getToggleSelectedHandler(),
+                className: "h-4 w-4 cursor-pointer rounded border-[#CBD5E1] disabled:opacity-40"
+              }
+            ) }),
+            row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx(
+              "td",
+              {
+                className: "px-[10px] py-[8px] text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
+                children: flexRender(
+                  cell.column.columnDef.cell,
+                  cell.getContext()
+                )
+              },
+              cell.id
+            ))
+          ]
+        },
+        row.id
+      )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ jsxs("div", { className: "flex items-center border-t border-[#E5E7EB] px-4 py-3", children: [
+    enablePagination && /* @__PURE__ */ jsxs("div", { className: "relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: showingFrom }),
-        "\u2013",
-        /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: showingTo }),
+        /* @__PURE__ */ jsxs("span", { className: "font-bold text-[#111827]", children: [
+          showingFrom,
+          "\u2013",
+          showingTo
+        ] }),
         " ",
         "of",
         " ",
-        /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: totalCount })
+        /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: totalRows.toLocaleString() }),
+        " ",
+        rowLabel
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "flex flex-1 items-center justify-center gap-2", children: [
+      /* @__PURE__ */ jsxs("div", { className: "absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]", children: [
         /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
-            onClick: () => goToPage(0),
-            disabled: !canPreviousPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
-            children: "<<"
+            disabled: !canPrev,
+            onClick: goToFirstPage,
+            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            children: /* @__PURE__ */ jsx(MdKeyboardDoubleArrowLeft, {})
           }
         ),
         /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
-            onClick: () => goToPage(pageIndex - 1),
-            disabled: !canPreviousPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
-            children: "<"
+            disabled: !canPrev,
+            onClick: goToPreviousPage,
+            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            children: /* @__PURE__ */ jsx(MdArrowBackIosNew, {})
           }
         ),
-        /* @__PURE__ */ jsxs("span", { className: "px-2 text-sm text-[#64748B]", children: [
+        /* @__PURE__ */ jsxs("p", { children: [
           "Page",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: currentPage }),
+          /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: safePageIndex + 1 }),
           " ",
           "of",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: totalPages })
+          /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: totalPages })
         ] }),
         /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
-            onClick: () => goToPage(pageIndex + 1),
-            disabled: !canNextPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
-            children: ">"
+            disabled: !canNext,
+            onClick: goToNextPage,
+            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            children: /* @__PURE__ */ jsx(MdArrowForwardIos, {})
           }
         ),
         /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
-            onClick: () => goToPage(totalPages - 1),
-            disabled: !canNextPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
-            children: ">>"
+            disabled: !canNext,
+            onClick: goToLastPage,
+            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            children: /* @__PURE__ */ jsx(MdKeyboardDoubleArrowRight, {})
           }
         )
       ] })

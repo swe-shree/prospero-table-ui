@@ -1,130 +1,244 @@
 "use client";
 
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   flexRender,
   type ColumnDef,
-  type PaginationState,
-  type RowSelectionState,
   type SortingState,
-  type OnChangeFn,
+  type RowSelectionState,
 } from "@tanstack/react-table";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import {
+  MdArrowBackIosNew,
+  MdArrowForwardIos,
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
+
 import { useTableCore } from "@prospero/table-core";
 
 export type TableProps<TData extends object> = {
   data: TData[];
   columns: ColumnDef<TData>[];
 
-  sorting?: SortingState;
-  onSortingChange?: OnChangeFn<SortingState>;
+  pageSize?: number;
+  total?: number;
 
-  pagination?: PaginationState;
-  onPaginationChange?: OnChangeFn<PaginationState>;
+  pageIndex?: number;
+  onPageChange?: (nextPageIndex: number) => void;
 
-  rowSelection?: RowSelectionState;
-  onRowSelectionChange?: OnChangeFn<RowSelectionState>;
+  rowLabel?: string;
+
+  enableQueryParams?: boolean;
+  pageQueryKey?: string;
 
   enableSorting?: boolean;
-  enablePagination?: boolean;
   enableRowSelection?: boolean;
+  enablePagination?: boolean;
 
-  manualPagination?: boolean;
-  pageCount?: number;
-  total?: number;
+  emptyMessage?: string;
 };
 
 export function Table<TData extends object>({
   data,
   columns,
 
-  sorting = [],
-  onSortingChange,
+  pageSize = 10,
+  total,
 
-  pagination = {
-    pageIndex: 0,
-    pageSize: 10,
-  },
-  onPaginationChange,
+  pageIndex: controlledPageIndex,
+  onPageChange,
 
-  rowSelection = {},
-  onRowSelectionChange,
+  rowLabel = "documents",
+
+  enableQueryParams = true,
+  pageQueryKey = "page",
 
   enableSorting = true,
+  enableRowSelection = true,
   enablePagination = true,
-  enableRowSelection = false,
 
-  manualPagination = false,
-  pageCount,
-  total,
+  emptyMessage = "No data found",
 }: TableProps<TData>) {
-  const totalCount = total ?? data.length;
+  const isControlled =
+    controlledPageIndex !== undefined && onPageChange !== undefined;
 
-  const totalPages =
-    pageCount ?? Math.max(1, Math.ceil(totalCount / pagination.pageSize));
+  const [hasMounted, setHasMounted] = useState(false);
+  const [internalPageIndex, setInternalPageIndex] = useState(0);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const isServerPagination =
-    manualPagination || total !== undefined || pageCount !== undefined;
+  const getPageIndexFromUrl = useCallback(() => {
+    if (!enableQueryParams || typeof window === "undefined") {
+      return 0;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const pageFromUrl = Number(params.get(pageQueryKey) || "1");
+
+    return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
+  }, [enableQueryParams, pageQueryKey]);
+
+  useEffect(() => {
+    setInternalPageIndex(getPageIndexFromUrl());
+    setHasMounted(true);
+  }, [getPageIndexFromUrl]);
+
+  useEffect(() => {
+    if (!enableQueryParams || isControlled) return;
+
+    const handlePopState = () => {
+      setInternalPageIndex(getPageIndexFromUrl());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [enableQueryParams, getPageIndexFromUrl, isControlled]);
+
+  const rawPageIndex = isControlled
+    ? controlledPageIndex ?? 0
+    : internalPageIndex;
+
+  const totalRows = total ?? data.length;
+
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(totalRows / pageSize));
+  }, [totalRows, pageSize]);
+
+  const safePageIndex = Math.max(
+    0,
+    Math.min(rawPageIndex, totalPages - 1)
+  );
+
+  const updateUrlPage = useCallback(
+    (nextPageIndex: number) => {
+      if (!enableQueryParams || typeof window === "undefined") return;
+
+      const params = new URLSearchParams(window.location.search);
+      params.set(pageQueryKey, String(nextPageIndex + 1));
+
+      const queryString = params.toString();
+      const newUrl = queryString
+        ? `${window.location.pathname}?${queryString}`
+        : window.location.pathname;
+
+      window.history.pushState({}, "", newUrl);
+    },
+    [enableQueryParams, pageQueryKey]
+  );
+
+  const setPage = useCallback(
+    (nextPageIndex: number) => {
+      const safeNextPageIndex = Math.max(
+        0,
+        Math.min(nextPageIndex, totalPages - 1)
+      );
+
+      updateUrlPage(safeNextPageIndex);
+
+      if (isControlled) {
+        onPageChange?.(safeNextPageIndex);
+      } else {
+        setInternalPageIndex(safeNextPageIndex);
+      }
+
+      setRowSelection({});
+    },
+    [isControlled, onPageChange, totalPages, updateUrlPage]
+  );
 
   const table = useTableCore({
     data,
     columns,
+
     sorting,
-    onSortingChange,
-    pagination,
-    onPaginationChange,
-    rowSelection,
-    onRowSelectionChange,
-    enableSorting,
-    enablePagination,
-    enableRowSelection,
-    manualPagination: isServerPagination,
-    pageCount: totalPages,
-  });
+    onSortingChange: setSorting,
 
-  const pageIndex = pagination.pageIndex;
-  const pageSize = pagination.pageSize;
-  const currentPage = pageIndex + 1;
-
-  const canPreviousPage = pageIndex > 0;
-  const canNextPage = pageIndex + 1 < totalPages;
-
-  const goToPage = (nextPageIndex: number) => {
-    const safePageIndex = Math.max(0, Math.min(nextPageIndex, totalPages - 1));
-
-    onPaginationChange?.({
+    pagination: {
       pageIndex: safePageIndex,
       pageSize,
-    });
-  };
+    },
+
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? updater({
+              pageIndex: safePageIndex,
+              pageSize,
+            })
+          : updater;
+
+      setPage(next.pageIndex);
+    },
+
+    rowSelection,
+    onRowSelectionChange: setRowSelection,
+
+    enableSorting,
+    enableRowSelection,
+  });
 
   const rows = table.getRowModel().rows;
 
-  const showingFrom = totalCount === 0 ? 0 : pageIndex * pageSize + 1;
+  const showingFrom =
+    totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
 
   const showingTo =
-    totalCount === 0
+    totalRows === 0
       ? 0
-      : Math.min(showingFrom + data.length - 1, totalCount);
+      : Math.min(showingFrom + data.length - 1, totalRows);
+
+  const canPrev = safePageIndex > 0;
+  const canNext = safePageIndex < totalPages - 1;
+
+  const goToFirstPage = useCallback(() => {
+    setPage(0);
+  }, [setPage]);
+
+  const goToPreviousPage = useCallback(() => {
+    if (canPrev) {
+      setPage(safePageIndex - 1);
+    }
+  }, [canPrev, safePageIndex, setPage]);
+
+  const goToNextPage = useCallback(() => {
+    if (canNext) {
+      setPage(safePageIndex + 1);
+    }
+  }, [canNext, safePageIndex, setPage]);
+
+  const goToLastPage = useCallback(() => {
+    setPage(totalPages - 1);
+  }, [setPage, totalPages]);
+
+  if (!hasMounted) {
+    return null;
+  }
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
-      <div className="max-h-[500px] overflow-auto">
+      <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-white">
+          <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
                 {enableRowSelection && (
-                  <th className="w-[48px] px-[10px] py-[10px] text-center align-middle">
+                  <th className="w-12 px-[10px] py-[10px] text-center">
                     <input
                       type="checkbox"
                       checked={table.getIsAllPageRowsSelected()}
-                      ref={(input) => {
-                        if (input) {
-                          input.indeterminate =
-                            table.getIsSomePageRowsSelected();
+                      ref={(el) => {
+                        if (el) {
+                          el.indeterminate =
+                            table.getIsSomePageRowsSelected() &&
+                            !table.getIsAllPageRowsSelected();
                         }
                       }}
                       onChange={table.getToggleAllPageRowsSelectedHandler()}
-                      className="h-4 w-4 cursor-pointer"
+                      className="h-4 w-4 cursor-pointer rounded border-[#CBD5E1]"
                     />
                   </th>
                 )}
@@ -138,8 +252,10 @@ export function Table<TData extends object>({
                       <button
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
-                        disabled={!header.column.getCanSort()}
-                        className="flex w-full items-center justify-center gap-1 bg-transparent p-0 text-center disabled:cursor-default"
+                        disabled={
+                          !enableSorting || !header.column.getCanSort()
+                        }
+                        className="flex w-full items-center justify-center gap-2 bg-transparent p-0 disabled:cursor-default"
                       >
                         <span>
                           {flexRender(
@@ -148,13 +264,15 @@ export function Table<TData extends object>({
                           )}
                         </span>
 
-                        {header.column.getCanSort() && (
-                          <span className="text-[10px] text-[#94A3B8]">
-                            {header.column.getIsSorted() === "asc"
-                              ? "▲"
-                              : header.column.getIsSorted() === "desc"
-                                ? "▼"
-                                : "↕"}
+                        {enableSorting && header.column.getCanSort() && (
+                          <span className="shrink-0 text-[11px] text-[#94A3B8]">
+                            {header.column.getIsSorted() === "asc" ? (
+                              <FaSortUp />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <FaSortDown />
+                            ) : (
+                              <FaSort />
+                            )}
                           </span>
                         )}
                       </button>
@@ -172,20 +290,23 @@ export function Table<TData extends object>({
                   colSpan={columns.length + (enableRowSelection ? 1 : 0)}
                   className="px-4 py-10 text-center text-sm text-[#64748B]"
                 >
-                  No data found
+                  {emptyMessage}
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
-                <tr key={row.id} className="border-b border-[#F1F5F9]">
+                <tr
+                  key={row.id}
+                  className="border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0"
+                >
                   {enableRowSelection && (
-                    <td className="w-[48px] px-[10px] py-[8px] text-center align-middle">
+                    <td className="px-[10px] py-[8px] text-center">
                       <input
                         type="checkbox"
                         checked={row.getIsSelected()}
                         disabled={!row.getCanSelect()}
                         onChange={row.getToggleSelectedHandler()}
-                        className="h-4 w-4 cursor-pointer"
+                        className="h-4 w-4 cursor-pointer rounded border-[#CBD5E1] disabled:opacity-40"
                       />
                     </td>
                   )}
@@ -193,7 +314,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-[10px] py-[8px] text-center align-middle text-[12px] font-medium leading-[13.48px] tracking-[0.51px] text-[#1E293B]"
+                      className="px-[10px] py-[8px] text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -209,62 +330,65 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="flex items-center border-t border-[#E5E7EB] px-4 py-3">
+        <div className="relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-semibold text-[#1E293B]">{showingFrom}</span>
-            –
-            <span className="font-semibold text-[#1E293B]">{showingTo}</span>{" "}
+            <span className="font-bold text-[#111827]">
+              {showingFrom}–{showingTo}
+            </span>{" "}
             of{" "}
-            <span className="font-semibold text-[#1E293B]">{totalCount}</span>
+            <span className="font-bold text-[#111827]">
+              {totalRows.toLocaleString()}
+            </span>{" "}
+            {rowLabel}
           </p>
 
-          <div className="flex flex-1 items-center justify-center gap-2">
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
             <button
               type="button"
-              onClick={() => goToPage(0)}
-              disabled={!canPreviousPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!canPrev}
+              onClick={goToFirstPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {"<<"}
+              <MdKeyboardDoubleArrowLeft />
             </button>
 
             <button
               type="button"
-              onClick={() => goToPage(pageIndex - 1)}
-              disabled={!canPreviousPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!canPrev}
+              onClick={goToPreviousPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {"<"}
+              <MdArrowBackIosNew />
             </button>
 
-            <span className="px-2 text-sm text-[#64748B]">
+            <p>
               Page{" "}
-              <span className="font-semibold text-[#1E293B]">
-                {currentPage}
+              <span className="font-bold text-[#111827]">
+                {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-semibold text-[#1E293B]">
+              <span className="font-bold text-[#111827]">
                 {totalPages}
               </span>
-            </span>
+            </p>
 
             <button
               type="button"
-              onClick={() => goToPage(pageIndex + 1)}
-              disabled={!canNextPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!canNext}
+              onClick={goToNextPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {">"}
+              <MdArrowForwardIos />
             </button>
 
             <button
               type="button"
-              onClick={() => goToPage(totalPages - 1)}
-              disabled={!canNextPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!canNext}
+              onClick={goToLastPage}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {">>"}
+              <MdKeyboardDoubleArrowRight />
             </button>
           </div>
         </div>
