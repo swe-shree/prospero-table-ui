@@ -59,10 +59,7 @@ function Table({
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(totalRows / pageSize));
   }, [totalRows, pageSize]);
-  const safePageIndex = Math.max(
-    0,
-    Math.min(rawPageIndex, totalPages - 1)
-  );
+  const safePageIndex = Math.max(0, Math.min(rawPageIndex, totalPages - 1));
   const updateUrlPage = useCallback(
     (nextPageIndex) => {
       if (!enableQueryParams || typeof window === "undefined") return;
@@ -117,24 +114,21 @@ function Table({
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
   const goToFirstPage = useCallback(() => {
-    setPage(0);
-  }, [setPage]);
+    if (canPrev) setPage(0);
+  }, [canPrev, setPage]);
   const goToPreviousPage = useCallback(() => {
-    if (canPrev) {
-      setPage(safePageIndex - 1);
-    }
+    if (canPrev) setPage(safePageIndex - 1);
   }, [canPrev, safePageIndex, setPage]);
   const goToNextPage = useCallback(() => {
-    if (canNext) {
-      setPage(safePageIndex + 1);
-    }
+    if (canNext) setPage(safePageIndex + 1);
   }, [canNext, safePageIndex, setPage]);
   const goToLastPage = useCallback(() => {
-    setPage(totalPages - 1);
-  }, [setPage, totalPages]);
+    if (canNext) setPage(totalPages - 1);
+  }, [canNext, setPage, totalPages]);
   if (!hasMounted) {
     return null;
   }
+  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] enabled:hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:bg-[#F8FAFC] disabled:text-[#CBD5E1]";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
@@ -237,7 +231,7 @@ function Table({
             type: "button",
             disabled: !canPrev,
             onClick: goToFirstPage,
-            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            className: paginationButtonClass,
             children: /* @__PURE__ */ jsx(MdKeyboardDoubleArrowLeft, {})
           }
         ),
@@ -247,7 +241,7 @@ function Table({
             type: "button",
             disabled: !canPrev,
             onClick: goToPreviousPage,
-            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            className: paginationButtonClass,
             children: /* @__PURE__ */ jsx(MdArrowBackIosNew, {})
           }
         ),
@@ -266,7 +260,7 @@ function Table({
             type: "button",
             disabled: !canNext,
             onClick: goToNextPage,
-            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            className: paginationButtonClass,
             children: /* @__PURE__ */ jsx(MdArrowForwardIos, {})
           }
         ),
@@ -276,7 +270,7 @@ function Table({
             type: "button",
             disabled: !canNext,
             onClick: goToLastPage,
-            className: "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40",
+            className: paginationButtonClass,
             children: /* @__PURE__ */ jsx(MdKeyboardDoubleArrowRight, {})
           }
         )

@@ -108,10 +108,7 @@ export function Table<TData extends object>({
     return Math.max(1, Math.ceil(totalRows / pageSize));
   }, [totalRows, pageSize]);
 
-  const safePageIndex = Math.max(
-    0,
-    Math.min(rawPageIndex, totalPages - 1)
-  );
+  const safePageIndex = Math.max(0, Math.min(rawPageIndex, totalPages - 1));
 
   const updateUrlPage = useCallback(
     (nextPageIndex: number) => {
@@ -183,8 +180,7 @@ export function Table<TData extends object>({
 
   const rows = table.getRowModel().rows;
 
-  const showingFrom =
-    totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
+  const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
 
   const showingTo =
     totalRows === 0
@@ -195,28 +191,27 @@ export function Table<TData extends object>({
   const canNext = safePageIndex < totalPages - 1;
 
   const goToFirstPage = useCallback(() => {
-    setPage(0);
-  }, [setPage]);
+    if (canPrev) setPage(0);
+  }, [canPrev, setPage]);
 
   const goToPreviousPage = useCallback(() => {
-    if (canPrev) {
-      setPage(safePageIndex - 1);
-    }
+    if (canPrev) setPage(safePageIndex - 1);
   }, [canPrev, safePageIndex, setPage]);
 
   const goToNextPage = useCallback(() => {
-    if (canNext) {
-      setPage(safePageIndex + 1);
-    }
+    if (canNext) setPage(safePageIndex + 1);
   }, [canNext, safePageIndex, setPage]);
 
   const goToLastPage = useCallback(() => {
-    setPage(totalPages - 1);
-  }, [setPage, totalPages]);
+    if (canNext) setPage(totalPages - 1);
+  }, [canNext, setPage, totalPages]);
 
   if (!hasMounted) {
     return null;
   }
+
+  const paginationButtonClass =
+    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] enabled:hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:bg-[#F8FAFC] disabled:text-[#CBD5E1]";
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
@@ -348,7 +343,7 @@ export function Table<TData extends object>({
               type="button"
               disabled={!canPrev}
               onClick={goToFirstPage}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              className={paginationButtonClass}
             >
               <MdKeyboardDoubleArrowLeft />
             </button>
@@ -357,7 +352,7 @@ export function Table<TData extends object>({
               type="button"
               disabled={!canPrev}
               onClick={goToPreviousPage}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              className={paginationButtonClass}
             >
               <MdArrowBackIosNew />
             </button>
@@ -368,16 +363,14 @@ export function Table<TData extends object>({
                 {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-bold text-[#111827]">
-                {totalPages}
-              </span>
+              <span className="font-bold text-[#111827]">{totalPages}</span>
             </p>
 
             <button
               type="button"
               disabled={!canNext}
               onClick={goToNextPage}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              className={paginationButtonClass}
             >
               <MdArrowForwardIos />
             </button>
@@ -386,7 +379,7 @@ export function Table<TData extends object>({
               type="button"
               disabled={!canNext}
               onClick={goToLastPage}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              className={paginationButtonClass}
             >
               <MdKeyboardDoubleArrowRight />
             </button>
