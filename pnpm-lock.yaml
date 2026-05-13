@@ -10,29 +10,26 @@ importers:
     dependencies:
       '@prospero/table-core':
         specifier: github:swe-shree/prospero-table-core#master
-        version: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@prospero/table-ui':
-        specifier: github:swe-shree/prospero-table-ui#master
-        version: https://codeload.github.com/swe-shree/prospero-table-ui/tar.gz/46e8f36df18239827a2b3b54ae6050e0e4672c11(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@tanstack/react-table':
-        specifier: ^8.21.3
-        version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
-      react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        version: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/df6ec9edac333a9040884e04ce345696f34ca83d(@tanstack/react-table@8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react-icons:
         specifier: ^5.6.0
         version: 5.6.0(react@19.2.6)
     devDependencies:
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
       '@types/react-dom':
         specifier: ^19.0.0
         version: 19.2.3(@types/react@19.2.14)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.6
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
       tsup:
         specifier: ^8.5.0
         version: 8.5.1(typescript@5.9.3)
@@ -211,17 +208,11 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde':
-    resolution: {tarball: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde}
+  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/df6ec9edac333a9040884e04ce345696f34ca83d':
+    resolution: {tarball: https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/df6ec9edac333a9040884e04ce345696f34ca83d}
     version: 1.0.0
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-
-  '@prospero/table-ui@https://codeload.github.com/swe-shree/prospero-table-ui/tar.gz/46e8f36df18239827a2b3b54ae6050e0e4672c11':
-    resolution: {tarball: https://codeload.github.com/swe-shree/prospero-table-ui/tar.gz/46e8f36df18239827a2b3b54ae6050e0e4672c11}
-    version: 1.0.0
-    peerDependencies:
+      '@tanstack/react-table': ^8.21.3
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
@@ -699,20 +690,11 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@prospero/table-core@https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/df6ec9edac333a9040884e04ce345696f34ca83d(@tanstack/react-table@8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@tanstack/react-table': 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
-
-  '@prospero/table-ui@https://codeload.github.com/swe-shree/prospero-table-ui/tar.gz/46e8f36df18239827a2b3b54ae6050e0e4672c11(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
-    dependencies:
-      '@prospero/table-core': https://codeload.github.com/swe-shree/prospero-table-core/tar.gz/3480b075dd4e8f12b1f1507dcec240ef738afbde(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@prospero/table-ui': 'link:'
-      '@tanstack/react-table': 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-      react-icons: 5.6.0(react@19.2.6)
 
   '@rollup/rollup-android-arm-eabi@4.60.3':
     optional: true
