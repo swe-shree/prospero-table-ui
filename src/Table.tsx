@@ -72,14 +72,24 @@ export function Table<TData extends object>({
     pageCount,
   });
 
-  const currentPage = table.getState().pagination.pageIndex + 1;
-  const totalPages = table.getPageCount();
-
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
 
+  const totalCount = total ?? data.length;
+
+  const totalPages =
+    pageCount ?? Math.max(1, Math.ceil(totalCount / pageSize));
+
+  const currentPage = pageIndex + 1;
+
+  const canPreviousPage = pageIndex > 0;
+  const canNextPage = pageIndex + 1 < totalPages;
+
   const goToPage = (nextPageIndex: number) => {
-    const safePageIndex = Math.max(0, Math.min(nextPageIndex, totalPages - 1));
+    const safePageIndex = Math.max(
+      0,
+      Math.min(nextPageIndex, totalPages - 1)
+    );
 
     onPaginationChange?.({
       pageIndex: safePageIndex,
@@ -88,18 +98,12 @@ export function Table<TData extends object>({
   };
 
   const showingFrom =
-    data.length === 0
-      ? 0
-      : table.getState().pagination.pageIndex *
-          table.getState().pagination.pageSize +
-        1;
+    totalCount === 0 ? 0 : pageIndex * pageSize + 1;
 
   const showingTo =
-    data.length === 0
+    totalCount === 0
       ? 0
-      : showingFrom + table.getRowModel().rows.length - 1;
-
-  const totalCount = total ?? data.length;
+      : Math.min(showingFrom + data.length - 1, totalCount);
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
@@ -132,8 +136,8 @@ export function Table<TData extends object>({
                             {header.column.getIsSorted() === "asc"
                               ? "▲"
                               : header.column.getIsSorted() === "desc"
-                              ? "▼"
-                              : "↕"}
+                                ? "▼"
+                                : "↕"}
                           </span>
                         )}
                       </button>
@@ -176,7 +180,7 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="flex items-center justify-between border-t border-[#E5E7EB] px-4 py-3">
+        <div className="flex items-center border-t border-[#E5E7EB] px-4 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
             <span className="font-semibold text-[#1E293B]">
@@ -192,11 +196,11 @@ export function Table<TData extends object>({
             </span>
           </p>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-1 items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => goToPage(0)}
-              disabled={!table.getCanPreviousPage()}
+              disabled={!canPreviousPage}
               className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {"<<"}
@@ -205,7 +209,7 @@ export function Table<TData extends object>({
             <button
               type="button"
               onClick={() => goToPage(pageIndex - 1)}
-              disabled={!table.getCanPreviousPage()}
+              disabled={!canPreviousPage}
               className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {"<"}
@@ -225,7 +229,7 @@ export function Table<TData extends object>({
             <button
               type="button"
               onClick={() => goToPage(pageIndex + 1)}
-              disabled={!table.getCanNextPage()}
+              disabled={!canNextPage}
               className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {">"}
@@ -234,7 +238,7 @@ export function Table<TData extends object>({
             <button
               type="button"
               onClick={() => goToPage(totalPages - 1)}
-              disabled={!table.getCanNextPage()}
+              disabled={!canNextPage}
               className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {">>"}
