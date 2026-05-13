@@ -47,6 +47,9 @@ function Table({
   pageCount,
   total
 }) {
+  const isServerPagination = manualPagination || total !== void 0 || pageCount !== void 0;
+  const totalCount = total ?? data.length;
+  const totalPages = pageCount ?? Math.max(1, Math.ceil(totalCount / pagination.pageSize));
   const table = (0, import_table_core.useTableCore)({
     data,
     columns,
@@ -59,26 +62,22 @@ function Table({
     enableSorting,
     enablePagination,
     enableRowSelection,
-    manualPagination,
-    pageCount
+    manualPagination: isServerPagination,
+    pageCount: totalPages
   });
   const pageIndex = pagination.pageIndex;
   const pageSize = pagination.pageSize;
-  const totalCount = total ?? data.length;
-  const totalPages = pageCount ?? Math.max(1, Math.ceil(totalCount / pageSize));
   const currentPage = pageIndex + 1;
-  const canPreviousPage = currentPage > 1;
-  const canNextPage = currentPage < totalPages;
-  const updatePage = (nextPageIndex) => {
-    const safePage = Math.max(
-      0,
-      Math.min(nextPageIndex, totalPages - 1)
-    );
+  const canPreviousPage = pageIndex > 0;
+  const canNextPage = pageIndex + 1 < totalPages;
+  const goToPage = (nextPageIndex) => {
+    const safePageIndex = Math.max(0, Math.min(nextPageIndex, totalPages - 1));
     onPaginationChange?.({
-      pageIndex: safePage,
+      pageIndex: safePageIndex,
       pageSize
     });
   };
+  const rows = table.getRowModel().rows;
   const showingFrom = totalCount === 0 ? 0 : pageIndex * pageSize + 1;
   const showingTo = totalCount === 0 ? 0 : Math.min(showingFrom + data.length - 1, totalCount);
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
@@ -93,7 +92,7 @@ function Table({
               type: "button",
               onClick: header.column.getToggleSortingHandler(),
               disabled: !header.column.getCanSort(),
-              className: "flex w-full items-center justify-center gap-1 bg-transparent p-0",
+              className: "flex w-full items-center justify-center gap-1 bg-transparent p-0 text-center disabled:cursor-default",
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: (0, import_react_table.flexRender)(
                   header.column.columnDef.header,
@@ -106,14 +105,14 @@ function Table({
         },
         header.id
       )) }, headerGroup.id)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: table.getRowModel().rows.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: rows.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
           colSpan: columns.length,
           className: "px-4 py-10 text-center text-sm text-[#64748B]",
           children: "No data found"
         }
-      ) }) : table.getRowModel().rows.map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { className: "border-b border-[#F1F5F9]", children: row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      ) }) : rows.map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { className: "border-b border-[#F1F5F9]", children: row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
           className: "px-[10px] py-[8px] text-center align-middle text-[12px] font-medium leading-[13.48px] tracking-[0.51px] text-[#1E293B]",
@@ -142,9 +141,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(0),
+            onClick: () => goToPage(0),
             disabled: !canPreviousPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: "<<"
           }
         ),
@@ -152,9 +151,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(pageIndex - 1),
+            onClick: () => goToPage(pageIndex - 1),
             disabled: !canPreviousPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: "<"
           }
         ),
@@ -171,9 +170,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(pageIndex + 1),
+            onClick: () => goToPage(pageIndex + 1),
             disabled: !canNextPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: ">"
           }
         ),
@@ -181,9 +180,9 @@ function Table({
           "button",
           {
             type: "button",
-            onClick: () => updatePage(totalPages - 1),
+            onClick: () => goToPage(totalPages - 1),
             disabled: !canNextPage,
-            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50",
+            className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: ">>"
           }
         )

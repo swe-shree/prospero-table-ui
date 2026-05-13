@@ -44,7 +44,6 @@ export function Table<TData extends object>({
     pageIndex: 0,
     pageSize: 10,
   },
-
   onPaginationChange,
 
   rowSelection = {},
@@ -58,54 +57,49 @@ export function Table<TData extends object>({
   pageCount,
   total,
 }: TableProps<TData>) {
-  const table = useTableCore({
-    data,
-    columns,
-
-    sorting,
-    onSortingChange,
-
-    pagination,
-    onPaginationChange,
-
-    rowSelection,
-    onRowSelectionChange,
-
-    enableSorting,
-    enablePagination,
-    enableRowSelection,
-
-    manualPagination,
-    pageCount,
-  });
-
-  const pageIndex = pagination.pageIndex;
-  const pageSize = pagination.pageSize;
+  const isServerPagination =
+    manualPagination || total !== undefined || pageCount !== undefined;
 
   const totalCount = total ?? data.length;
 
   const totalPages =
-    pageCount ?? Math.max(1, Math.ceil(totalCount / pageSize));
+    pageCount ?? Math.max(1, Math.ceil(totalCount / pagination.pageSize));
 
+  const table = useTableCore({
+    data,
+    columns,
+    sorting,
+    onSortingChange,
+    pagination,
+    onPaginationChange,
+    rowSelection,
+    onRowSelectionChange,
+    enableSorting,
+    enablePagination,
+    enableRowSelection,
+    manualPagination: isServerPagination,
+    pageCount: totalPages,
+  });
+
+  const pageIndex = pagination.pageIndex;
+  const pageSize = pagination.pageSize;
   const currentPage = pageIndex + 1;
 
-  const canPreviousPage = currentPage > 1;
-  const canNextPage = currentPage < totalPages;
+  const canPreviousPage = pageIndex > 0;
+  const canNextPage = pageIndex + 1 < totalPages;
 
-  const updatePage = (nextPageIndex: number) => {
-    const safePage = Math.max(
-      0,
-      Math.min(nextPageIndex, totalPages - 1)
-    );
+  const goToPage = (nextPageIndex: number) => {
+    const safePageIndex = Math.max(0, Math.min(nextPageIndex, totalPages - 1));
 
     onPaginationChange?.({
-      pageIndex: safePage,
+      pageIndex: safePageIndex,
       pageSize,
     });
   };
 
-  const showingFrom =
-    totalCount === 0 ? 0 : pageIndex * pageSize + 1;
+  const rows = table.getRowModel().rows;
+
+  const showingFrom = totalCount === 0 ? 0 : pageIndex * pageSize + 1;
 
   const showingTo =
     totalCount === 0
@@ -129,7 +123,7 @@ export function Table<TData extends object>({
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
                         disabled={!header.column.getCanSort()}
-                        className="flex w-full items-center justify-center gap-1 bg-transparent p-0"
+                        className="flex w-full items-center justify-center gap-1 bg-transparent p-0 text-center disabled:cursor-default"
                       >
                         <span>
                           {flexRender(
@@ -156,7 +150,7 @@ export function Table<TData extends object>({
           </thead>
 
           <tbody>
-            {table.getRowModel().rows.length === 0 ? (
+            {rows.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length}
@@ -166,7 +160,7 @@ export function Table<TData extends object>({
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
+              rows.map((row) => (
                 <tr key={row.id} className="border-b border-[#F1F5F9]">
                   {row.getVisibleCells().map((cell) => (
                     <td
@@ -190,34 +184,28 @@ export function Table<TData extends object>({
         <div className="flex items-center border-t border-[#E5E7EB] px-4 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-semibold text-[#1E293B]">
-              {showingFrom}
-            </span>
+            <span className="font-semibold text-[#1E293B]">{showingFrom}</span>
             –
-            <span className="font-semibold text-[#1E293B]">
-              {showingTo}
-            </span>{" "}
+            <span className="font-semibold text-[#1E293B]">{showingTo}</span>{" "}
             of{" "}
-            <span className="font-semibold text-[#1E293B]">
-              {totalCount}
-            </span>
+            <span className="font-semibold text-[#1E293B]">{totalCount}</span>
           </p>
 
           <div className="flex flex-1 items-center justify-center gap-2">
             <button
               type="button"
-              onClick={() => updatePage(0)}
+              onClick={() => goToPage(0)}
               disabled={!canPreviousPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {"<<"}
             </button>
 
             <button
               type="button"
-              onClick={() => updatePage(pageIndex - 1)}
+              onClick={() => goToPage(pageIndex - 1)}
               disabled={!canPreviousPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {"<"}
             </button>
@@ -235,18 +223,18 @@ export function Table<TData extends object>({
 
             <button
               type="button"
-              onClick={() => updatePage(pageIndex + 1)}
+              onClick={() => goToPage(pageIndex + 1)}
               disabled={!canNextPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {">"}
             </button>
 
             <button
               type="button"
-              onClick={() => updatePage(totalPages - 1)}
+              onClick={() => goToPage(totalPages - 1)}
               disabled={!canNextPage}
-              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:opacity-50"
+              className="rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {">>"}
             </button>
