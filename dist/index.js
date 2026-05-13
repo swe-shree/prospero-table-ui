@@ -62,25 +62,19 @@ function Table({
     manualPagination,
     pageCount
   });
+  const currentPage = table.getState().pagination.pageIndex + 1;
+  const totalPages = table.getPageCount();
   const pageIndex = pagination.pageIndex;
   const pageSize = pagination.pageSize;
-  const totalCount = total ?? data.length;
-  const totalPages = pageCount ?? Math.max(1, Math.ceil(totalCount / pageSize));
-  const currentPage = pageIndex + 1;
-  const canPreviousPage = pageIndex > 0;
-  const canNextPage = pageIndex + 1 < totalPages;
-  const showingFrom = totalCount === 0 ? 0 : pageIndex * pageSize + 1;
-  const showingTo = totalCount === 0 ? 0 : Math.min(showingFrom + data.length - 1, totalCount);
   const updatePage = (nextPageIndex) => {
-    const safePageIndex = Math.max(
-      0,
-      Math.min(nextPageIndex, totalPages - 1)
-    );
     onPaginationChange?.({
-      pageIndex: safePageIndex,
+      pageIndex: nextPageIndex,
       pageSize
     });
   };
+  const showingFrom = data.length === 0 ? 0 : table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1;
+  const showingTo = data.length === 0 ? 0 : showingFrom + table.getRowModel().rows.length - 1;
+  const totalCount = total ?? data.length;
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-white", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { className: "border-b border-[#E5E7EB]", children: headerGroup.headers.map((header) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
@@ -143,7 +137,7 @@ function Table({
           {
             type: "button",
             onClick: () => updatePage(0),
-            disabled: !canPreviousPage,
+            disabled: !table.getCanPreviousPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: "<<"
           }
@@ -153,7 +147,7 @@ function Table({
           {
             type: "button",
             onClick: () => updatePage(pageIndex - 1),
-            disabled: !canPreviousPage,
+            disabled: !table.getCanPreviousPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: "<"
           }
@@ -172,7 +166,7 @@ function Table({
           {
             type: "button",
             onClick: () => updatePage(pageIndex + 1),
-            disabled: !canNextPage,
+            disabled: !table.getCanNextPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: ">"
           }
@@ -182,7 +176,7 @@ function Table({
           {
             type: "button",
             onClick: () => updatePage(totalPages - 1),
-            disabled: !canNextPage,
+            disabled: !table.getCanNextPage(),
             className: "rounded border border-[#E5E7EB] px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50",
             children: ">>"
           }
