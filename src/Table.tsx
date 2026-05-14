@@ -211,6 +211,7 @@ export function Table<TData extends object>({
     enableSorting,
     enableRowSelection,
     enablePagination,
+ 
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
