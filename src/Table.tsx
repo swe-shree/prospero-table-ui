@@ -211,7 +211,7 @@ export function Table<TData extends object>({
     enableSorting,
     enableRowSelection,
     enablePagination,
- 
+
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
@@ -220,8 +220,8 @@ export function Table<TData extends object>({
 
   const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
 
-  const showingTo =
-    totalRows === 0
+  const showingTo = 
+     totalRows === 0
       ? 0
       : Math.min(showingFrom + tableData.length - 1, totalRows);
 
