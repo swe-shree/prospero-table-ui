@@ -2,12 +2,11 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ColumnDef } from '@tanstack/react-table';
 
 type TableProps<TData extends object> = {
-    data: TData[];
     columns: ColumnDef<TData>[];
-    pageSize?: number;
+    data?: TData[];
     total?: number;
-    pageIndex?: number;
-    onPageChange?: (nextPageIndex: number) => void;
+    fetchUrl?: string;
+    pageSize?: number;
     rowLabel?: string;
     enableQueryParams?: boolean;
     pageQueryKey?: string;
@@ -16,6 +15,6 @@ type TableProps<TData extends object> = {
     enablePagination?: boolean;
     emptyMessage?: string;
 };
-declare function Table<TData extends object>({ data, columns, pageSize, total, pageIndex: controlledPageIndex, onPageChange, rowLabel, enableQueryParams, pageQueryKey, enableSorting, enableRowSelection, enablePagination, emptyMessage, }: TableProps<TData>): react_jsx_runtime.JSX.Element | null;
+declare function Table<TData extends object>({ columns, data, total, fetchUrl, pageSize, rowLabel, enableQueryParams, pageQueryKey, enableSorting, enableRowSelection, enablePagination, emptyMessage, }: TableProps<TData>): react_jsx_runtime.JSX.Element | null;
 
 export { Table, type TableProps };
