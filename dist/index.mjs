@@ -28,7 +28,14 @@ function Table({
 }) {
   const isServerPagination = Boolean(fetchUrl);
   const [hasMounted, setHasMounted] = useState(false);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(() => {
+    if (enableQueryParams && typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const pageFromUrl = Number(params.get(pageQueryKey) || "1");
+      return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
+    }
+    return 0;
+  });
   const [internalData, setInternalData] = useState([]);
   const [internalTotal, setInternalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,9 +77,8 @@ function Table({
     [totalPages, updateUrlPage]
   );
   useEffect(() => {
-    setPageIndex(getPageIndexFromUrl());
     setHasMounted(true);
-  }, [getPageIndexFromUrl]);
+  }, []);
   useEffect(() => {
     if (!enableQueryParams) return;
     const handlePopState = () => {
@@ -124,7 +130,7 @@ function Table({
     sorting,
     onSortingChange: setSorting,
     pagination: {
-      pageIndex: safePageIndex,
+      pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize
     },
     onPaginationChange: (updater) => {
