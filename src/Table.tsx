@@ -27,19 +27,14 @@ export type TableProps<TData extends object> = {
 
   data?: TData[];
   total?: number;
-
   fetchUrl?: string;
-
   pageSize?: number;
   rowLabel?: string;
-
   enableQueryParams?: boolean;
   pageQueryKey?: string;
-
   enableSorting?: boolean;
   enableRowSelection?: boolean;
   enablePagination?: boolean;
-
   emptyMessage?: string;
 };
 
@@ -48,15 +43,11 @@ export function Table<TData extends object>({
 
   data = [],
   total,
-
   fetchUrl,
-
   pageSize = 10,
   rowLabel = "documents",
-
   enableQueryParams = true,
   pageQueryKey = "page",
-
   enableSorting = true,
   enableRowSelection = true,
   enablePagination = true,
@@ -220,7 +211,6 @@ export function Table<TData extends object>({
     enableSorting,
     enableRowSelection,
     enablePagination,
-
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
