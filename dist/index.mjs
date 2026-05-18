@@ -237,7 +237,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ jsxs("div", { className: "flex justify-between border-t border-[#E5E7EB] bg-white px-5 py-2", children: [
+    enablePagination && /* @__PURE__ */ jsxs("div", { className: "flex justify-between border-t border-[#F1F5F9] bg-white px-5 py-2", children: [
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",

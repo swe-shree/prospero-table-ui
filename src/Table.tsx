@@ -351,7 +351,7 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="flex justify-between border-t border-[#E5E7EB] bg-white px-5 py-2">
+        <div className="flex justify-between border-t border-[#F1F5F9] bg-white px-5 py-2">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
             <span className="font-bold text-black">
