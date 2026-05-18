@@ -369,8 +369,7 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(0)}
               disabled={!canPrev}
-              className={paginationButtonClass
-              }
+              className={paginationButtonClass}
             >
               <MdKeyboardDoubleArrowLeft />
             </button>
@@ -379,8 +378,8 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(safePageIndex - 1)}
               disabled={!canPrev}
-              className={paginationButtonClass
-              }
+              className={paginationButtonClass}
+              
             >
               <MdArrowBackIosNew />
             </button>
@@ -398,8 +397,8 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(safePageIndex + 1)}
               disabled={!canNext}
-              className={paginationButtonClass
-              }
+              className={paginationButtonClass}
+              
             >
               <MdArrowForwardIos />
             </button>
@@ -408,8 +407,8 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(totalPages - 1)}
               disabled={!canNext}
-              className={paginationButtonClass
-              }
+              className={paginationButtonClass}
+              
             >
               <MdKeyboardDoubleArrowRight />
             </button>
