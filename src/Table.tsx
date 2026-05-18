@@ -24,7 +24,6 @@ type FetchResponse<TData> = {
 
 export type TableProps<TData extends object> = {
   columns: ColumnDef<TData>[];
-
   data?: TData[];
   total?: number;
   fetchUrl?: string;
@@ -40,7 +39,6 @@ export type TableProps<TData extends object> = {
 
 export function Table<TData extends object>({
   columns,
-
   data = [],
   total,
   fetchUrl,
@@ -51,7 +49,6 @@ export function Table<TData extends object>({
   enableSorting = true,
   enableRowSelection = true,
   enablePagination = true,
-
   emptyMessage = "No data found",
 }: TableProps<TData>) {
   const isServerPagination = Boolean(fetchUrl);
@@ -100,21 +97,21 @@ export function Table<TData extends object>({
 
       window.history.pushState({}, "", newUrl);
     },
-    [enableQueryParams, pageQueryKey]
+    [enableQueryParams, pageQueryKey],
   );
 
   const setPage = useCallback(
     (nextPageIndex: number) => {
       const safeNextPageIndex = Math.max(
         0,
-        Math.min(nextPageIndex, totalPages - 1)
+        Math.min(nextPageIndex, totalPages - 1),
       );
 
       setPageIndex(safeNextPageIndex);
       updateUrlPage(safeNextPageIndex);
       setRowSelection({});
     },
-    [totalPages, updateUrlPage]
+    [totalPages, updateUrlPage],
   );
 
   useEffect(() => {
@@ -188,10 +185,10 @@ export function Table<TData extends object>({
     sorting,
     onSortingChange: setSorting,
 
-   pagination: {
+    pagination: {
       pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize,
-},
+    },
 
     onPaginationChange: (updater) => {
       const next =
@@ -220,8 +217,8 @@ export function Table<TData extends object>({
 
   const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
 
-  const showingTo = 
-     totalRows === 0
+  const showingTo =
+    totalRows === 0
       ? 0
       : Math.min(showingFrom + tableData.length - 1, totalRows);
 
@@ -235,18 +232,17 @@ export function Table<TData extends object>({
   const paginationButtonClass =
     "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] hover:bg-[#F8FAFC]";
 
-  const inactivePaginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#94A3B8]";
+
 
   return (
-    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
+    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white">
       <div className="max-h-[500px] w-full overflow-auto">
-        <table className="w-full border-collapse text-sm">
+        <table className="w-full min-w-full border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-[#F3F4F6]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
                 {enableRowSelection && (
-                  <th className="w-12 px-[10px] py-[10px] text-center">
+                  <th className="w-12 px-2.5 py-2.5 text-center">
                     <input
                       type="checkbox"
                       checked={table.getIsAllPageRowsSelected()}
@@ -266,7 +262,7 @@ export function Table<TData extends object>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-[10px] py-[10px] text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
+                    className="px-2.5 py-2.5 text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
                   >
                     {header.isPlaceholder ? null : (
                       <button
@@ -278,7 +274,7 @@ export function Table<TData extends object>({
                         <span>
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                         </span>
 
@@ -327,7 +323,7 @@ export function Table<TData extends object>({
                   className="border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0"
                 >
                   {enableRowSelection && (
-                    <td className="px-[10px] py-[8px] text-center">
+                    <td className="px-2.5 py-2 text-center">
                       <input
                         type="checkbox"
                         checked={row.getIsSelected()}
@@ -341,11 +337,11 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-[10px] py-[8px] text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
+                      className="px-2.5 py-2 text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </td>
                   ))}
@@ -357,7 +353,7 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
+        <div className="flex w-full items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-4">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
             <span className="font-bold text-[#111827]">
@@ -370,15 +366,12 @@ export function Table<TData extends object>({
             {rowLabel}
           </p>
 
-          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
+          <div className="flex items-center gap-3 text-sm text-[#64748B]">
             <button
               type="button"
               onClick={() => setPage(0)}
               disabled={!canPrev}
-              className={
-                canPrev
-                  ? paginationButtonClass
-                  : inactivePaginationButtonClass
+              className={paginationButtonClass
               }
             >
               <MdKeyboardDoubleArrowLeft />
@@ -388,10 +381,7 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(safePageIndex - 1)}
               disabled={!canPrev}
-              className={
-                canPrev
-                  ? paginationButtonClass
-                  : inactivePaginationButtonClass
+              className={paginationButtonClass
               }
             >
               <MdArrowBackIosNew />
@@ -410,10 +400,7 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(safePageIndex + 1)}
               disabled={!canNext}
-              className={
-                canNext
-                  ? paginationButtonClass
-                  : inactivePaginationButtonClass
+              className={paginationButtonClass
               }
             >
               <MdArrowForwardIos />
@@ -423,10 +410,7 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(totalPages - 1)}
               disabled={!canNext}
-              className={
-                canNext
-                  ? paginationButtonClass
-                  : inactivePaginationButtonClass
+              className={paginationButtonClass
               }
             >
               <MdKeyboardDoubleArrowRight />

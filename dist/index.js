@@ -170,11 +170,10 @@ function Table({
     return null;
   }
   const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] hover:bg-[#F8FAFC]";
-  const inactivePaginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#94A3B8]";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F3F4F6]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
-        enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-2.5 py-2.5 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             type: "checkbox",
@@ -191,7 +190,7 @@ function Table({
         headerGroup.headers.map((header) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "th",
           {
-            className: "px-[10px] py-[10px] text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
+            className: "px-2.5 py-2.5 text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
             children: header.isPlaceholder ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
               "button",
               {
@@ -231,7 +230,7 @@ function Table({
         {
           className: "border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0",
           children: [
-            enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-[10px] py-[8px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-2.5 py-2 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "input",
               {
                 type: "checkbox",
@@ -244,7 +243,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "px-[10px] py-[8px] text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
+                className: "px-2.5 py-2 text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()
@@ -257,7 +256,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
+    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex w-full items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
@@ -273,14 +272,14 @@ function Table({
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3 text-sm text-[#64748B]", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
             type: "button",
             onClick: () => setPage(0),
             disabled: !canPrev,
-            className: canPrev ? paginationButtonClass : inactivePaginationButtonClass,
+            className: paginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowLeft, {})
           }
         ),
@@ -290,7 +289,7 @@ function Table({
             type: "button",
             onClick: () => setPage(safePageIndex - 1),
             disabled: !canPrev,
-            className: canPrev ? paginationButtonClass : inactivePaginationButtonClass,
+            className: paginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowBackIosNew, {})
           }
         ),
@@ -309,7 +308,7 @@ function Table({
             type: "button",
             onClick: () => setPage(safePageIndex + 1),
             disabled: !canNext,
-            className: canNext ? paginationButtonClass : inactivePaginationButtonClass,
+            className: paginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowForwardIos, {})
           }
         ),
@@ -319,7 +318,7 @@ function Table({
             type: "button",
             onClick: () => setPage(totalPages - 1),
             disabled: !canNext,
-            className: canNext ? paginationButtonClass : inactivePaginationButtonClass,
+            className: paginationButtonClass,
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
           }
         )
