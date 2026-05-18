@@ -47,14 +47,7 @@ function Table({
 }) {
   const isServerPagination = Boolean(fetchUrl);
   const [hasMounted, setHasMounted] = (0, import_react.useState)(false);
-  const [pageIndex, setPageIndex] = (0, import_react.useState)(() => {
-    if (enableQueryParams && typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const pageFromUrl = Number(params.get(pageQueryKey) || "1");
-      return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
-    }
-    return 0;
-  });
+  const [pageIndex, setPageIndex] = (0, import_react.useState)(0);
   const [internalData, setInternalData] = (0, import_react.useState)([]);
   const [internalTotal, setInternalTotal] = (0, import_react.useState)(0);
   const [isLoading, setIsLoading] = (0, import_react.useState)(false);
@@ -96,8 +89,9 @@ function Table({
     [totalPages, updateUrlPage]
   );
   (0, import_react.useEffect)(() => {
+    setPageIndex(getPageIndexFromUrl());
     setHasMounted(true);
-  }, []);
+  }, [getPageIndexFromUrl]);
   (0, import_react.useEffect)(() => {
     if (!enableQueryParams) return;
     const handlePopState = () => {
@@ -179,7 +173,7 @@ function Table({
   const inactivePaginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#94A3B8]";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full border-collapse text-sm", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F3F4F6]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
         enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {

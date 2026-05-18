@@ -242,7 +242,7 @@ export function Table<TData extends object>({
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]">
       <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
+          <thead className="sticky top-0 z-10 bg-[#F3F4F6]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
                 {enableRowSelection && (

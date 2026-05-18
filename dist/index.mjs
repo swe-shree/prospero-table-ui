@@ -28,14 +28,7 @@ function Table({
 }) {
   const isServerPagination = Boolean(fetchUrl);
   const [hasMounted, setHasMounted] = useState(false);
-  const [pageIndex, setPageIndex] = useState(() => {
-    if (enableQueryParams && typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const pageFromUrl = Number(params.get(pageQueryKey) || "1");
-      return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
-    }
-    return 0;
-  });
+  const [pageIndex, setPageIndex] = useState(0);
   const [internalData, setInternalData] = useState([]);
   const [internalTotal, setInternalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,8 +70,9 @@ function Table({
     [totalPages, updateUrlPage]
   );
   useEffect(() => {
+    setPageIndex(getPageIndexFromUrl());
     setHasMounted(true);
-  }, []);
+  }, [getPageIndexFromUrl]);
   useEffect(() => {
     if (!enableQueryParams) return;
     const handlePopState = () => {
@@ -160,7 +154,7 @@ function Table({
   const inactivePaginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#94A3B8]";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white font-[Inter,sans-serif]", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full border-collapse text-sm", children: [
-      /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
+      /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F3F4F6]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
         enableRowSelection && /* @__PURE__ */ jsx("th", { className: "w-12 px-[10px] py-[10px] text-center", children: /* @__PURE__ */ jsx(
           "input",
           {
