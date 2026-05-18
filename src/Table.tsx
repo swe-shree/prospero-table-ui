@@ -364,7 +364,7 @@ export function Table<TData extends object>({
             {rowLabel}
           </p>
 
-          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
+          <div className="flex items-center gap-3 text-sm text-[#64748B]">
             <button
               type="button"
               onClick={() => setPage(0)}

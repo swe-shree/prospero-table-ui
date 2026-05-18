@@ -253,7 +253,7 @@ function Table({
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 text-sm text-[#64748B]", children: [
         /* @__PURE__ */ jsx(
           "button",
           {
