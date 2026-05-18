@@ -230,7 +230,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-11 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-[#475569] shadow-sm hover:bg-[#F8FAFC] disabled:opacity-40";
+    "flex h-11 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
 
 
 
