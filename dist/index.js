@@ -169,7 +169,7 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-10 w-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
+  const paginationButtonClass = "flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F3F4F6]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
@@ -256,7 +256,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
+    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-between border-t border-[#E5E7EB] bg-white px-5 py-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
@@ -322,7 +322,8 @@ function Table({
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
           }
         )
-      ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {})
     ] })
   ] });
 }

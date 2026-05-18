@@ -230,9 +230,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-10 w-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
-
-
+  "flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white">
@@ -353,7 +351,7 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
+        <div className="flex justify-between border-t border-[#E5E7EB] bg-white px-5 py-4">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
             <span className="font-bold text-black">
@@ -416,6 +414,7 @@ export function Table<TData extends object>({
               <MdKeyboardDoubleArrowRight />
             </button>
           </div>
+          <div></div>
         </div>
       )}
     </div>
