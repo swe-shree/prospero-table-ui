@@ -277,11 +277,11 @@ function Table({
         /* @__PURE__ */ jsxs("p", { children: [
           "Page",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: safePageIndex + 1 }),
+          /* @__PURE__ */ jsx("span", { className: "font-bold text-black", children: safePageIndex + 1 }),
           " ",
           "of",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: totalPages })
+          /* @__PURE__ */ jsx("span", { className: "font-bold text-black", children: totalPages })
         ] }),
         /* @__PURE__ */ jsx(
           "button",

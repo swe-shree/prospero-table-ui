@@ -389,11 +389,11 @@ export function Table<TData extends object>({
 
             <p>
               Page{" "}
-              <span className="font-bold text-[#111827]">
+              <span className="font-bold text-black">
                 {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-bold text-[#111827]">{totalPages}</span>
+              <span className="font-bold text-black">{totalPages}</span>
             </p>
 
             <button
