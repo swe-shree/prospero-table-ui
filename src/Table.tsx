@@ -356,11 +356,11 @@ export function Table<TData extends object>({
         <div className="flex items-center border-t border-[#E5E7EB] bg-white px-5 py-4">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-bold text-[#111827]">
-              {showingFrom}–{showingTo}
+            <span className="font-bold text-black">
+              {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-bold text-[#111827]">
+            <span className="font-bold text-black">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}

@@ -260,15 +260,15 @@ function Table({
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-bold text-[#111827]", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-bold text-black", children: [
           showingFrom,
-          "\u2013",
+          "-",
           showingTo
         ] }),
         " ",
         "of",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-bold text-[#111827]", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-bold text-black", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),

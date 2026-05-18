@@ -241,15 +241,15 @@ function Table({
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ jsxs("span", { className: "font-bold text-[#111827]", children: [
+        /* @__PURE__ */ jsxs("span", { className: "font-bold text-black", children: [
           showingFrom,
-          "\u2013",
+          "-",
           showingTo
         ] }),
         " ",
         "of",
         " ",
-        /* @__PURE__ */ jsx("span", { className: "font-bold text-[#111827]", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ jsx("span", { className: "font-bold text-black", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),
