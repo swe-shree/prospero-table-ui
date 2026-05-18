@@ -230,7 +230,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#334155] hover:bg-[#F8FAFC]";
+    "flex h-11 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-[#475569] shadow-sm hover:bg-[#F8FAFC] disabled:opacity-40";
 
 
 
@@ -366,7 +366,7 @@ export function Table<TData extends object>({
             {rowLabel}
           </p>
 
-          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 text-sm text-[#64748B]">
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-4 text-base text-[#475569]">
             <button
               type="button"
               onClick={() => setPage(0)}
@@ -387,7 +387,7 @@ export function Table<TData extends object>({
               <MdArrowBackIosNew />
             </button>
 
-            <p>
+            <p className= "mx-2">
               Page{" "}
               <span className="font-bold text-black">
                 {safePageIndex + 1}
