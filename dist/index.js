@@ -255,15 +255,15 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-[16px] text-black transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-lg border border-[#D1D5DB] bg-white", children: [
+  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-sm text-black shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-xl border border-slate-200 bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
         enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "th",
           {
             className: (0, import_clsx.default)(
-              "bg-slate-50 border-b border-slate-200",
+              "bg-slate-50 border-b border-slate-100",
               "px-4 py-3 text-center",
               "text-[11px]",
               "font-semibold uppercase tracking-wider text-slate-600"
@@ -293,7 +293,7 @@ function Table({
               {
                 onClick: canSort ? header.column.getToggleSortingHandler() : void 0,
                 className: (0, import_clsx.default)(
-                  "bg-slate-50 border-b border-slate-200",
+                  "bg-slate-50 border-b border-slate-100",
                   "px-4 py-3 text-left",
                   "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
                   canSort && "cursor-pointer transition-colors hover:bg-slate-100 hover:text-slate-900"
@@ -344,7 +344,7 @@ function Table({
               "hover:bg-blue-50"
             ),
             children: [
-              enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "border-b border-slate-100 px-4 py-2.5 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+              enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "border-b border-slate-50 px-4 py-2.5 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                 "input",
                 {
                   type: "checkbox",
@@ -357,7 +357,7 @@ function Table({
               row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                 "td",
                 {
-                  className: "border-b border-slate-100 px-4 py-2.5 text-left font-normal text-slate-700",
+                  className: "border-b border-slate-50 px-4 py-2.5 text-left font-normal text-slate-700",
                   children: cell.column.id === "filename" ? String(
                     cell.getValue()
                   ).replace(
@@ -420,7 +420,7 @@ function Table({
         ),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-sm text-slate-500", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Page" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-8 min-w-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 font-semibold text-black", children: safePageIndex + 1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-9 min-w-9 items-center justify-center rounded-md border border-slate-200 bg-white px-3 font-semibold text-black shadow-none", children: safePageIndex + 1 }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-black", children: [
             "of ",
             totalPages

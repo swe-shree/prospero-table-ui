@@ -385,10 +385,10 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-[16px] text-black transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-sm text-black shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden rounded-lg border border-[#D1D5DB] bg-white">
+    <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white">
       <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-20">
@@ -399,7 +399,7 @@ export function Table<TData extends object>({
                   {enableRowSelection && (
                     <th
                       className={clsx(
-                        "bg-slate-50 border-b border-slate-200",
+                        "bg-slate-50 border-b border-slate-100",
                         "px-4 py-3 text-center",
                         "text-[11px]",
                         "font-semibold uppercase tracking-wider text-slate-600",
@@ -438,7 +438,7 @@ export function Table<TData extends object>({
                               : undefined
                           }
                           className={clsx(
-                            "bg-slate-50 border-b border-slate-200",
+                            "bg-slate-50 border-b border-slate-100",
                             "px-4 py-3 text-left",
                             "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
                             canSort &&
@@ -529,7 +529,7 @@ export function Table<TData extends object>({
                     )}
                   >
                     {enableRowSelection && (
-                      <td className="border-b border-slate-100 px-4 py-2.5 text-center">
+                      <td className="border-b border-slate-50 px-4 py-2.5 text-center">
                         <input
                           type="checkbox"
                           checked={row.getIsSelected()}
@@ -545,7 +545,7 @@ export function Table<TData extends object>({
                       .map((cell) => (
                         <td
                           key={cell.id}
-                          className="border-b border-slate-100 px-4 py-2.5 text-left font-normal text-slate-700"
+                          className="border-b border-slate-50 px-4 py-2.5 text-left font-normal text-slate-700"
                         >
                           {cell.column.id ===
                           "filename"
@@ -621,7 +621,7 @@ export function Table<TData extends object>({
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-8 min-w-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 font-semibold text-black">
+              <span className="flex h-9 min-w-9 items-center justify-center rounded-md border border-slate-200 bg-white px-3 font-semibold text-black shadow-none">
                 {safePageIndex + 1}
               </span>
 
