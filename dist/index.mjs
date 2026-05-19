@@ -151,7 +151,7 @@ function Table({
     return null;
   }
   const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
-  return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden rounded-xl border border-[#E5E7EB] bg-white font-sans", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
         enableRowSelection && /* @__PURE__ */ jsx("th", { className: "w-12 px-5 py-3 text-center", children: /* @__PURE__ */ jsx(
@@ -165,7 +165,7 @@ function Table({
               }
             },
             onChange: table.getToggleAllPageRowsSelectedHandler(),
-            className: "h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1]"
+            className: "h-[18px] w-[18px] cursor-pointer rounded border border-[#D1D5DB]"
           }
         ) }),
         headerGroup.headers.map((header) => {
@@ -173,7 +173,7 @@ function Table({
           return /* @__PURE__ */ jsx(
             "th",
             {
-              className: `px-5 py-3.5 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${isSorted ? "bg-[#F1F5F9] text-[#1E293B]" : "text-[#64748B]"}`,
+              className: `px-5 py-3 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${isSorted ? "bg-[#F1F5F9] text-[#334155]" : "text-[#64748B]"}`,
               children: header.isPlaceholder ? null : /* @__PURE__ */ jsxs(
                 "button",
                 {
@@ -227,13 +227,13 @@ function Table({
                 checked: row.getIsSelected(),
                 disabled: !row.getCanSelect(),
                 onChange: row.getToggleSelectedHandler(),
-                className: "h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1] disabled:opacity-40"
+                className: "h-[18px] w-[18px] cursor-pointer rounded border border-[#D1D5DB] disabled:opacity-40"
               }
             ) }),
             row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx(
               "td",
               {
-                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#334155]",
+                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#475569]",
                 children: flexRender(
                   cell.column.columnDef.cell,
                   cell.getContext()
@@ -250,7 +250,7 @@ function Table({
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ jsxs("span", { className: "font-semibold text-[#334155]", children: [
+        /* @__PURE__ */ jsxs("span", { className: "font-semibold text-[#1E293B]", children: [
           showingFrom,
           "-",
           showingTo
@@ -258,7 +258,7 @@ function Table({
         " ",
         "of",
         " ",
-        /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#334155]", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),
@@ -286,11 +286,11 @@ function Table({
         /* @__PURE__ */ jsxs("p", { className: "mx-2 text-sm text-[#64748B]", children: [
           "Page",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#334155]", children: safePageIndex + 1 }),
+          /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: safePageIndex + 1 }),
           " ",
           "of",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#334155]", children: totalPages })
+          /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#1E293B]", children: totalPages })
         ] }),
         /* @__PURE__ */ jsx(
           "button",

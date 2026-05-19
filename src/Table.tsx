@@ -233,7 +233,7 @@ export function Table<TData extends object>({
     "flex h-9 w-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-[#E5E7EB] bg-white font-sans">
+    <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
       <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full min-w-full border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
@@ -252,7 +252,7 @@ export function Table<TData extends object>({
                         }
                       }}
                       onChange={table.getToggleAllPageRowsSelectedHandler()}
-                      className="h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1]"
+                      className="h-[18px] w-[18px] cursor-pointer rounded border border-[#D1D5DB]"
                     />
                   </th>
                 )}
@@ -263,8 +263,8 @@ export function Table<TData extends object>({
                   return (
                     <th
                       key={header.id}
-                      className={`px-5 py-3.5 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${
-                        isSorted ? "bg-[#F1F5F9] text-[#1E293B]" : "text-[#64748B]"
+                      className={`px-5 py-3 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${
+                        isSorted ? "bg-[#F1F5F9] text-[#334155]" : "text-[#64748B]"
                       }`}
                     >
                       {header.isPlaceholder ? null : (
@@ -339,7 +339,7 @@ export function Table<TData extends object>({
                         checked={row.getIsSelected()}
                         disabled={!row.getCanSelect()}
                         onChange={row.getToggleSelectedHandler()}
-                        className="h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1] disabled:opacity-40"
+                        className="h-[18px] w-[18px] cursor-pointer rounded border border-[#D1D5DB] disabled:opacity-40"
                       />
                     </td>
                   )}
@@ -347,7 +347,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#334155]"
+                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#475569]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -366,11 +366,11 @@ export function Table<TData extends object>({
         <div className="flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-semibold text-[#334155]">
+            <span className="font-semibold text-[#1E293B]">
               {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-[#334155]">
+            <span className="font-semibold text-[#1E293B]">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}
@@ -397,11 +397,11 @@ export function Table<TData extends object>({
 
             <p className="mx-2 text-sm text-[#64748B]">
               Page{" "}
-              <span className="font-semibold text-[#334155]">
+              <span className="font-semibold text-[#1E293B]">
                 {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-semibold text-[#334155]">{totalPages}</span>
+              <span className="font-semibold text-[#1E293B]">{totalPages}</span>
             </p>
 
             <button
