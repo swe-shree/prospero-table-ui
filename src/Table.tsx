@@ -49,7 +49,7 @@ export function Table({
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
 
   const paginationButtonClass =
-    "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
+    "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-sm text-[#64748B] shadow-sm transition-colors hover:bg-slate-50 disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white">
@@ -112,44 +112,45 @@ export function Table({
 
           <tbody className="text-xs">
             {data && rows.length > 0 ? (
-              rows.map((row: any, rowIndex: number) => (
-                <tr
-                  key={row.id}
-                  className={clsx(
-                    "group transition-colors",
-                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
-                    "hover:bg-blue-50",
-                  )}
-                >
-                  {row.getVisibleCells().map((cell: any, cellIndex: number) => (
-                    <td
-                      key={cell.id}
-                      style={{
-                        ...(cellIndex === 1 && firstColumnColor
-                          ? {
-                              color: firstColumnColor,
-                              fontWeight: 600,
-                            }
-                          : {}),
-                      }}
-                      className={clsx(
-                    
-                      "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700",
-                        cell.column.columnDef.meta?.className,
-                      )}
-                    >
-                      {cell.column.id === "filename"
-                        ? String(cell.getValue())
-                            .replace(".pdf", "")
-                            .replace(/\s+\d+$/, "")
-                        : flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                    </td>
-                  ))}
-                </tr>
-              ))
+              rows.map((row: any, rowIndex: number) => {
+                const rowBg =
+                  rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]";
+
+                return (
+                  <tr
+                    key={row.id}
+                    className="group transition-colors hover:bg-blue-50"
+                  >
+                    {row.getVisibleCells().map((cell: any, cellIndex: number) => (
+                      <td
+                        key={cell.id}
+                        style={{
+                          ...(cellIndex === 1 && firstColumnColor
+                            ? {
+                                color: firstColumnColor,
+                                fontWeight: 600,
+                              }
+                            : {}),
+                        }}
+                        className={clsx(
+                          rowBg,
+                          "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700 group-hover:bg-blue-50",
+                          cell.column.columnDef.meta?.className,
+                        )}
+                      >
+                        {cell.column.id === "filename"
+                          ? String(cell.getValue())
+                              .replace(".pdf", "")
+                              .replace(/\s+\d+$/, "")
+                          : flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td
@@ -200,7 +201,7 @@ export function Table({
             <div className="flex items-center gap-2 text-[11px] text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-10 min-w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white px-2 font-semibold text-black">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm">
                 {currentPage}
               </span>
 
