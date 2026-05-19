@@ -223,7 +223,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-8 w-8 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[16px] text-[#94A3B8] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-10 w-10 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[18px] text-[#94A3B8] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
