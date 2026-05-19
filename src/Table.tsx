@@ -70,114 +70,65 @@ export function Table<TData extends object>({
 }: TableProps<TData>) {
   const isServerPagination = Boolean(fetchUrl);
 
-  const [hasMounted, setHasMounted] =
-    useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [internalData, setInternalData] = useState<TData[]>([]);
+  const [internalTotal, setInternalTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const [pageIndex, setPageIndex] =
-    useState(0);
-
-  const [internalData, setInternalData] =
-    useState<TData[]>([]);
-
-  const [internalTotal, setInternalTotal] =
-    useState(0);
-
-  const [isLoading, setIsLoading] =
-    useState(false);
-
-  const [sorting, setSorting] =
-    useState<SortingState>([]);
-
-  const [rowSelection, setRowSelection] =
-    useState<RowSelectionState>({});
-
-  const tableData = isServerPagination
-    ? internalData
-    : data;
+  const tableData = isServerPagination ? internalData : data;
 
   const totalRows = isServerPagination
     ? internalTotal
     : total ?? data.length;
 
-  const generatedColumns =
-    useMemo<ColumnDef<TData>[]>(() => {
-      if (!tableData || tableData.length === 0) {
-        return columns;
-      }
+  const generatedColumns = useMemo<ColumnDef<TData>[]>(() => {
+    if (!tableData || tableData.length === 0) {
+      return columns;
+    }
 
-      const autoColumns = Object.keys(
-        tableData[0],
-      )
-        .filter(
-          (key) =>
-            !hiddenColumns.includes(key),
-        )
-        .map((key) => ({
-          accessorKey: key,
-          header: key
-            .replace(/_/g, " ")
-            .toUpperCase(),
-        })) as ColumnDef<TData>[];
+    const autoColumns = Object.keys(tableData[0])
+      .filter((key) => !hiddenColumns.includes(key))
+      .map((key) => ({
+        accessorKey: key,
+        header: key.replace(/_/g, " ").toUpperCase(),
+      })) as ColumnDef<TData>[];
 
-      return [...autoColumns, ...columns];
-    }, [columns, tableData]);
+    return [...autoColumns, ...columns];
+  }, [columns, tableData]);
 
   const totalPages = useMemo(() => {
-    return Math.max(
-      1,
-      Math.ceil(totalRows / pageSize),
-    );
+    return Math.max(1, Math.ceil(totalRows / pageSize));
   }, [totalRows, pageSize]);
 
   const safePageIndex =
     totalRows > 0
-      ? Math.max(
-          0,
-          Math.min(pageIndex, totalPages - 1),
-        )
+      ? Math.max(0, Math.min(pageIndex, totalPages - 1))
       : pageIndex;
 
-  const getPageIndexFromUrl =
-    useCallback(() => {
-      if (
-        !enableQueryParams ||
-        typeof window === "undefined"
-      ) {
-        return 0;
-      }
+  const getPageIndexFromUrl = useCallback(() => {
+    if (!enableQueryParams || typeof window === "undefined") {
+      return 0;
+    }
 
-      const params =
-        new URLSearchParams(
-          window.location.search,
-        );
+    const params = new URLSearchParams(window.location.search);
 
-      const pageFromUrl = Number(
-        params.get(pageQueryKey) || "1",
-      );
+    const pageFromUrl = Number(params.get(pageQueryKey) || "1");
 
-      return pageFromUrl > 0
-        ? pageFromUrl - 1
-        : 0;
-    }, [enableQueryParams, pageQueryKey]);
+    return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
+  }, [enableQueryParams, pageQueryKey]);
 
   const updateUrlPage = useCallback(
     (nextPageIndex: number) => {
-      if (
-        !enableQueryParams ||
-        typeof window === "undefined"
-      ) {
+      if (!enableQueryParams || typeof window === "undefined") {
         return;
       }
 
-      const params =
-        new URLSearchParams(
-          window.location.search,
-        );
+      const params = new URLSearchParams(window.location.search);
 
-      params.set(
-        pageQueryKey,
-        String(nextPageIndex + 1),
-      );
+      params.set(pageQueryKey, String(nextPageIndex + 1));
 
       const queryString = params.toString();
 
@@ -185,25 +136,17 @@ export function Table<TData extends object>({
         ? `${window.location.pathname}?${queryString}`
         : window.location.pathname;
 
-      window.history.pushState(
-        {},
-        "",
-        newUrl,
-      );
+      window.history.pushState({}, "", newUrl);
     },
     [enableQueryParams, pageQueryKey],
   );
 
   const setPage = useCallback(
     (nextPageIndex: number) => {
-      const safeNextPageIndex =
-        Math.max(
-          0,
-          Math.min(
-            nextPageIndex,
-            totalPages - 1,
-          ),
-        );
+      const safeNextPageIndex = Math.max(
+        0,
+        Math.min(nextPageIndex, totalPages - 1),
+      );
 
       setPageIndex(safeNextPageIndex);
 
@@ -227,27 +170,17 @@ export function Table<TData extends object>({
       setPageIndex(getPageIndexFromUrl());
     };
 
-    window.addEventListener(
-      "popstate",
-      handlePopState,
-    );
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
-      window.removeEventListener(
-        "popstate",
-        handlePopState,
-      );
+      window.removeEventListener("popstate", handlePopState);
     };
-  }, [
-    enableQueryParams,
-    getPageIndexFromUrl,
-  ]);
+  }, [enableQueryParams, getPageIndexFromUrl]);
 
   useEffect(() => {
     if (!fetchUrl || !hasMounted) return;
 
-    const controller =
-      new AbortController();
+    const controller = new AbortController();
 
     async function loadData() {
       try {
@@ -255,41 +188,25 @@ export function Table<TData extends object>({
 
         const url = new URL(fetchUrl!);
 
-        url.searchParams.set(
-          "page",
-          String(safePageIndex + 1),
-        );
+        url.searchParams.set("page", String(safePageIndex + 1));
+        url.searchParams.set("limit", String(pageSize));
 
-        url.searchParams.set(
-          "limit",
-          String(pageSize),
-        );
-
-        const response = await fetch(
-          url.toString(),
-          {
-            signal: controller.signal,
-          },
-        );
+        const response = await fetch(url.toString(), {
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
-          throw new Error(
-            "Failed to fetch table data",
-          );
+          throw new Error("Failed to fetch table data");
         }
 
-        const result =
-          (await response.json()) as FetchResponse<TData>;
+        const result = (await response.json()) as FetchResponse<TData>;
 
         setInternalData(result.items);
-
         setInternalTotal(result.total);
       } catch (error) {
         if (!controller.signal.aborted) {
           setInternalData([]);
-
           setInternalTotal(0);
-
           console.error(error);
         }
       } finally {
@@ -304,27 +221,16 @@ export function Table<TData extends object>({
     return () => {
       controller.abort();
     };
-  }, [
-    fetchUrl,
-    hasMounted,
-    safePageIndex,
-    pageSize,
-  ]);
+  }, [fetchUrl, hasMounted, safePageIndex, pageSize]);
 
   const table = useTableCore({
     data: tableData,
-
     columns: generatedColumns,
-
     sorting,
-
     onSortingChange: setSorting,
 
     pagination: {
-      pageIndex: isServerPagination
-        ? 0
-        : safePageIndex,
-
+      pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize,
     },
 
@@ -341,161 +247,124 @@ export function Table<TData extends object>({
     },
 
     rowSelection,
-
-    onRowSelectionChange:
-      setRowSelection,
-
+    onRowSelectionChange: setRowSelection,
     enableSorting,
-
     enableRowSelection,
-
     enablePagination,
-
-    manualPagination:
-      isServerPagination,
-
+    manualPagination: isServerPagination,
     pageCount: totalPages,
   });
 
   const rows = table.getRowModel().rows;
 
   const showingFrom =
-    totalRows === 0
-      ? 0
-      : safePageIndex * pageSize + 1;
+    totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
 
   const showingTo =
     totalRows === 0
       ? 0
-      : Math.min(
-          showingFrom +
-            tableData.length -
-            1,
-          totalRows,
-        );
+      : Math.min(showingFrom + tableData.length - 1, totalRows);
 
-  const canPrev =
-    safePageIndex > 0;
-
-  const canNext =
-    safePageIndex < totalPages - 1;
+  const canPrev = safePageIndex > 0;
+  const canNext = safePageIndex < totalPages - 1;
 
   if (!hasMounted) {
     return null;
   }
 
   const paginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-md border border-slate-[#CBD5E1] bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-9 w-9 items-center justify-center rounded-none border border-[#CBD5E1] bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white">
-      <div className="max-h-[500px] w-full overflow-auto border-b border-[#F1F5F9]">
+    <div className="w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white">
+      <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-20">
-            {table
-              .getHeaderGroups()
-              .map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {enableRowSelection && (
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {enableRowSelection && (
+                  <th
+                    className={clsx(
+                      "border-b border-[#CBD5E1] bg-white",
+                      "px-4 py-3 text-center",
+                      "text-[11px]",
+                      "font-semibold uppercase tracking-wider text-slate-600",
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={table.getIsAllPageRowsSelected()}
+                      ref={(el) => {
+                        if (el) {
+                          el.indeterminate =
+                            table.getIsSomePageRowsSelected() &&
+                            !table.getIsAllPageRowsSelected();
+                        }
+                      }}
+                      onChange={table.getToggleAllPageRowsSelectedHandler()}
+                      className="h-4 w-4 rounded-none border border-[#94A3B8]"
+                    />
+                  </th>
+                )}
+
+                {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
+                  const isSorted = header.column.getIsSorted();
+
+                  return (
                     <th
+                      key={header.id}
+                      onClick={
+                        canSort
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
                       className={clsx(
-                        "bg-slate-50 border-b border-slate-100",
-                        "px-4 py-3 text-center",
-                        "text-[11px]",
-                        "font-semibold uppercase tracking-wider text-slate-600",
+                        "border-b border-[#CBD5E1] bg-white",
+                        "px-4 py-3 text-left",
+                        "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
+                        canSort &&
+                          "cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900",
                       )}
                     >
-                      <input
-                        type="checkbox"
-                        checked={table.getIsAllPageRowsSelected()}
-                        ref={(el) => {
-                          if (el) {
-                            el.indeterminate =
-                              table.getIsSomePageRowsSelected() &&
-                              !table.getIsAllPageRowsSelected();
-                          }
-                        }}
-                        onChange={table.getToggleAllPageRowsSelectedHandler()}
-                        className="h-4 w-4 rounded border border-slate-300"
-                      />
-                    </th>
-                  )}
-
-                  {headerGroup.headers.map(
-                    (header) => {
-                      const canSort =
-                        header.column.getCanSort();
-
-                      const isSorted =
-                        header.column.getIsSorted();
-
-                      return (
-                        <th
-                          key={header.id}
-                          onClick={
-                            canSort
-                              ? header.column.getToggleSortingHandler()
-                              : undefined
-                          }
-                          className={clsx(
-                            "bg-slate-50 border-b border-slate-100",
-                            "px-4 py-3 text-left",
-                            "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
-                            canSort &&
-                              "cursor-pointer transition-colors hover:bg-slate-100 hover:text-slate-900",
-                          )}
-                        >
-                          <div className="flex w-fit items-center gap-2 text-nowrap">
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header
-                                    .column
-                                    .columnDef
-                                    .header,
-                                  header.getContext(),
-                                )}
-
-                            {canSort && (
-                              <span
-                                className={clsx(
-                                  "inline-flex h-4 w-4 items-center justify-center",
-                                  isSorted
-                                    ? "text-slate-900"
-                                    : "text-slate-400",
-                                )}
-                              >
-                                {isSorted ===
-                                "asc" ? (
-                                  <FaSortUp className="h-3 w-3" />
-                                ) : isSorted ===
-                                  "desc" ? (
-                                  <FaSortDown className="h-3 w-3" />
-                                ) : (
-                                  <FaSort className="h-3 w-3" />
-                                )}
-                              </span>
+                      <div className="flex w-fit items-center gap-2 text-nowrap">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
                             )}
-                          </div>
-                        </th>
-                      );
-                    },
-                  )}
-                </tr>
-              ))}
+
+                        {canSort && (
+                          <span
+                            className={clsx(
+                              "inline-flex h-4 w-4 items-center justify-center",
+                              isSorted ? "text-slate-900" : "text-slate-400",
+                            )}
+                          >
+                            {isSorted === "asc" ? (
+                              <FaSortUp className="h-3 w-3" />
+                            ) : isSorted === "desc" ? (
+                              <FaSortDown className="h-3 w-3" />
+                            ) : (
+                              <FaSort className="h-3 w-3" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
           </thead>
 
           <tbody className="text-xs">
             {isLoading ? (
               <tr>
                 <td
-                  colSpan={
-                    generatedColumns.length +
-                    (enableRowSelection
-                      ? 1
-                      : 0)
-                  }
-                  className="px-4 py-10 text-center text-sm text-slate-400"
+                  colSpan={generatedColumns.length + (enableRowSelection ? 1 : 0)}
+                  className="border-b border-[#CBD5E1] px-4 py-10 text-center text-sm text-slate-400"
                 >
                   Loading...
                 </td>
@@ -503,86 +372,62 @@ export function Table<TData extends object>({
             ) : rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={
-                    generatedColumns.length +
-                    (enableRowSelection
-                      ? 1
-                      : 0)
-                  }
-                  className="px-4 py-10 text-center text-sm text-slate-400"
+                  colSpan={generatedColumns.length + (enableRowSelection ? 1 : 0)}
+                  className="border-b border-[#CBD5E1] px-4 py-10 text-center text-sm text-slate-400"
                 >
                   {emptyMessage}
                 </td>
               </tr>
             ) : (
-              rows.map(
-                (row, rowIndex) => (
-                  <tr
-                    key={row.id}
-                    className={clsx(
-                      "group transition-colors",
-                      rowIndex % 2 ===
-                        0
-                        ? "bg-white"
-                        : "bg-slate-50",
-                      "hover:bg-blue-50",
-                    )}
-                  >
-                    {enableRowSelection && (
-                      <td className="border-b border-slate-50 px-4 py-2.5 text-center">
-                        <input
-                          type="checkbox"
-                          checked={row.getIsSelected()}
-                          disabled={!row.getCanSelect()}
-                          onChange={row.getToggleSelectedHandler()}
-                          className="h-4 w-4 rounded border border-slate-300"
-                        />
-                      </td>
-                    )}
+              rows.map((row, rowIndex) => (
+                <tr
+                  key={row.id}
+                  className={clsx(
+                    "group transition-colors",
+                    rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50",
+                    "hover:bg-blue-50",
+                  )}
+                >
+                  {enableRowSelection && (
+                    <td className="border-b border-[#CBD5E1] px-4 py-2.5 text-center">
+                      <input
+                        type="checkbox"
+                        checked={row.getIsSelected()}
+                        disabled={!row.getCanSelect()}
+                        onChange={row.getToggleSelectedHandler()}
+                        className="h-4 w-4 rounded-none border border-[#94A3B8]"
+                      />
+                    </td>
+                  )}
 
-                    {row
-                      .getVisibleCells()
-                      .map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="border-b border-slate-50 px-4 py-2.5 text-left font-normal text-slate-700"
-                        >
-                          {cell.column.id ===
-                          "filename"
-                            ? String(
-                                cell.getValue(),
-                              )
-                                .replace(
-                                  ".pdf",
-                                  "",
-                                )
-                                .replace(
-                                  /\s+\d+$/,
-                                  "",
-                                )
-                            : flexRender(
-                                cell.column
-                                  .columnDef
-                                  .cell,
-                                cell.getContext(),
-                              )}
-                        </td>
-                      ))}
-                  </tr>
-                ),
-              )
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="border-b border-[#CBD5E1] px-4 py-2.5 text-left font-normal text-slate-700"
+                    >
+                      {cell.column.id === "filename"
+                        ? String(cell.getValue())
+                            .replace(".pdf", "")
+                            .replace(/\s+\d+$/, "")
+                        : flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                    </td>
+                  ))}
+                </tr>
+              ))
             )}
           </tbody>
         </table>
       </div>
 
       {enablePagination && (
-        <div className="grid grid-cols-3 items-center bg-white px-4 py-4">
+        <div className="grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-4 py-4">
           <p className="text-sm text-slate-500">
             Showing{" "}
             <span className="font-semibold text-black">
-              {showingFrom}-
-              {showingTo}
+              {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
             <span className="font-semibold text-black">
@@ -596,24 +441,16 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(0)}
               disabled={!canPrev}
-              className={
-                paginationButtonClass
-              }
+              className={paginationButtonClass}
             >
               <MdKeyboardDoubleArrowLeft />
             </button>
 
             <button
               type="button"
-              onClick={() =>
-                setPage(
-                  safePageIndex - 1,
-                )
-              }
+              onClick={() => setPage(safePageIndex - 1)}
               disabled={!canPrev}
-              className={
-                paginationButtonClass
-              }
+              className={paginationButtonClass}
             >
               <MdArrowBackIosNew />
             </button>
@@ -621,41 +458,27 @@ export function Table<TData extends object>({
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-9 min-w-9 items-center justify-center rounded-md border border-slate-200 bg-white px-3 font-semibold text-black shadow-none">
+              <span className="flex h-9 min-w-9 items-center justify-center rounded-none border border-[#CBD5E1] bg-white px-3 font-semibold text-black shadow-none">
                 {safePageIndex + 1}
               </span>
 
-              <span className="text-black">
-                of {totalPages}
-              </span>
+              <span className="text-black">of {totalPages}</span>
             </div>
 
             <button
               type="button"
-              onClick={() =>
-                setPage(
-                  safePageIndex + 1,
-                )
-              }
+              onClick={() => setPage(safePageIndex + 1)}
               disabled={!canNext}
-              className={
-                paginationButtonClass
-              }
+              className={paginationButtonClass}
             >
               <MdArrowForwardIos />
             </button>
 
             <button
               type="button"
-              onClick={() =>
-                setPage(
-                  totalPages - 1,
-                )
-              }
+              onClick={() => setPage(totalPages - 1)}
               disabled={!canNext}
-              className={
-                paginationButtonClass
-              }
+              className={paginationButtonClass}
             >
               <MdKeyboardDoubleArrowRight />
             </button>
