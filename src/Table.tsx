@@ -388,7 +388,7 @@ export function Table<TData extends object>({
     "flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-[16px] text-black transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden bg-white">
+    <div className="w-full overflow-hidden rounded-lg border border-[#D1D5DB] bg-white">
       <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-20">
@@ -547,12 +547,25 @@ export function Table<TData extends object>({
                           key={cell.id}
                           className="border-b border-slate-100 px-4 py-2.5 text-left font-normal text-slate-700"
                         >
-                          {flexRender(
-                            cell.column
-                              .columnDef
-                              .cell,
-                            cell.getContext(),
-                          )}
+                          {cell.column.id ===
+                          "filename"
+                            ? String(
+                                cell.getValue(),
+                              )
+                                .replace(
+                                  ".pdf",
+                                  "",
+                                )
+                                .replace(
+                                  /\s+\d+$/,
+                                  "",
+                                )
+                            : flexRender(
+                                cell.column
+                                  .columnDef
+                                  .cell,
+                                cell.getContext(),
+                              )}
                         </td>
                       ))}
                   </tr>

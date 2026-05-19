@@ -256,7 +256,7 @@ function Table({
     return null;
   }
   const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-[16px] text-black transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden bg-white", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-lg border border-[#D1D5DB] bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
         enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
@@ -358,7 +358,15 @@ function Table({
                 "td",
                 {
                   className: "border-b border-slate-100 px-4 py-2.5 text-left font-normal text-slate-700",
-                  children: (0, import_react_table.flexRender)(
+                  children: cell.column.id === "filename" ? String(
+                    cell.getValue()
+                  ).replace(
+                    ".pdf",
+                    ""
+                  ).replace(
+                    /\s+\d+$/,
+                    ""
+                  ) : (0, import_react_table.flexRender)(
                     cell.column.columnDef.cell,
                     cell.getContext()
                   )
