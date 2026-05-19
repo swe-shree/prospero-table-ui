@@ -1,7 +1,15 @@
 // src/Table.tsx
 import { flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import {
+  FaSort,
+  FaSortDown,
+  FaSortUp,
+  FaAngleLeft,
+  FaAngleRight,
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight
+} from "react-icons/fa";
 import { jsx, jsxs } from "react/jsx-runtime";
 function Table({
   data,
@@ -25,7 +33,7 @@ function Table({
   const rows = table.getRowModel().rows;
   const headerGroups = table.getHeaderGroups();
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-sm text-[#64748B] shadow-sm transition-colors hover:bg-slate-50 disabled:opacity-40";
+  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#E2E8F0] bg-white text-[#475569] shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-20", children: headerGroups.map((headerGroup) => /* @__PURE__ */ jsx("tr", { children: headerGroup.headers.map((header) => {
@@ -36,9 +44,9 @@ function Table({
           {
             onClick: canSort ? header.column.getToggleSortingHandler() : void 0,
             className: clsx(
-              "border-b border-[#CBD5E1] bg-white px-3 py-3 text-left",
+              "border-b border-[#CBD5E1] bg-[#F8FAFC] px-3 py-3 text-left",
               "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
-              canSort && "cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900",
+              canSort && "cursor-pointer transition-colors hover:bg-slate-100 hover:text-slate-900",
               header.column.columnDef.meta?.className
             ),
             children: /* @__PURE__ */ jsxs(
@@ -53,7 +61,7 @@ function Table({
                     header.column.columnDef.header,
                     header.getContext()
                   ),
-                  canSort && /* @__PURE__ */ jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: isSorted === "asc" ? /* @__PURE__ */ jsx(FaSortUp, { className: "h-3 w-3 text-slate-900" }) : isSorted === "desc" ? /* @__PURE__ */ jsx(FaSortDown, { className: "h-3 w-3 text-slate-900" }) : /* @__PURE__ */ jsx(FaSort, { className: "h-3 w-3 text-slate-400" }) })
+                  canSort && /* @__PURE__ */ jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: isSorted === "asc" ? /* @__PURE__ */ jsx(FaSortUp, { className: "h-3 w-3 text-slate-700" }) : isSorted === "desc" ? /* @__PURE__ */ jsx(FaSortDown, { className: "h-3 w-3 text-slate-700" }) : /* @__PURE__ */ jsx(FaSort, { className: "h-3 w-3 text-slate-400" }) })
                 ]
               }
             )
@@ -62,7 +70,7 @@ function Table({
         );
       }) }, headerGroup.id)) }),
       /* @__PURE__ */ jsx("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => {
-        const rowBg = rowIndex % 2 === 0 ? "bg-white" : "!bg-[#EEF2F7]";
+        const rowBg = rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]";
         return /* @__PURE__ */ jsx("tr", { className: "group", children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ jsx(
           "td",
           {
@@ -74,7 +82,7 @@ function Table({
             },
             className: clsx(
               rowBg,
-              "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
+              "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700 group-hover:bg-blue-50",
               cell.column.columnDef.meta?.className
             ),
             children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : flexRender(
@@ -117,7 +125,7 @@ function Table({
             onClick: onFirstPage,
             disabled: !canPrev,
             className: paginationButtonClass,
-            children: "<<"
+            children: /* @__PURE__ */ jsx(FaAngleDoubleLeft, { className: "h-4 w-4" })
           }
         ),
         /* @__PURE__ */ jsx(
@@ -127,12 +135,12 @@ function Table({
             onClick: onPrevPage,
             disabled: !canPrev,
             className: paginationButtonClass,
-            children: "<"
+            children: /* @__PURE__ */ jsx(FaAngleLeft, { className: "h-4 w-4" })
           }
         ),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-[11px] text-slate-500", children: [
           /* @__PURE__ */ jsx("span", { children: "Page" }),
-          /* @__PURE__ */ jsx("span", { className: "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
+          /* @__PURE__ */ jsx("span", { className: "flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
           /* @__PURE__ */ jsxs("span", { className: "text-black", children: [
             "of ",
             totalPages
@@ -145,7 +153,7 @@ function Table({
             onClick: onNextPage,
             disabled: !canNext,
             className: paginationButtonClass,
-            children: ">"
+            children: /* @__PURE__ */ jsx(FaAngleRight, { className: "h-4 w-4" })
           }
         ),
         /* @__PURE__ */ jsx(
@@ -155,7 +163,7 @@ function Table({
             onClick: onLastPage,
             disabled: !canNext,
             className: paginationButtonClass,
-            children: ">>"
+            children: /* @__PURE__ */ jsx(FaAngleDoubleRight, { className: "h-4 w-4" })
           }
         )
       ] }),
