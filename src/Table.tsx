@@ -117,7 +117,7 @@ export function Table({
                   key={row.id}
                   className={clsx(
                     "group transition-colors",
-                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
+                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#EEF2F7]",
                     "hover:bg-blue-50",
                   )}
                 >

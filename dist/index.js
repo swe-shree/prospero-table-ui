@@ -103,7 +103,7 @@ function Table({
         {
           className: (0, import_clsx.default)(
             "group transition-colors",
-            rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
+            rowIndex % 2 === 0 ? "bg-white" : "bg-[#EEF2F7]",
             "hover:bg-blue-50"
           ),
           children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
