@@ -252,7 +252,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#475569]",
+                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-slate-600 font normal",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()

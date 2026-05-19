@@ -347,7 +347,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#475569]"
+                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-slate-600 font normal"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

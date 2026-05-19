@@ -233,7 +233,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx(
               "td",
               {
-                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#475569]",
+                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-slate-600 font normal",
                 children: flexRender(
                   cell.column.columnDef.cell,
                   cell.getContext()
