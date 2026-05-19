@@ -347,7 +347,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-5 py-3 text-left align-middle text-[13px] font-medium leading-5 text-[#475869]"
+                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#334155]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -366,11 +366,11 @@ export function Table<TData extends object>({
         <div className="flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-semibold text-[#111827]">
+            <span className="font-semibold text-[#334155]">
               {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-[#111827]">
+            <span className="font-semibold text-[#334155]">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}
@@ -397,11 +397,11 @@ export function Table<TData extends object>({
 
             <p className="mx-2 text-sm text-[#64748B]">
               Page{" "}
-              <span className="font-semibold text-[#111827]">
+              <span className="font-semibold text-[#334155]">
                 {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-semibold text-[#111827]">{totalPages}</span>
+              <span className="font-semibold text-[#334155]">{totalPages}</span>
             </p>
 
             <button

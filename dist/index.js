@@ -252,7 +252,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "px-5 py-3 text-left align-middle text-[13px] font-medium leading-5 text-[#475869]",
+                className: "px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-[#334155]",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()
@@ -269,7 +269,7 @@ function Table({
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold text-[#111827]", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold text-[#334155]", children: [
           showingFrom,
           "-",
           showingTo
@@ -277,7 +277,7 @@ function Table({
         " ",
         "of",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#334155]", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),
@@ -305,11 +305,11 @@ function Table({
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "mx-2 text-sm text-[#64748B]", children: [
           "Page",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: safePageIndex + 1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#334155]", children: safePageIndex + 1 }),
           " ",
           "of",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: totalPages })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#334155]", children: totalPages })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
