@@ -60,7 +60,7 @@ export function Table({
     "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white">
+    <div className="w-full overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white">
       <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-20">
@@ -124,7 +124,7 @@ export function Table({
                 <tr
                   key={row.id}
                   className={clsx(
-                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
+                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#E9EEF5]",
                     "group hover:bg-blue-50",
                   )}
                 >

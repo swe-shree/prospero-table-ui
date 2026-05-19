@@ -63,7 +63,7 @@ function Table({
   const headerGroups = table.getHeaderGroups();
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
   const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: headerGroups.map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: headerGroup.headers.map((header) => {
         const canSort = header.column.getCanSort();
@@ -102,7 +102,7 @@ function Table({
         "tr",
         {
           className: (0, import_clsx.default)(
-            rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
+            rowIndex % 2 === 0 ? "bg-white" : "bg-[#E9EEF5]",
             "group hover:bg-blue-50"
           ),
           children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
