@@ -49,7 +49,7 @@ export function Table({
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
 
   const paginationButtonClass =
-    "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-sm text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
+    "flex h-8 w-8 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-xs text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white">
@@ -133,7 +133,7 @@ export function Table({
                           : {}),
                       }}
                       className={clsx(
-                        "border-b border-[#CBD5E1] px-3 py-2.5 text-left font-normal text-slate-700",
+                        "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700",
                         cell.column.columnDef.meta?.className,
                       )}
                     >
@@ -153,7 +153,7 @@ export function Table({
               <tr>
                 <td
                   colSpan={visibleColumnsCount}
-                  className="px-3 py-10 text-center text-sm text-slate-400"
+                  className="px-3 py-8 text-center text-sm text-slate-400"
                 >
                   {emptyMessage}
                 </td>
@@ -164,8 +164,8 @@ export function Table({
       </div>
 
       {enablePagination && (
-        <div className="grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-3 py-3">
-          <p className="text-xs text-slate-500">
+        <div className="grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-2 py-2">
+          <p className="text-[11px] text-slate-500">
             Showing{" "}
             <span className="font-semibold text-black">
               {showingFrom}-{showingTo}
@@ -196,10 +196,10 @@ export function Table({
               {"<"}
             </button>
 
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-[11px] text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-10 min-w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white px-3 font-semibold text-black">
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-md border border-[#E2E8F0] bg-white px-2 font-semibold text-black">
                 {currentPage}
               </span>
 
