@@ -25,7 +25,7 @@ function Table({
   const rows = table.getRowModel().rows;
   const headerGroups = table.getHeaderGroups();
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
-  const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-xs text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
+  const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded-md border border-[#CBD5E1] bg-white text-xs text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-20", children: headerGroups.map((headerGroup) => /* @__PURE__ */ jsx("tr", { children: headerGroup.headers.map((header) => {
@@ -139,7 +139,7 @@ function Table({
         ),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-[11px] text-slate-500", children: [
           /* @__PURE__ */ jsx("span", { children: "Page" }),
-          /* @__PURE__ */ jsx("span", { className: "flex h-8 min-w-8 items-center justify-center rounded-md border border-[#E2E8F0] bg-white px-2 font-semibold text-black", children: currentPage }),
+          /* @__PURE__ */ jsx("span", { className: "flex h-8 min-w-8 items-center justify-center rounded-md border border-[#CBD5E1] bg-white px-2 font-semibold text-black", children: currentPage }),
           /* @__PURE__ */ jsxs("span", { className: "text-black", children: [
             "of ",
             totalPages
