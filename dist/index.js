@@ -169,11 +169,11 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#E5E7EB] bg-white", children: [
+  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-xl border border-[#E5E7EB] bg-white font-sans", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-collapse text-sm", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F3F4F6]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
-        enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-2.5 py-2.5 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
+        enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { className: "w-12 px-5 py-3 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             type: "checkbox",
@@ -184,66 +184,75 @@ function Table({
               }
             },
             onChange: table.getToggleAllPageRowsSelectedHandler(),
-            className: "h-4 w-4 cursor-pointer rounded border-[#CBD5E1]"
+            className: "h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1]"
           }
         ) }),
-        headerGroup.headers.map((header) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-          "th",
-          {
-            className: "px-2.5 py-2.5 text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]",
-            children: header.isPlaceholder ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
-              "button",
-              {
-                type: "button",
-                onClick: header.column.getToggleSortingHandler(),
-                disabled: !enableSorting || !header.column.getCanSort(),
-                className: "flex w-full items-center justify-center gap-2 bg-transparent p-0 disabled:cursor-default",
-                children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: (0, import_react_table.flexRender)(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  ) }),
-                  enableSorting && header.column.getCanSort() && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "shrink-0 text-[11px] text-[#94A3B8]", children: header.column.getIsSorted() === "asc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSortUp, {}) : header.column.getIsSorted() === "desc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSortDown, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSort, {}) })
-                ]
-              }
-            )
-          },
-          header.id
-        ))
+        headerGroup.headers.map((header) => {
+          const isSorted = header.column.getIsSorted();
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "th",
+            {
+              className: `px-5 py-3.5 text-left align-middle text-[13px] font-semibold uppercase leading-5 tracking-[0.04em] ${isSorted ? "bg-[#F1F5F9] text-[#111827]" : "text-[#64748B]"}`,
+              children: header.isPlaceholder ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+                "button",
+                {
+                  type: "button",
+                  onClick: header.column.getToggleSortingHandler(),
+                  disabled: !enableSorting || !header.column.getCanSort(),
+                  className: "flex w-full items-center gap-2 bg-transparent p-0 text-left disabled:cursor-default",
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: (0, import_react_table.flexRender)(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    ) }),
+                    enableSorting && header.column.getCanSort() && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                      "span",
+                      {
+                        className: `shrink-0 text-[12px] ${isSorted ? "text-[#111827]" : "text-[#CBD5E1]"}`,
+                        children: isSorted === "asc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSortUp, {}) : isSorted === "desc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSortDown, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSort, {})
+                      }
+                    )
+                  ]
+                }
+              )
+            },
+            header.id
+          );
+        })
       ] }, headerGroup.id)) }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: isLoading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
           colSpan: columns.length + (enableRowSelection ? 1 : 0),
-          className: "px-4 py-10 text-center text-sm text-[#64748B]",
+          className: "px-5 py-10 text-center text-sm text-[#64748B]",
           children: "Loading..."
         }
       ) }) : rows.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
           colSpan: columns.length + (enableRowSelection ? 1 : 0),
-          className: "px-4 py-10 text-center text-sm text-[#64748B]",
+          className: "px-5 py-10 text-center text-sm text-[#64748B]",
           children: emptyMessage
         }
-      ) }) : rows.map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+      ) }) : rows.map((row, rowIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
         "tr",
         {
-          className: "border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0",
+          className: `h-[54px] border-b border-[#E5E7EB] transition-colors hover:bg-[#F8FAFC] last:border-b-0 ${rowIndex % 2 === 0 ? "bg-white" : "bg-[#F8FAFC]"}`,
           children: [
-            enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-2.5 py-2 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            enableRowSelection && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "px-5 py-3.5 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "input",
               {
                 type: "checkbox",
                 checked: row.getIsSelected(),
                 disabled: !row.getCanSelect(),
                 onChange: row.getToggleSelectedHandler(),
-                className: "h-4 w-4 cursor-pointer rounded border-[#CBD5E1] disabled:opacity-40"
+                className: "h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1] disabled:opacity-40"
               }
             ) }),
             row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "td",
               {
-                className: "px-2.5 py-2 text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]",
+                className: "px-5 py-3.5 text-left align-middle text-[14px] font-medium leading-5 text-[#334155]",
                 children: (0, import_react_table.flexRender)(
                   cell.column.columnDef.cell,
                   cell.getContext()
@@ -256,11 +265,11 @@ function Table({
         row.id
       )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex justify-between items-center bg-white px-5 py-2", children: [
+    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-3", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-bold text-black", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold text-[#111827]", children: [
           showingFrom,
           "-",
           showingTo
@@ -268,11 +277,11 @@ function Table({
         " ",
         "of",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-bold text-black", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3 text-sm text-[#64748B]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-sm text-[#64748B]", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
@@ -293,14 +302,14 @@ function Table({
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowBackIosNew, {})
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "mx-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "mx-2 text-sm text-[#64748B]", children: [
           "Page",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-bold text-black", children: safePageIndex + 1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: safePageIndex + 1 }),
           " ",
           "of",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-bold text-black", children: totalPages })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: totalPages })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
@@ -322,8 +331,7 @@ function Table({
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdKeyboardDoubleArrowRight, {})
           }
         )
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {})
+      ] })
     ] })
   ] });
 }

@@ -230,17 +230,17 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
+    "flex h-9 w-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden border border-[#E5E7EB] bg-white">
+    <div className="w-full overflow-hidden rounded-xl border border-[#E5E7EB] bg-white font-sans">
       <div className="max-h-[500px] w-full overflow-auto">
         <table className="w-full min-w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-[#F3F4F6]">
+          <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
                 {enableRowSelection && (
-                  <th className="w-12 px-2.5 py-2.5 text-center">
+                  <th className="w-12 px-5 py-3 text-center">
                     <input
                       type="checkbox"
                       checked={table.getIsAllPageRowsSelected()}
@@ -252,45 +252,55 @@ export function Table<TData extends object>({
                         }
                       }}
                       onChange={table.getToggleAllPageRowsSelectedHandler()}
-                      className="h-4 w-4 cursor-pointer rounded border-[#CBD5E1]"
+                      className="h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1]"
                     />
                   </th>
                 )}
 
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="px-2.5 py-2.5 text-center align-middle text-[12px] font-medium uppercase leading-[13.48px] tracking-[0.51px] text-[#64748B]"
-                  >
-                    {header.isPlaceholder ? null : (
-                      <button
-                        type="button"
-                        onClick={header.column.getToggleSortingHandler()}
-                        disabled={!enableSorting || !header.column.getCanSort()}
-                        className="flex w-full items-center justify-center gap-2 bg-transparent p-0 disabled:cursor-default"
-                      >
-                        <span>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                        </span>
+                {headerGroup.headers.map((header) => {
+                  const isSorted = header.column.getIsSorted();
 
-                        {enableSorting && header.column.getCanSort() && (
-                          <span className="shrink-0 text-[11px] text-[#94A3B8]">
-                            {header.column.getIsSorted() === "asc" ? (
-                              <FaSortUp />
-                            ) : header.column.getIsSorted() === "desc" ? (
-                              <FaSortDown />
-                            ) : (
-                              <FaSort />
+                  return (
+                    <th
+                      key={header.id}
+                      className={`px-5 py-3.5 text-left align-middle text-[13px] font-semibold uppercase leading-5 tracking-[0.04em] ${
+                        isSorted ? "bg-[#F1F5F9] text-[#111827]" : "text-[#64748B]"
+                      }`}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <button
+                          type="button"
+                          onClick={header.column.getToggleSortingHandler()}
+                          disabled={!enableSorting || !header.column.getCanSort()}
+                          className="flex w-full items-center gap-2 bg-transparent p-0 text-left disabled:cursor-default"
+                        >
+                          <span>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
                             )}
                           </span>
-                        )}
-                      </button>
-                    )}
-                  </th>
-                ))}
+
+                          {enableSorting && header.column.getCanSort() && (
+                            <span
+                              className={`shrink-0 text-[12px] ${
+                                isSorted ? "text-[#111827]" : "text-[#CBD5E1]"
+                              }`}
+                            >
+                              {isSorted === "asc" ? (
+                                <FaSortUp />
+                              ) : isSorted === "desc" ? (
+                                <FaSortDown />
+                              ) : (
+                                <FaSort />
+                              )}
+                            </span>
+                          )}
+                        </button>
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
@@ -300,7 +310,7 @@ export function Table<TData extends object>({
               <tr>
                 <td
                   colSpan={columns.length + (enableRowSelection ? 1 : 0)}
-                  className="px-4 py-10 text-center text-sm text-[#64748B]"
+                  className="px-5 py-10 text-center text-sm text-[#64748B]"
                 >
                   Loading...
                 </td>
@@ -309,25 +319,27 @@ export function Table<TData extends object>({
               <tr>
                 <td
                   colSpan={columns.length + (enableRowSelection ? 1 : 0)}
-                  className="px-4 py-10 text-center text-sm text-[#64748B]"
+                  className="px-5 py-10 text-center text-sm text-[#64748B]"
                 >
                   {emptyMessage}
                 </td>
               </tr>
             ) : (
-              rows.map((row) => (
+              rows.map((row, rowIndex) => (
                 <tr
                   key={row.id}
-                  className="border-b border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC] last:border-b-0"
+                  className={`h-[54px] border-b border-[#E5E7EB] transition-colors hover:bg-[#F8FAFC] last:border-b-0 ${
+                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#F8FAFC]"
+                  }`}
                 >
                   {enableRowSelection && (
-                    <td className="px-2.5 py-2 text-center">
+                    <td className="px-5 py-3.5 text-center">
                       <input
                         type="checkbox"
                         checked={row.getIsSelected()}
                         disabled={!row.getCanSelect()}
                         onChange={row.getToggleSelectedHandler()}
-                        className="h-4 w-4 cursor-pointer rounded border-[#CBD5E1] disabled:opacity-40"
+                        className="h-[18px] w-[18px] cursor-pointer rounded border border-[#CBD5E1] disabled:opacity-40"
                       />
                     </td>
                   )}
@@ -335,7 +347,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-2.5 py-2 text-center align-middle text-[12px] font-normal leading-[18px] text-[#1E293B]"
+                      className="px-5 py-3.5 text-left align-middle text-[14px] font-medium leading-5 text-[#334155]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -351,20 +363,20 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="flex justify-between items-center bg-white px-5 py-2">
+        <div className="flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-bold text-black">
+            <span className="font-semibold text-[#111827]">
               {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-bold text-black">
+            <span className="font-semibold text-[#111827]">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}
           </p>
 
-          <div className="flex items-center gap-3 text-sm text-[#64748B]">
+          <div className="flex items-center gap-2 text-sm text-[#64748B]">
             <button
               type="button"
               onClick={() => setPage(0)}
@@ -379,18 +391,17 @@ export function Table<TData extends object>({
               onClick={() => setPage(safePageIndex - 1)}
               disabled={!canPrev}
               className={paginationButtonClass}
-              
             >
               <MdArrowBackIosNew />
             </button>
 
-            <p className= "mx-2">
+            <p className="mx-2 text-sm text-[#64748B]">
               Page{" "}
-              <span className="font-bold text-black">
+              <span className="font-semibold text-[#111827]">
                 {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-bold text-black">{totalPages}</span>
+              <span className="font-semibold text-[#111827]">{totalPages}</span>
             </p>
 
             <button
@@ -398,7 +409,6 @@ export function Table<TData extends object>({
               onClick={() => setPage(safePageIndex + 1)}
               disabled={!canNext}
               className={paginationButtonClass}
-              
             >
               <MdArrowForwardIos />
             </button>
@@ -408,12 +418,10 @@ export function Table<TData extends object>({
               onClick={() => setPage(totalPages - 1)}
               disabled={!canNext}
               className={paginationButtonClass}
-              
             >
               <MdKeyboardDoubleArrowRight />
             </button>
           </div>
-          <div></div>
         </div>
       )}
     </div>
