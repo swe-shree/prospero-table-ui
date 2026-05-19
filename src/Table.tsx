@@ -90,7 +90,6 @@ export function Table<TData extends object>({
       params.set(pageQueryKey, String(nextPageIndex + 1));
 
       const queryString = params.toString();
-
       const newUrl = queryString
         ? `${window.location.pathname}?${queryString}`
         : window.location.pathname;
@@ -181,15 +180,12 @@ export function Table<TData extends object>({
   const table = useTableCore({
     data: tableData,
     columns,
-
     sorting,
     onSortingChange: setSorting,
-
     pagination: {
       pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize,
     },
-
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
@@ -201,14 +197,11 @@ export function Table<TData extends object>({
 
       setPage(next.pageIndex);
     },
-
     rowSelection,
     onRowSelectionChange: setRowSelection,
-
     enableSorting,
     enableRowSelection,
     enablePagination,
-
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
@@ -230,7 +223,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-8 w-8 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[16px] text-[#94A3B8] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
@@ -365,14 +358,14 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="grid grid-cols-3 items-center border-t border-[#E5E7EB] bg-white px-5 py-3">
+        <div className="grid grid-cols-3 items-center border-t border-[#E5E7EB] bg-white px-3 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
-            <span className="font-semibold text-[#1E293B]">
+            <span className="font-semibold text-[#111827]">
               {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-[#1E293B]">
+            <span className="font-semibold text-[#111827]">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}
@@ -397,15 +390,14 @@ export function Table<TData extends object>({
               <MdArrowBackIosNew />
             </button>
 
-            <p className="flex items-center text-sm text-[#64748B]">
-              Page{" "}
-              <span className="mx-1 font-semibold text-[#1E293B]">
+            <p className="flex items-center gap-2 text-sm text-[#64748B]">
+              <span>Page</span>
+
+              <span className="flex h-8 min-w-12 items-center justify-center rounded-md border border-[#E5E7EB] bg-white px-3 font-semibold text-[#111827]">
                 {safePageIndex + 1}
               </span>
-              of
-              <span className="ml-1 font-semibold text-[#1E293B]">
-                {totalPages}
-              </span>
+
+              <span>of {totalPages}</span>
             </p>
 
             <button
