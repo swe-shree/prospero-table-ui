@@ -181,25 +181,34 @@ export function Table<TData extends object>({
   const table = useTableCore({
     data: tableData,
     columns,
+
     sorting,
     onSortingChange: setSorting,
+
     pagination: {
       pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize,
     },
+
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
-          ? updater({ pageIndex: safePageIndex, pageSize })
+          ? updater({
+              pageIndex: safePageIndex,
+              pageSize,
+            })
           : updater;
 
       setPage(next.pageIndex);
     },
+
     rowSelection,
     onRowSelectionChange: setRowSelection,
+
     enableSorting,
     enableRowSelection,
     enablePagination,
+
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
@@ -207,6 +216,7 @@ export function Table<TData extends object>({
   const rows = table.getRowModel().rows;
 
   const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
+
   const showingTo =
     totalRows === 0
       ? 0
@@ -215,10 +225,12 @@ export function Table<TData extends object>({
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
 
-  if (!hasMounted) return null;
+  if (!hasMounted) {
+    return null;
+  }
 
   const paginationButtonClass =
-    "flex h-8 w-8 items-center justify-center rounded border border-[#CBD5E1] bg-white text-[18px] text-[#64748B] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
@@ -353,7 +365,7 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-3">
+        <div className="grid grid-cols-3 items-center border-t border-[#E5E7EB] bg-white px-5 py-3">
           <p className="text-sm text-[#64748B]">
             Showing{" "}
             <span className="font-semibold text-[#1E293B]">
@@ -366,7 +378,7 @@ export function Table<TData extends object>({
             {rowLabel}
           </p>
 
-          <div className="flex items-center gap-1 text-sm text-[#64748B]">
+          <div className="flex items-center justify-center gap-2 text-sm text-[#64748B]">
             <button
               type="button"
               onClick={() => setPage(0)}
@@ -385,12 +397,12 @@ export function Table<TData extends object>({
               <MdArrowBackIosNew />
             </button>
 
-            <p className="mx-2 flex items-center text-sm text-[#64748B]">
+            <p className="flex items-center text-sm text-[#64748B]">
               Page{" "}
-              <span className="ml-1 font-semibold text-[#1E293B]">
+              <span className="mx-1 font-semibold text-[#1E293B]">
                 {safePageIndex + 1}
-              </span>{" "}
-              of{" "}
+              </span>
+              of
               <span className="ml-1 font-semibold text-[#1E293B]">
                 {totalPages}
               </span>
@@ -414,6 +426,8 @@ export function Table<TData extends object>({
               <MdKeyboardDoubleArrowRight />
             </button>
           </div>
+
+          <div />
         </div>
       )}
     </div>

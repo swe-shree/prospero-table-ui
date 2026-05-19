@@ -128,7 +128,10 @@ function Table({
       pageSize
     },
     onPaginationChange: (updater) => {
-      const next = typeof updater === "function" ? updater({ pageIndex: safePageIndex, pageSize }) : updater;
+      const next = typeof updater === "function" ? updater({
+        pageIndex: safePageIndex,
+        pageSize
+      }) : updater;
       setPage(next.pageIndex);
     },
     rowSelection,
@@ -144,8 +147,10 @@ function Table({
   const showingTo = totalRows === 0 ? 0 : Math.min(showingFrom + tableData.length - 1, totalRows);
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
-  if (!hasMounted) return null;
-  const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded border border-[#CBD5E1] bg-white text-[18px] text-[#64748B] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+  if (!hasMounted) {
+    return null;
+  }
+  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
@@ -241,7 +246,7 @@ function Table({
         row.id
       )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-3", children: [
+    enablePagination && /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-3 items-center border-t border-[#E5E7EB] bg-white px-5 py-3", children: [
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#64748B]", children: [
         "Showing",
         " ",
@@ -257,7 +262,7 @@ function Table({
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1 text-sm text-[#64748B]", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-2 text-sm text-[#64748B]", children: [
         /* @__PURE__ */ jsx(
           "button",
           {
@@ -278,13 +283,11 @@ function Table({
             children: /* @__PURE__ */ jsx(MdArrowBackIosNew, {})
           }
         ),
-        /* @__PURE__ */ jsxs("p", { className: "mx-2 flex items-center text-sm text-[#64748B]", children: [
+        /* @__PURE__ */ jsxs("p", { className: "flex items-center text-sm text-[#64748B]", children: [
           "Page",
           " ",
-          /* @__PURE__ */ jsx("span", { className: "ml-1 font-semibold text-[#1E293B]", children: safePageIndex + 1 }),
-          " ",
+          /* @__PURE__ */ jsx("span", { className: "mx-1 font-semibold text-[#1E293B]", children: safePageIndex + 1 }),
           "of",
-          " ",
           /* @__PURE__ */ jsx("span", { className: "ml-1 font-semibold text-[#1E293B]", children: totalPages })
         ] }),
         /* @__PURE__ */ jsx(
@@ -307,7 +310,8 @@ function Table({
             children: /* @__PURE__ */ jsx(MdKeyboardDoubleArrowRight, {})
           }
         )
-      ] })
+      ] }),
+      /* @__PURE__ */ jsx("div", {})
     ] })
   ] });
 }
