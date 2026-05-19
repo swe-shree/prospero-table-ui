@@ -181,34 +181,25 @@ export function Table<TData extends object>({
   const table = useTableCore({
     data: tableData,
     columns,
-
     sorting,
     onSortingChange: setSorting,
-
     pagination: {
       pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize,
     },
-
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
-          ? updater({
-              pageIndex: safePageIndex,
-              pageSize,
-            })
+          ? updater({ pageIndex: safePageIndex, pageSize })
           : updater;
 
       setPage(next.pageIndex);
     },
-
     rowSelection,
     onRowSelectionChange: setRowSelection,
-
     enableSorting,
     enableRowSelection,
     enablePagination,
-
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
@@ -216,7 +207,6 @@ export function Table<TData extends object>({
   const rows = table.getRowModel().rows;
 
   const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
-
   const showingTo =
     totalRows === 0
       ? 0
@@ -225,12 +215,10 @@ export function Table<TData extends object>({
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < totalPages - 1;
 
-  if (!hasMounted) {
-    return null;
-  }
+  if (!hasMounted) return null;
 
   const paginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-md border border-[#CBD5E1] bg-white text-[#64748B] hover:bg-[#F8FAFC] disabled:opacity-40";
+    "flex h-8 w-8 items-center justify-center rounded border border-[#CBD5E1] bg-white text-[18px] text-[#64748B] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
@@ -264,7 +252,9 @@ export function Table<TData extends object>({
                     <th
                       key={header.id}
                       className={`px-5 py-3 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${
-                        isSorted ? "bg-[#F1F5F9] text-[#334155]" : "text-[#64748B]"
+                        isSorted
+                          ? "bg-[#F1F5F9] text-[#334155]"
+                          : "text-[#64748B]"
                       }`}
                     >
                       {header.isPlaceholder ? null : (
@@ -333,7 +323,7 @@ export function Table<TData extends object>({
                   }`}
                 >
                   {enableRowSelection && (
-                    <td className="px-5 py-3.5 text-center">
+                    <td className="px-5 py-3 text-center">
                       <input
                         type="checkbox"
                         checked={row.getIsSelected()}
@@ -347,7 +337,7 @@ export function Table<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-slate-600 font normal"
+                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-slate-600"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -395,13 +385,15 @@ export function Table<TData extends object>({
               <MdArrowBackIosNew />
             </button>
 
-            <p className="mx-2 text-sm text-[#64748B]">
+            <p className="mx-2 flex items-center text-sm text-[#64748B]">
               Page{" "}
-              <span className="font-semibold text-[#1E293B]">
+              <span className="ml-1 font-semibold text-[#1E293B]">
                 {safePageIndex + 1}
               </span>{" "}
               of{" "}
-              <span className="font-semibold text-[#1E293B]">{totalPages}</span>
+              <span className="ml-1 font-semibold text-[#1E293B]">
+                {totalPages}
+              </span>
             </p>
 
             <button
