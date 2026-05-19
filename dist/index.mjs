@@ -33,7 +33,7 @@ function Table({
   const rows = table.getRowModel().rows;
   const headerGroups = table.getHeaderGroups();
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#E2E8F0] bg-white text-[#475569] shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
+  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-20", children: headerGroups.map((headerGroup) => /* @__PURE__ */ jsx("tr", { children: headerGroup.headers.map((header) => {
@@ -69,30 +69,36 @@ function Table({
           header.id
         );
       }) }, headerGroup.id)) }),
-      /* @__PURE__ */ jsx("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => {
-        const rowBg = rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]";
-        return /* @__PURE__ */ jsx("tr", { className: "group", children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ jsx(
-          "td",
-          {
-            style: {
-              ...cellIndex === 1 && firstColumnColor ? {
-                color: firstColumnColor,
-                fontWeight: 600
-              } : {}
+      /* @__PURE__ */ jsx("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => /* @__PURE__ */ jsx(
+        "tr",
+        {
+          className: clsx(
+            rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
+            "group hover:bg-blue-50"
+          ),
+          children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ jsx(
+            "td",
+            {
+              style: {
+                ...cellIndex === 1 && firstColumnColor ? {
+                  color: firstColumnColor,
+                  fontWeight: 600
+                } : {}
+              },
+              className: clsx(
+                "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700",
+                cell.column.columnDef.meta?.className
+              ),
+              children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : flexRender(
+                cell.column.columnDef.cell,
+                cell.getContext()
+              )
             },
-            className: clsx(
-              rowBg,
-              "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700 group-hover:bg-blue-50",
-              cell.column.columnDef.meta?.className
-            ),
-            children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : flexRender(
-              cell.column.columnDef.cell,
-              cell.getContext()
-            )
-          },
-          cell.id
-        )) }, row.id);
-      }) : /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx(
+            cell.id
+          ))
+        },
+        row.id
+      )) : /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx(
         "td",
         {
           colSpan: visibleColumnsCount,
@@ -125,7 +131,7 @@ function Table({
             onClick: onFirstPage,
             disabled: !canPrev,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ jsx(FaAngleDoubleLeft, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx(FaAngleDoubleLeft, { className: "h-4 w-4 text-black" })
           }
         ),
         /* @__PURE__ */ jsx(
@@ -135,12 +141,12 @@ function Table({
             onClick: onPrevPage,
             disabled: !canPrev,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ jsx(FaAngleLeft, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx(FaAngleLeft, { className: "h-4 w-4 text-black" })
           }
         ),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-[11px] text-slate-500", children: [
           /* @__PURE__ */ jsx("span", { children: "Page" }),
-          /* @__PURE__ */ jsx("span", { className: "flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
+          /* @__PURE__ */ jsx("span", { className: "flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
           /* @__PURE__ */ jsxs("span", { className: "text-black", children: [
             "of ",
             totalPages
@@ -153,7 +159,7 @@ function Table({
             onClick: onNextPage,
             disabled: !canNext,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ jsx(FaAngleRight, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx(FaAngleRight, { className: "h-4 w-4 text-black" })
           }
         ),
         /* @__PURE__ */ jsx(
@@ -163,7 +169,7 @@ function Table({
             onClick: onLastPage,
             disabled: !canNext,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ jsx(FaAngleDoubleRight, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx(FaAngleDoubleRight, { className: "h-4 w-4 text-black" })
           }
         )
       ] }),
