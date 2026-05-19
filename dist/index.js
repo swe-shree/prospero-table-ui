@@ -31,8 +31,9 @@ var import_fa = require("react-icons/fa");
 var import_md = require("react-icons/md");
 var import_table_core = require("@prospero/table-core");
 var import_jsx_runtime = require("react/jsx-runtime");
+var hiddenColumns = ["_id", "id", "job_id", "created_at", "updated_at"];
 function Table({
-  columns,
+  columns = [],
   data = [],
   total,
   fetchUrl,
@@ -55,6 +56,16 @@ function Table({
   const [rowSelection, setRowSelection] = (0, import_react.useState)({});
   const tableData = isServerPagination ? internalData : data;
   const totalRows = isServerPagination ? internalTotal : total ?? data.length;
+  const generatedColumns = (0, import_react.useMemo)(() => {
+    if (!tableData || tableData.length === 0) {
+      return columns;
+    }
+    const autoColumns = Object.keys(tableData[0]).filter((key) => !hiddenColumns.includes(key)).map((key) => ({
+      accessorKey: key,
+      header: key.replace(/_/g, " ").toUpperCase()
+    }));
+    return [...autoColumns, ...columns];
+  }, [columns, tableData]);
   const totalPages = (0, import_react.useMemo)(() => {
     return Math.max(1, Math.ceil(totalRows / pageSize));
   }, [totalRows, pageSize]);
@@ -139,7 +150,7 @@ function Table({
   }, [fetchUrl, hasMounted, safePageIndex, pageSize]);
   const table = (0, import_table_core.useTableCore)({
     data: tableData,
-    columns,
+    columns: generatedColumns,
     sorting,
     onSortingChange: setSorting,
     pagination: {
@@ -169,7 +180,7 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-md border border-[#D1D5DB] bg-white text-[18px] text-black hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+  const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[16px] text-black hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-collapse text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { className: "border-b border-[#E5E7EB]", children: [
@@ -223,14 +234,14 @@ function Table({
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: isLoading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
-          colSpan: columns.length + (enableRowSelection ? 1 : 0),
+          colSpan: generatedColumns.length + (enableRowSelection ? 1 : 0),
           className: "px-5 py-10 text-center text-sm text-[#64748B]",
           children: "Loading..."
         }
       ) }) : rows.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
-          colSpan: columns.length + (enableRowSelection ? 1 : 0),
+          colSpan: generatedColumns.length + (enableRowSelection ? 1 : 0),
           className: "px-5 py-10 text-center text-sm text-[#64748B]",
           children: emptyMessage
         }
@@ -269,7 +280,7 @@ function Table({
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-[#111827]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold text-[#111827]", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold", children: [
           showingFrom,
           "-",
           showingTo
@@ -277,11 +288,11 @@ function Table({
         " ",
         "of",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-[#111827]", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-2 text-sm text-[#111827]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-2", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {

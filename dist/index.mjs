@@ -12,8 +12,9 @@ import {
 } from "react-icons/md";
 import { useTableCore } from "@prospero/table-core";
 import { jsx, jsxs } from "react/jsx-runtime";
+var hiddenColumns = ["_id", "id", "job_id", "created_at", "updated_at"];
 function Table({
-  columns,
+  columns = [],
   data = [],
   total,
   fetchUrl,
@@ -36,6 +37,16 @@ function Table({
   const [rowSelection, setRowSelection] = useState({});
   const tableData = isServerPagination ? internalData : data;
   const totalRows = isServerPagination ? internalTotal : total ?? data.length;
+  const generatedColumns = useMemo(() => {
+    if (!tableData || tableData.length === 0) {
+      return columns;
+    }
+    const autoColumns = Object.keys(tableData[0]).filter((key) => !hiddenColumns.includes(key)).map((key) => ({
+      accessorKey: key,
+      header: key.replace(/_/g, " ").toUpperCase()
+    }));
+    return [...autoColumns, ...columns];
+  }, [columns, tableData]);
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(totalRows / pageSize));
   }, [totalRows, pageSize]);
@@ -120,7 +131,7 @@ function Table({
   }, [fetchUrl, hasMounted, safePageIndex, pageSize]);
   const table = useTableCore({
     data: tableData,
-    columns,
+    columns: generatedColumns,
     sorting,
     onSortingChange: setSorting,
     pagination: {
@@ -150,7 +161,7 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-md border border-[#D1D5DB] bg-white text-[18px] text-black hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+  const paginationButtonClass = "flex h-8 w-8 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[16px] text-black hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-collapse text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-10 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { className: "border-b border-[#E5E7EB]", children: [
@@ -204,14 +215,14 @@ function Table({
       /* @__PURE__ */ jsx("tbody", { children: isLoading ? /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx(
         "td",
         {
-          colSpan: columns.length + (enableRowSelection ? 1 : 0),
+          colSpan: generatedColumns.length + (enableRowSelection ? 1 : 0),
           className: "px-5 py-10 text-center text-sm text-[#64748B]",
           children: "Loading..."
         }
       ) }) : rows.length === 0 ? /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx(
         "td",
         {
-          colSpan: columns.length + (enableRowSelection ? 1 : 0),
+          colSpan: generatedColumns.length + (enableRowSelection ? 1 : 0),
           className: "px-5 py-10 text-center text-sm text-[#64748B]",
           children: emptyMessage
         }
@@ -250,7 +261,7 @@ function Table({
       /* @__PURE__ */ jsxs("p", { className: "text-sm text-[#111827]", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ jsxs("span", { className: "font-semibold text-[#111827]", children: [
+        /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
           showingFrom,
           "-",
           showingTo
@@ -258,11 +269,11 @@ function Table({
         " ",
         "of",
         " ",
-        /* @__PURE__ */ jsx("span", { className: "font-semibold text-[#111827]", children: totalRows.toLocaleString() }),
+        /* @__PURE__ */ jsx("span", { className: "font-semibold", children: totalRows.toLocaleString() }),
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-2 text-sm text-[#111827]", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-2", children: [
         /* @__PURE__ */ jsx(
           "button",
           {

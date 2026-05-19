@@ -2,7 +2,7 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ColumnDef } from '@tanstack/react-table';
 
 type TableProps<TData extends object> = {
-    columns: ColumnDef<TData>[];
+    columns?: ColumnDef<TData>[];
     data?: TData[];
     total?: number;
     fetchUrl?: string;

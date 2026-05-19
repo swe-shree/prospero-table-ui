@@ -23,7 +23,7 @@ type FetchResponse<TData> = {
 };
 
 export type TableProps<TData extends object> = {
-  columns: ColumnDef<TData>[];
+  columns?: ColumnDef<TData>[];
   data?: TData[];
   total?: number;
   fetchUrl?: string;
@@ -37,8 +37,10 @@ export type TableProps<TData extends object> = {
   emptyMessage?: string;
 };
 
+const hiddenColumns = ["_id", "id", "job_id", "created_at", "updated_at"];
+
 export function Table<TData extends object>({
-  columns,
+  columns = [],
   data = [],
   total,
   fetchUrl,
@@ -66,6 +68,21 @@ export function Table<TData extends object>({
   const tableData = isServerPagination ? internalData : data;
   const totalRows = isServerPagination ? internalTotal : total ?? data.length;
 
+  const generatedColumns = useMemo<ColumnDef<TData>[]>(() => {
+    if (!tableData || tableData.length === 0) {
+      return columns;
+    }
+
+    const autoColumns = Object.keys(tableData[0])
+      .filter((key) => !hiddenColumns.includes(key))
+      .map((key) => ({
+        accessorKey: key,
+        header: key.replace(/_/g, " ").toUpperCase(),
+      })) as ColumnDef<TData>[];
+
+    return [...autoColumns, ...columns];
+  }, [columns, tableData]);
+
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(totalRows / pageSize));
   }, [totalRows, pageSize]);
@@ -90,6 +107,7 @@ export function Table<TData extends object>({
       params.set(pageQueryKey, String(nextPageIndex + 1));
 
       const queryString = params.toString();
+
       const newUrl = queryString
         ? `${window.location.pathname}?${queryString}`
         : window.location.pathname;
@@ -179,13 +197,16 @@ export function Table<TData extends object>({
 
   const table = useTableCore({
     data: tableData,
-    columns,
+    columns: generatedColumns,
+
     sorting,
     onSortingChange: setSorting,
+
     pagination: {
       pageIndex: isServerPagination ? 0 : safePageIndex,
       pageSize,
     },
+
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
@@ -197,11 +218,14 @@ export function Table<TData extends object>({
 
       setPage(next.pageIndex);
     },
+
     rowSelection,
     onRowSelectionChange: setRowSelection,
+
     enableSorting,
     enableRowSelection,
     enablePagination,
+
     manualPagination: isServerPagination,
     pageCount: totalPages,
   });
@@ -223,7 +247,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-10 w-10 items-center justify-center rounded-md border border-[#D1D5DB] bg-white text-[18px] text-black hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-8 w-8 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[16px] text-black hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
@@ -304,7 +328,7 @@ export function Table<TData extends object>({
             {isLoading ? (
               <tr>
                 <td
-                  colSpan={columns.length + (enableRowSelection ? 1 : 0)}
+                  colSpan={generatedColumns.length + (enableRowSelection ? 1 : 0)}
                   className="px-5 py-10 text-center text-sm text-[#64748B]"
                 >
                   Loading...
@@ -313,7 +337,7 @@ export function Table<TData extends object>({
             ) : rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length + (enableRowSelection ? 1 : 0)}
+                  colSpan={generatedColumns.length + (enableRowSelection ? 1 : 0)}
                   className="px-5 py-10 text-center text-sm text-[#64748B]"
                 >
                   {emptyMessage}
@@ -361,17 +385,17 @@ export function Table<TData extends object>({
         <div className="grid grid-cols-3 items-center border-t border-[#E5E7EB] bg-white px-3 py-3">
           <p className="text-sm text-[#111827]">
             Showing{" "}
-            <span className="font-semibold text-[#111827]">
+            <span className="font-semibold">
               {showingFrom}-{showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-[#111827]">
+            <span className="font-semibold">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}
           </p>
 
-          <div className="flex items-center justify-center gap-2 text-sm text-[#111827]">
+          <div className="flex items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => setPage(0)}
