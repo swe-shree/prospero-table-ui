@@ -114,13 +114,10 @@ export function Table({
             {data && rows.length > 0 ? (
               rows.map((row: any, rowIndex: number) => {
                 const rowBg =
-                  rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]";
+                  rowIndex % 2 === 0 ? "bg-white" : "!bg-[#EEF2F7]";
 
                 return (
-                  <tr
-                    key={row.id}
-                    className="group transition-colors hover:bg-blue-50"
-                  >
+                  <tr key={row.id} className="group">
                     {row.getVisibleCells().map((cell: any, cellIndex: number) => (
                       <td
                         key={cell.id}
@@ -134,7 +131,7 @@ export function Table({
                         }}
                         className={clsx(
                           rowBg,
-                          "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700 group-hover:bg-blue-50",
+                          "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
                           cell.column.columnDef.meta?.className,
                         )}
                       >

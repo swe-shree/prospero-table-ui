@@ -99,35 +99,28 @@ function Table({
         );
       }) }, headerGroup.id)) }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => {
-        const rowBg = rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]";
-        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-          "tr",
+        const rowBg = rowIndex % 2 === 0 ? "bg-white" : "!bg-[#EEF2F7]";
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { className: "group", children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "td",
           {
-            className: "group transition-colors hover:bg-blue-50",
-            children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-              "td",
-              {
-                style: {
-                  ...cellIndex === 1 && firstColumnColor ? {
-                    color: firstColumnColor,
-                    fontWeight: 600
-                  } : {}
-                },
-                className: (0, import_clsx.default)(
-                  rowBg,
-                  "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700 group-hover:bg-blue-50",
-                  cell.column.columnDef.meta?.className
-                ),
-                children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : (0, import_react_table.flexRender)(
-                  cell.column.columnDef.cell,
-                  cell.getContext()
-                )
-              },
-              cell.id
-            ))
+            style: {
+              ...cellIndex === 1 && firstColumnColor ? {
+                color: firstColumnColor,
+                fontWeight: 600
+              } : {}
+            },
+            className: (0, import_clsx.default)(
+              rowBg,
+              "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
+              cell.column.columnDef.meta?.className
+            ),
+            children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : (0, import_react_table.flexRender)(
+              cell.column.columnDef.cell,
+              cell.getContext()
+            )
           },
-          row.id
-        );
+          cell.id
+        )) }, row.id);
       }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
