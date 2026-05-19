@@ -201,7 +201,7 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-12 w-12 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-none text-base text-[#64748B] shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-sm text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
@@ -329,7 +329,7 @@ function Table({
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-2", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
@@ -350,9 +350,9 @@ function Table({
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_md.MdArrowBackIosNew, {})
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3 text-sm text-slate-500", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-sm text-slate-500", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Page" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-12 min-w-12 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white px-3 font-semibold text-[#64748B] shadow-none", children: safePageIndex + 1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-10 min-w-10 items-center justify-center rounded-md border border-[#E2E8F0] bg-white px-3 font-semibold text-black", children: safePageIndex + 1 }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-black", children: [
             "of ",
             totalPages
