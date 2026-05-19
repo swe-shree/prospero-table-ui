@@ -173,7 +173,7 @@ function Table({
           return /* @__PURE__ */ jsx(
             "th",
             {
-              className: `px-5 py-3.5 text-left align-middle text-[13px] font-semibold uppercase leading-5 tracking-[0.04em] ${isSorted ? "bg-[#F1F5F9] text-[#111827]" : "text-[#64748B]"}`,
+              className: `px-5 py-3.5 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${isSorted ? "bg-[#F1F5F9] text-[#1E293B]" : "text-[#64748B]"}`,
               children: header.isPlaceholder ? null : /* @__PURE__ */ jsxs(
                 "button",
                 {
@@ -189,7 +189,7 @@ function Table({
                     enableSorting && header.column.getCanSort() && /* @__PURE__ */ jsx(
                       "span",
                       {
-                        className: `shrink-0 text-[12px] ${isSorted ? "text-[#111827]" : "text-[#CBD5E1]"}`,
+                        className: `shrink-0 text-[10px] ${isSorted ? "text-[#475569]" : "text-[#CBD5E1]"}`,
                         children: isSorted === "asc" ? /* @__PURE__ */ jsx(FaSortUp, {}) : isSorted === "desc" ? /* @__PURE__ */ jsx(FaSortDown, {}) : /* @__PURE__ */ jsx(FaSort, {})
                       }
                     )
@@ -218,7 +218,7 @@ function Table({
       ) }) : rows.map((row, rowIndex) => /* @__PURE__ */ jsxs(
         "tr",
         {
-          className: `h-[54px] border-b border-[#E5E7EB] transition-colors hover:bg-[#F8FAFC] last:border-b-0 ${rowIndex % 2 === 0 ? "bg-white" : "bg-[#F8FAFC]"}`,
+          className: `h-[48px] border-b border-[#E5E7EB] transition-colors hover:bg-[#F8FAFC] last:border-b-0 ${rowIndex % 2 === 0 ? "bg-white" : "bg-[#F8FAFC]"}`,
           children: [
             enableRowSelection && /* @__PURE__ */ jsx("td", { className: "px-5 py-3.5 text-center", children: /* @__PURE__ */ jsx(
               "input",
@@ -233,7 +233,7 @@ function Table({
             row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx(
               "td",
               {
-                className: "px-5 py-3.5 text-left align-middle text-[14px] font-medium leading-5 text-[#334155]",
+                className: "px-5 py-3 text-left align-middle text-[13px] font-medium leading-5 text-[#475869]",
                 children: flexRender(
                   cell.column.columnDef.cell,
                   cell.getContext()
