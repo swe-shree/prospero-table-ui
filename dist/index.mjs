@@ -66,7 +66,7 @@ function Table({
         {
           className: clsx(
             "group transition-colors",
-            rowIndex % 2 === 0 ? "bg-white" : "bg-[#EEF2F7]",
+            rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
             "hover:bg-blue-50"
           ),
           children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ jsx(
@@ -79,7 +79,6 @@ function Table({
                 } : {}
               },
               className: clsx(
-                rowIndex % 2 === 0 ? "bg-white" : "bg-[#F1F5F9]",
                 "border-b border-[#CBD5E1] px-3 py-2 text-left font-normal text-slate-700",
                 cell.column.columnDef.meta?.className
               ),
