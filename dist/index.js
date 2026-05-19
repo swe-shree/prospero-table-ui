@@ -62,7 +62,7 @@ function Table({
   const rows = table.getRowModel().rows;
   const headerGroups = table.getHeaderGroups();
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
+  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: headerGroups.map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: headerGroup.headers.map((header) => {
@@ -115,7 +115,7 @@ function Table({
                 } : {}
               },
               className: (0, import_clsx.default)(
-                "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700",
+                "border-b border-[#E2E8F0] px-3 py-3 text-left font-normal text-slate-700",
                 cell.column.columnDef.meta?.className
               ),
               children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : (0, import_react_table.flexRender)(
@@ -136,8 +136,8 @@ function Table({
         }
       ) }) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-2 py-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-[11px] text-slate-500", children: [
+    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-3 py-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-[12px] text-slate-500", children: [
         "Showing",
         " ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold text-black", children: [
@@ -152,7 +152,7 @@ function Table({
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-4", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
@@ -173,9 +173,9 @@ function Table({
             children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaAngleLeft, { className: "h-4 w-4 text-black" })
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-[11px] text-slate-500", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-[12px] text-slate-500", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Page" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-black", children: [
             "of ",
             totalPages
