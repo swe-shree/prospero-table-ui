@@ -176,7 +176,7 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-none border border-[#CBD5E1] bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+  const paginationButtonClass = "flex h-11 w-11 items-center justify-center rounded-none border border-[#CBD5E1] bg-white text-none text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
   return /* @__PURE__ */ jsxs("div", { className: "w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white", children: [
     /* @__PURE__ */ jsx("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ jsx("thead", { className: "sticky top-0 z-20", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxs("tr", { children: [
@@ -304,7 +304,7 @@ function Table({
         " ",
         rowLabel
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-2", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3", children: [
         /* @__PURE__ */ jsx(
           "button",
           {
@@ -327,7 +327,7 @@ function Table({
         ),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-sm text-slate-500", children: [
           /* @__PURE__ */ jsx("span", { children: "Page" }),
-          /* @__PURE__ */ jsx("span", { className: "flex h-9 min-w-9 items-center justify-center rounded-none border border-[#CBD5E1] bg-white px-3 font-semibold text-black shadow-none", children: safePageIndex + 1 }),
+          /* @__PURE__ */ jsx("span", { className: "flex h-11 min-w-11 items-center justify-center rounded-none border border-[#CBD5E1] bg-white px-3 font-semibold text-black shadow-none", children: safePageIndex + 1 }),
           /* @__PURE__ */ jsxs("span", { className: "text-black", children: [
             "of ",
             totalPages

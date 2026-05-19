@@ -273,7 +273,7 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-none border border-[#CBD5E1] bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-11 w-11 items-center justify-center rounded-none border border-[#CBD5E1] bg-white text-none text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white">
@@ -436,7 +436,7 @@ export function Table<TData extends object>({
             {rowLabel}
           </p>
 
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-3">
             <button
               type="button"
               onClick={() => setPage(0)}
@@ -458,7 +458,7 @@ export function Table<TData extends object>({
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-9 min-w-9 items-center justify-center rounded-none border border-[#CBD5E1] bg-white px-3 font-semibold text-black shadow-none">
+              <span className="flex h-11 min-w-11 items-center justify-center rounded-none border border-[#CBD5E1] bg-white px-3 font-semibold text-black shadow-none">
                 {safePageIndex + 1}
               </span>
 
