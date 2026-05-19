@@ -1,13 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import {
   flexRender,
   type ColumnDef,
   type SortingState,
   type RowSelectionState,
 } from "@tanstack/react-table";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+
+import clsx from "clsx";
+
+import {
+  FaSort,
+  FaSortDown,
+  FaSortUp,
+} from "react-icons/fa";
+
 import {
   MdArrowBackIosNew,
   MdArrowForwardIos,
@@ -37,7 +46,13 @@ export type TableProps<TData extends object> = {
   emptyMessage?: string;
 };
 
-const hiddenColumns = ["_id", "id", "job_id", "created_at", "updated_at"];
+const hiddenColumns = [
+  "_id",
+  "id",
+  "job_id",
+  "created_at",
+  "updated_at",
+];
 
 export function Table<TData extends object>({
   columns = [],
@@ -55,56 +70,114 @@ export function Table<TData extends object>({
 }: TableProps<TData>) {
   const isServerPagination = Boolean(fetchUrl);
 
-  const [hasMounted, setHasMounted] = useState(false);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [hasMounted, setHasMounted] =
+    useState(false);
 
-  const [internalData, setInternalData] = useState<TData[]>([]);
-  const [internalTotal, setInternalTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [pageIndex, setPageIndex] =
+    useState(0);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [internalData, setInternalData] =
+    useState<TData[]>([]);
 
-  const tableData = isServerPagination ? internalData : data;
-  const totalRows = isServerPagination ? internalTotal : total ?? data.length;
+  const [internalTotal, setInternalTotal] =
+    useState(0);
 
-  const generatedColumns = useMemo<ColumnDef<TData>[]>(() => {
-    if (!tableData || tableData.length === 0) {
-      return columns;
-    }
+  const [isLoading, setIsLoading] =
+    useState(false);
 
-    const autoColumns = Object.keys(tableData[0])
-      .filter((key) => !hiddenColumns.includes(key))
-      .map((key) => ({
-        accessorKey: key,
-        header: key.replace(/_/g, " ").toUpperCase(),
-      })) as ColumnDef<TData>[];
+  const [sorting, setSorting] =
+    useState<SortingState>([]);
 
-    return [...autoColumns, ...columns];
-  }, [columns, tableData]);
+  const [rowSelection, setRowSelection] =
+    useState<RowSelectionState>({});
+
+  const tableData = isServerPagination
+    ? internalData
+    : data;
+
+  const totalRows = isServerPagination
+    ? internalTotal
+    : total ?? data.length;
+
+  const generatedColumns =
+    useMemo<ColumnDef<TData>[]>(() => {
+      if (!tableData || tableData.length === 0) {
+        return columns;
+      }
+
+      const autoColumns = Object.keys(
+        tableData[0],
+      )
+        .filter(
+          (key) =>
+            !hiddenColumns.includes(key),
+        )
+        .map((key) => ({
+          accessorKey: key,
+          header: key
+            .replace(/_/g, " ")
+            .toUpperCase(),
+        })) as ColumnDef<TData>[];
+
+      return [...autoColumns, ...columns];
+    }, [columns, tableData]);
 
   const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(totalRows / pageSize));
+    return Math.max(
+      1,
+      Math.ceil(totalRows / pageSize),
+    );
   }, [totalRows, pageSize]);
 
   const safePageIndex =
-    totalRows > 0 ? Math.max(0, Math.min(pageIndex, totalPages - 1)) : pageIndex;
+    totalRows > 0
+      ? Math.max(
+          0,
+          Math.min(pageIndex, totalPages - 1),
+        )
+      : pageIndex;
 
-  const getPageIndexFromUrl = useCallback(() => {
-    if (!enableQueryParams || typeof window === "undefined") return 0;
+  const getPageIndexFromUrl =
+    useCallback(() => {
+      if (
+        !enableQueryParams ||
+        typeof window === "undefined"
+      ) {
+        return 0;
+      }
 
-    const params = new URLSearchParams(window.location.search);
-    const pageFromUrl = Number(params.get(pageQueryKey) || "1");
+      const params =
+        new URLSearchParams(
+          window.location.search,
+        );
 
-    return pageFromUrl > 0 ? pageFromUrl - 1 : 0;
-  }, [enableQueryParams, pageQueryKey]);
+      const pageFromUrl = Number(
+        params.get(pageQueryKey) || "1",
+      );
+
+      return pageFromUrl > 0
+        ? pageFromUrl - 1
+        : 0;
+    }, [enableQueryParams, pageQueryKey]);
 
   const updateUrlPage = useCallback(
     (nextPageIndex: number) => {
-      if (!enableQueryParams || typeof window === "undefined") return;
+      if (
+        !enableQueryParams ||
+        typeof window === "undefined"
+      ) {
+        return;
+      }
 
-      const params = new URLSearchParams(window.location.search);
-      params.set(pageQueryKey, String(nextPageIndex + 1));
+      const params =
+        new URLSearchParams(
+          window.location.search,
+        );
+
+      params.set(
+        pageQueryKey,
+        String(nextPageIndex + 1),
+      );
 
       const queryString = params.toString();
 
@@ -112,20 +185,30 @@ export function Table<TData extends object>({
         ? `${window.location.pathname}?${queryString}`
         : window.location.pathname;
 
-      window.history.pushState({}, "", newUrl);
+      window.history.pushState(
+        {},
+        "",
+        newUrl,
+      );
     },
     [enableQueryParams, pageQueryKey],
   );
 
   const setPage = useCallback(
     (nextPageIndex: number) => {
-      const safeNextPageIndex = Math.max(
-        0,
-        Math.min(nextPageIndex, totalPages - 1),
-      );
+      const safeNextPageIndex =
+        Math.max(
+          0,
+          Math.min(
+            nextPageIndex,
+            totalPages - 1,
+          ),
+        );
 
       setPageIndex(safeNextPageIndex);
+
       updateUrlPage(safeNextPageIndex);
+
       setRowSelection({});
     },
     [totalPages, updateUrlPage],
@@ -133,6 +216,7 @@ export function Table<TData extends object>({
 
   useEffect(() => {
     setPageIndex(getPageIndexFromUrl());
+
     setHasMounted(true);
   }, [getPageIndexFromUrl]);
 
@@ -143,42 +227,69 @@ export function Table<TData extends object>({
       setPageIndex(getPageIndexFromUrl());
     };
 
-    window.addEventListener("popstate", handlePopState);
+    window.addEventListener(
+      "popstate",
+      handlePopState,
+    );
 
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener(
+        "popstate",
+        handlePopState,
+      );
     };
-  }, [enableQueryParams, getPageIndexFromUrl]);
+  }, [
+    enableQueryParams,
+    getPageIndexFromUrl,
+  ]);
 
   useEffect(() => {
     if (!fetchUrl || !hasMounted) return;
 
-    const controller = new AbortController();
+    const controller =
+      new AbortController();
 
     async function loadData() {
       try {
         setIsLoading(true);
 
         const url = new URL(fetchUrl!);
-        url.searchParams.set("page", String(safePageIndex + 1));
-        url.searchParams.set("limit", String(pageSize));
 
-        const response = await fetch(url.toString(), {
-          signal: controller.signal,
-        });
+        url.searchParams.set(
+          "page",
+          String(safePageIndex + 1),
+        );
+
+        url.searchParams.set(
+          "limit",
+          String(pageSize),
+        );
+
+        const response = await fetch(
+          url.toString(),
+          {
+            signal: controller.signal,
+          },
+        );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch table data");
+          throw new Error(
+            "Failed to fetch table data",
+          );
         }
 
-        const result = (await response.json()) as FetchResponse<TData>;
+        const result =
+          (await response.json()) as FetchResponse<TData>;
 
         setInternalData(result.items);
+
         setInternalTotal(result.total);
       } catch (error) {
         if (!controller.signal.aborted) {
           setInternalData([]);
+
           setInternalTotal(0);
+
           console.error(error);
         }
       } finally {
@@ -193,17 +304,27 @@ export function Table<TData extends object>({
     return () => {
       controller.abort();
     };
-  }, [fetchUrl, hasMounted, safePageIndex, pageSize]);
+  }, [
+    fetchUrl,
+    hasMounted,
+    safePageIndex,
+    pageSize,
+  ]);
 
   const table = useTableCore({
     data: tableData,
+
     columns: generatedColumns,
 
     sorting,
+
     onSortingChange: setSorting,
 
     pagination: {
-      pageIndex: isServerPagination ? 0 : safePageIndex,
+      pageIndex: isServerPagination
+        ? 0
+        : safePageIndex,
+
       pageSize,
     },
 
@@ -220,116 +341,161 @@ export function Table<TData extends object>({
     },
 
     rowSelection,
-    onRowSelectionChange: setRowSelection,
+
+    onRowSelectionChange:
+      setRowSelection,
 
     enableSorting,
+
     enableRowSelection,
+
     enablePagination,
 
-    manualPagination: isServerPagination,
+    manualPagination:
+      isServerPagination,
+
     pageCount: totalPages,
   });
 
   const rows = table.getRowModel().rows;
 
-  const showingFrom = totalRows === 0 ? 0 : safePageIndex * pageSize + 1;
+  const showingFrom =
+    totalRows === 0
+      ? 0
+      : safePageIndex * pageSize + 1;
 
   const showingTo =
     totalRows === 0
       ? 0
-      : Math.min(showingFrom + tableData.length - 1, totalRows);
+      : Math.min(
+          showingFrom +
+            tableData.length -
+            1,
+          totalRows,
+        );
 
-  const canPrev = safePageIndex > 0;
-  const canNext = safePageIndex < totalPages - 1;
+  const canPrev =
+    safePageIndex > 0;
+
+  const canNext =
+    safePageIndex < totalPages - 1;
 
   if (!hasMounted) {
     return null;
   }
 
   const paginationButtonClass =
-    "flex h-8 w-8 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[16px] text-black hover:bg-[#F8FAFC]shadow-none disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-[16px] text-black transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden border border-[#D1D5DB] bg-white font-sans">
+    <div className="w-full overflow-hidden bg-white">
       <div className="max-h-[500px] w-full overflow-auto">
-        <table className="w-full min-w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-[#F8FAFC]">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
-                {enableRowSelection && (
-                  <th className="w-12 px-5 py-3 text-center">
-                    <input
-                      type="checkbox"
-                      checked={table.getIsAllPageRowsSelected()}
-                      ref={(el) => {
-                        if (el) {
-                          el.indeterminate =
-                            table.getIsSomePageRowsSelected() &&
-                            !table.getIsAllPageRowsSelected();
-                        }
-                      }}
-                      onChange={table.getToggleAllPageRowsSelectedHandler()}
-                      className="h-[18px] w-[18px] cursor-pointer rounded border border-[#D1D5DB]"
-                    />
-                  </th>
-                )}
-
-                {headerGroup.headers.map((header) => {
-                  const isSorted = header.column.getIsSorted();
-
-                  return (
+        <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
+          <thead className="sticky top-0 z-20">
+            {table
+              .getHeaderGroups()
+              .map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {enableRowSelection && (
                     <th
-                      key={header.id}
-                      className={`px-5 py-3 text-left align-middle text-[12px] font-semibold uppercase leading-5 tracking-[0.04em] ${
-                        isSorted
-                          ? "bg-[#F1F5F9] text-[#334155]"
-                          : "text-[#64748B]"
-                      }`}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <button
-                          type="button"
-                          onClick={header.column.getToggleSortingHandler()}
-                          disabled={!enableSorting || !header.column.getCanSort()}
-                          className="flex w-full items-center gap-2 bg-transparent p-0 text-left disabled:cursor-default"
-                        >
-                          <span>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                          </span>
-
-                          {enableSorting && header.column.getCanSort() && (
-                            <span
-                              className={`shrink-0 text-[10px] ${
-                                isSorted ? "text-[#475569]" : "text-[#CBD5E1]"
-                              }`}
-                            >
-                              {isSorted === "asc" ? (
-                                <FaSortUp />
-                              ) : isSorted === "desc" ? (
-                                <FaSortDown />
-                              ) : (
-                                <FaSort />
-                              )}
-                            </span>
-                          )}
-                        </button>
+                      className={clsx(
+                        "bg-slate-50 border-b border-slate-200",
+                        "px-4 py-3 text-center",
+                        "text-[11px]",
+                        "font-semibold uppercase tracking-wider text-slate-600",
                       )}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={table.getIsAllPageRowsSelected()}
+                        ref={(el) => {
+                          if (el) {
+                            el.indeterminate =
+                              table.getIsSomePageRowsSelected() &&
+                              !table.getIsAllPageRowsSelected();
+                          }
+                        }}
+                        onChange={table.getToggleAllPageRowsSelectedHandler()}
+                        className="h-4 w-4 rounded border border-slate-300"
+                      />
                     </th>
-                  );
-                })}
-              </tr>
-            ))}
+                  )}
+
+                  {headerGroup.headers.map(
+                    (header) => {
+                      const canSort =
+                        header.column.getCanSort();
+
+                      const isSorted =
+                        header.column.getIsSorted();
+
+                      return (
+                        <th
+                          key={header.id}
+                          onClick={
+                            canSort
+                              ? header.column.getToggleSortingHandler()
+                              : undefined
+                          }
+                          className={clsx(
+                            "bg-slate-50 border-b border-slate-200",
+                            "px-4 py-3 text-left",
+                            "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
+                            canSort &&
+                              "cursor-pointer transition-colors hover:bg-slate-100 hover:text-slate-900",
+                          )}
+                        >
+                          <div className="flex w-fit items-center gap-2 text-nowrap">
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header
+                                    .column
+                                    .columnDef
+                                    .header,
+                                  header.getContext(),
+                                )}
+
+                            {canSort && (
+                              <span
+                                className={clsx(
+                                  "inline-flex h-4 w-4 items-center justify-center",
+                                  isSorted
+                                    ? "text-slate-900"
+                                    : "text-slate-400",
+                                )}
+                              >
+                                {isSorted ===
+                                "asc" ? (
+                                  <FaSortUp className="h-3 w-3" />
+                                ) : isSorted ===
+                                  "desc" ? (
+                                  <FaSortDown className="h-3 w-3" />
+                                ) : (
+                                  <FaSort className="h-3 w-3" />
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </th>
+                      );
+                    },
+                  )}
+                </tr>
+              ))}
           </thead>
 
-          <tbody>
+          <tbody className="text-xs">
             {isLoading ? (
               <tr>
                 <td
-                  colSpan={generatedColumns.length + (enableRowSelection ? 1 : 0)}
-                  className="px-5 py-10 text-center text-sm text-[#64748B]"
+                  colSpan={
+                    generatedColumns.length +
+                    (enableRowSelection
+                      ? 1
+                      : 0)
+                  }
+                  className="px-4 py-10 text-center text-sm text-slate-400"
                 >
                   Loading...
                 </td>
@@ -337,59 +503,76 @@ export function Table<TData extends object>({
             ) : rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={generatedColumns.length + (enableRowSelection ? 1 : 0)}
-                  className="px-5 py-10 text-center text-sm text-[#64748B]"
+                  colSpan={
+                    generatedColumns.length +
+                    (enableRowSelection
+                      ? 1
+                      : 0)
+                  }
+                  className="px-4 py-10 text-center text-sm text-slate-400"
                 >
                   {emptyMessage}
                 </td>
               </tr>
             ) : (
-              rows.map((row, rowIndex) => (
-                <tr
-                  key={row.id}
-                  className={`h-[48px] border-b border-[#E5E7EB] transition-colors hover:bg-[#F8FAFC] last:border-b-0 ${
-                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#F8FAFC]"
-                  }`}
-                >
-                  {enableRowSelection && (
-                    <td className="px-5 py-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={row.getIsSelected()}
-                        disabled={!row.getCanSelect()}
-                        onChange={row.getToggleSelectedHandler()}
-                        className="h-[18px] w-[18px] cursor-pointer rounded border border-[#D1D5DB] disabled:opacity-40"
-                      />
-                    </td>
-                  )}
+              rows.map(
+                (row, rowIndex) => (
+                  <tr
+                    key={row.id}
+                    className={clsx(
+                      "group transition-colors",
+                      rowIndex % 2 ===
+                        0
+                        ? "bg-white"
+                        : "bg-slate-50",
+                      "hover:bg-blue-50",
+                    )}
+                  >
+                    {enableRowSelection && (
+                      <td className="border-b border-slate-100 px-4 py-2.5 text-center">
+                        <input
+                          type="checkbox"
+                          checked={row.getIsSelected()}
+                          disabled={!row.getCanSelect()}
+                          onChange={row.getToggleSelectedHandler()}
+                          className="h-4 w-4 rounded border border-slate-300"
+                        />
+                      </td>
+                    )}
 
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="px-5 py-3 text-left align-middle text-[13px] font-normal leading-5 text-slate-600"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))
+                    {row
+                      .getVisibleCells()
+                      .map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="border-b border-slate-100 px-4 py-2.5 text-left font-normal text-slate-700"
+                        >
+                          {flexRender(
+                            cell.column
+                              .columnDef
+                              .cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      ))}
+                  </tr>
+                ),
+              )
             )}
           </tbody>
         </table>
       </div>
 
       {enablePagination && (
-        <div className="grid grid-cols-3 items-center border-t border-[#E5E7EB] bg-white px-3 py-3">
-          <p className="text-sm text-[#111827]">
+        <div className="grid grid-cols-3 items-center border-t border-slate-100 bg-white px-4 py-4">
+          <p className="text-sm text-slate-500">
             Showing{" "}
-            <span className="font-semibold">
-              {showingFrom}-{showingTo}
+            <span className="font-semibold text-black">
+              {showingFrom}-
+              {showingTo}
             </span>{" "}
             of{" "}
-            <span className="font-semibold">
+            <span className="font-semibold text-black">
               {totalRows.toLocaleString()}
             </span>{" "}
             {rowLabel}
@@ -400,44 +583,66 @@ export function Table<TData extends object>({
               type="button"
               onClick={() => setPage(0)}
               disabled={!canPrev}
-              className={paginationButtonClass}
+              className={
+                paginationButtonClass
+              }
             >
               <MdKeyboardDoubleArrowLeft />
             </button>
 
             <button
               type="button"
-              onClick={() => setPage(safePageIndex - 1)}
+              onClick={() =>
+                setPage(
+                  safePageIndex - 1,
+                )
+              }
               disabled={!canPrev}
-              className={paginationButtonClass}
+              className={
+                paginationButtonClass
+              }
             >
               <MdArrowBackIosNew />
             </button>
 
-            <p className="flex items-center gap-2 text-sm text-[#64748B]">
+            <div className="flex items-center gap-2 text-sm text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-8 min-w-12 items-center justify-center rounded-md border border-[#E5E7EB] bg-white px-3 font-semibold text-black shadow-none">
+              <span className="flex h-8 min-w-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 font-semibold text-black">
                 {safePageIndex + 1}
               </span>
 
-              <span className="text-black">of {totalPages}</span>
-            </p>
+              <span className="text-black">
+                of {totalPages}
+              </span>
+            </div>
 
             <button
               type="button"
-              onClick={() => setPage(safePageIndex + 1)}
+              onClick={() =>
+                setPage(
+                  safePageIndex + 1,
+                )
+              }
               disabled={!canNext}
-              className={paginationButtonClass}
+              className={
+                paginationButtonClass
+              }
             >
               <MdArrowForwardIos />
             </button>
 
             <button
               type="button"
-              onClick={() => setPage(totalPages - 1)}
+              onClick={() =>
+                setPage(
+                  totalPages - 1,
+                )
+              }
               disabled={!canNext}
-              className={paginationButtonClass}
+              className={
+                paginationButtonClass
+              }
             >
               <MdKeyboardDoubleArrowRight />
             </button>
