@@ -255,7 +255,7 @@ function Table({
   if (!hasMounted) {
     return null;
   }
-  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-sm text-black shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+  const paginationButtonClass = "flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-xl border border-slate-200 bg-white", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
@@ -379,7 +379,7 @@ function Table({
         )
       ) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 items-center border-t border-slate-100 bg-white px-4 py-4", children: [
+    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 items-center border-t border-slate-50 bg-white px-4 py-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-sm text-slate-500", children: [
         "Showing",
         " ",
