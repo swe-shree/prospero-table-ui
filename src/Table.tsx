@@ -385,11 +385,11 @@ export function Table<TData extends object>({
   }
 
   const paginationButtonClass =
-    "flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-9 w-9 items-center justify-center rounded-md border border-slate-[#CBD5E1] bg-white text-sm text-black shadow-none transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white">
-      <div className="max-h-[500px] w-full overflow-auto">
+      <div className="max-h-[500px] w-full overflow-auto border-b border-[#F1F5F9]">
         <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-20">
             {table
@@ -577,7 +577,7 @@ export function Table<TData extends object>({
       </div>
 
       {enablePagination && (
-        <div className="grid grid-cols-3 items-center border-t border-slate-50 bg-white px-4 py-4">
+        <div className="grid grid-cols-3 items-center bg-white px-4 py-4">
           <p className="text-sm text-slate-500">
             Showing{" "}
             <span className="font-semibold text-black">
