@@ -1,20 +1,11 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { ColumnDef } from '@tanstack/react-table';
 
-type TableProps<TData extends object> = {
-    columns?: ColumnDef<TData>[];
-    data?: TData[];
-    total?: number;
-    fetchUrl?: string;
-    pageSize?: number;
-    rowLabel?: string;
-    enableQueryParams?: boolean;
-    pageQueryKey?: string;
-    enableSorting?: boolean;
-    enableRowSelection?: boolean;
-    enablePagination?: boolean;
+type TableContainerProps = {
+    data: any[];
+    table: any;
     emptyMessage?: string;
+    firstColumnColor?: string;
 };
-declare function Table<TData extends object>({ columns, data, total, fetchUrl, pageSize, rowLabel, enableQueryParams, pageQueryKey, enableSorting, enableRowSelection, enablePagination, emptyMessage, }: TableProps<TData>): react_jsx_runtime.JSX.Element | null;
+declare function TableContainer({ data, table, emptyMessage, firstColumnColor, }: TableContainerProps): react_jsx_runtime.JSX.Element;
 
-export { Table, type TableProps };
+export { TableContainer as Table, TableContainer, type TableContainerProps };
