@@ -49,7 +49,7 @@ export function Table({
   const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
 
   const paginationButtonClass =
-    "flex h-8 w-8 items-center justify-center rounded-md border border-[#CBD5E1] bg-white text-xs text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
+    "flex h-8 w-8 items-center justify-center rounded-none border border-[#CBD5E1] bg-white text-xs text-[#64748B] transition-colors hover:bg-slate-50 disabled:opacity-40";
 
   return (
     <div className="w-full overflow-hidden rounded-none border border-[#CBD5E1] bg-white">
@@ -199,7 +199,7 @@ export function Table({
             <div className="flex items-center gap-2 text-[11px] text-slate-500">
               <span>Page</span>
 
-              <span className="flex h-8 min-w-8 items-center justify-center rounded-md border border-[#CBD5E1] bg-white px-2 font-semibold text-black">
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-none border border-[#CBD5E1] bg-white px-2 font-semibold text-black">
                 {currentPage}
               </span>
 
