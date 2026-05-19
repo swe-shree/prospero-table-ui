@@ -121,17 +121,13 @@ export function Table({
           <tbody className="text-xs">
             {data && rows.length > 0 ? (
               rows.map((row: any, rowIndex: number) => (
-                <tr
-                  key={row.id}
-                  className={clsx(
-                    rowIndex % 2 === 0 ? "bg-white" : "bg-[#E9EEF5]",
-                    "group hover:bg-blue-50",
-                  )}
-                >
+                <tr key={row.id} className="group">
                   {row.getVisibleCells().map((cell: any, cellIndex: number) => (
                     <td
                       key={cell.id}
                       style={{
+                        backgroundColor:
+                          rowIndex % 2 === 0 ? "#FFFFFF" : "#E9EEF5",
                         ...(cellIndex === 1 && firstColumnColor
                           ? {
                               color: firstColumnColor,
@@ -140,7 +136,7 @@ export function Table({
                           : {}),
                       }}
                       className={clsx(
-                        "border-b border-[#E2E8F0] px-3 py-3 text-left font-normal text-slate-700",
+                        "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
                         cell.column.columnDef.meta?.className,
                       )}
                     >

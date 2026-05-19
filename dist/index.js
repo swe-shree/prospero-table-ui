@@ -98,36 +98,27 @@ function Table({
           header.id
         );
       }) }, headerGroup.id)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        "tr",
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { className: "group", children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        "td",
         {
+          style: {
+            backgroundColor: rowIndex % 2 === 0 ? "#FFFFFF" : "#E9EEF5",
+            ...cellIndex === 1 && firstColumnColor ? {
+              color: firstColumnColor,
+              fontWeight: 600
+            } : {}
+          },
           className: (0, import_clsx.default)(
-            rowIndex % 2 === 0 ? "bg-white" : "bg-[#E9EEF5]",
-            "group hover:bg-blue-50"
+            "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
+            cell.column.columnDef.meta?.className
           ),
-          children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-            "td",
-            {
-              style: {
-                ...cellIndex === 1 && firstColumnColor ? {
-                  color: firstColumnColor,
-                  fontWeight: 600
-                } : {}
-              },
-              className: (0, import_clsx.default)(
-                "border-b border-[#E2E8F0] px-3 py-3 text-left font-normal text-slate-700",
-                cell.column.columnDef.meta?.className
-              ),
-              children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : (0, import_react_table.flexRender)(
-                cell.column.columnDef.cell,
-                cell.getContext()
-              )
-            },
-            cell.id
-          ))
+          children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : (0, import_react_table.flexRender)(
+            cell.column.columnDef.cell,
+            cell.getContext()
+          )
         },
-        row.id
-      )) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        cell.id
+      )) }, row.id)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "td",
         {
           colSpan: visibleColumnsCount,
