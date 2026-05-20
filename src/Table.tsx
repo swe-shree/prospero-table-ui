@@ -1,74 +1,71 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { flexRender } from "@tanstack/react-table";
-import clsx from "clsx";
 import {
-  FaSort,
-  FaSortDown,
-  FaSortUp,
-  FaAngleLeft,
-  FaAngleRight,
-  FaAngleDoubleLeft,
-  FaAngleDoubleRight,
-} from "react-icons/fa";
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type SortingState,
+} from "@tanstack/react-table";
 
-export type TableProps = {
-  data: any[];
-  table: any;
-  emptyMessage?: string;
-  firstColumnColor?: string;
-  enablePagination?: boolean;
-  rowLabel?: string;
-  showingFrom?: number;
-  showingTo?: number;
-  totalRows?: number;
-  currentPage?: number;
-  totalPages?: number;
-  canPrev?: boolean;
-  canNext?: boolean;
-  onFirstPage?: () => void;
-  onPrevPage?: () => void;
-  onNextPage?: () => void;
-  onLastPage?: () => void;
+import { useState } from "react";
+
+import {
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+} from "lucide-react";
+
+export type TableProps<TData> = {
+  data: TData[];
+  columns: ColumnDef<TData>[];
 };
 
-export function Table({
+export function Table<TData>({
   data,
-  table,
-  emptyMessage = "No records to display",
-  firstColumnColor,
-  enablePagination = true,
-  rowLabel = "documents",
-  showingFrom = 0,
-  showingTo = 0,
-  totalRows = data?.length ?? 0,
-  currentPage = 1,
-  totalPages = 1,
-  canPrev = false,
-  canNext = false,
-  onFirstPage,
-  onPrevPage,
-  onNextPage,
-  onLastPage,
-}: TableProps) {
-  const rows = table.getRowModel().rows;
-  const headerGroups = table.getHeaderGroups();
-  const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
+  columns,
+}: TableProps<TData>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({
+    data,
+    columns,
+
+    state: {
+      sorting,
+    },
+
+    onSortingChange: setSorting,
+
+    getCoreRowModel: getCoreRowModel(),
+
+    getSortedRowModel: getSortedRowModel(),
+
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   const paginationButtonClass =
-    "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
+    "flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white">
+    <div className="w-full overflow-hidden rounded-2xl border-2 border-slate-300 bg-white">
       <div className="max-h-[500px] w-full overflow-auto">
-        <table className="w-full min-w-full border-separate border-spacing-0 text-sm">
-          <thead className="sticky top-0 z-20">
-            {headerGroups.map((headerGroup: any) => (
+        <table className="w-full min-w-full border-separate border-spacing-0">
+          <thead className="sticky top-0 z-20 bg-[#F8FAFC]">
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header: any) => {
-                  const canSort = header.column.getCanSort();
-                  const isSorted = header.column.getIsSorted();
+                {headerGroup.headers.map((header) => {
+                  const canSort =
+                    header.column.getCanSort();
+
+                  const isSorted =
+                    header.column.getIsSorted();
 
                   return (
                     <th
@@ -78,37 +75,28 @@ export function Table({
                           ? header.column.getToggleSortingHandler()
                           : undefined
                       }
-                      className={clsx(
-                        "border-b border-[#CBD5E1] bg-[#F8FAFC] px-3 py-3 text-left",
-                        "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
-                        canSort &&
-                          "cursor-pointer transition-colors hover:bg-slate-100 hover:text-slate-900",
-                        header.column.columnDef.meta?.className,
-                      )}
+                      className={`border-b border-slate-200 bg-[#F8FAFC] px-5 py-4 text-left text-sm font-semibold uppercase tracking-wide text-slate-700 ${
+                        canSort
+                          ? "cursor-pointer select-none"
+                          : ""
+                      }`}
                     >
-                      <div
-                        className={clsx(
-                          "flex w-fit items-center gap-2 text-nowrap",
-                          header.column.columnDef.meta?.headerClassName,
+                      <div className="flex items-center gap-2">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
 
                         {canSort && (
-                          <span className="inline-flex h-4 w-4 items-center justify-center">
+                          <>
                             {isSorted === "asc" ? (
-                              <FaSortUp className="h-3 w-3 text-slate-700" />
+                              <ArrowUp className="h-3.5 w-3.5 text-slate-700" />
                             ) : isSorted === "desc" ? (
-                              <FaSortDown className="h-3 w-3 text-slate-700" />
+                              <ArrowDown className="h-3.5 w-3.5 text-slate-700" />
                             ) : (
-                              <FaSort className="h-3 w-3 text-slate-400" />
+                              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
                             )}
-                          </span>
+                          </>
                         )}
                       </div>
                     </th>
@@ -118,121 +106,92 @@ export function Table({
             ))}
           </thead>
 
-          <tbody className="text-xs">
-            {data && rows.length > 0 ? (
-              rows.map((row: any, rowIndex: number) => (
-                <tr key={row.id} className="group">
-                  {row.getVisibleCells().map((cell: any, cellIndex: number) => (
-                    <td
-                      key={cell.id}
-                      style={{
-                        backgroundColor:
-                          rowIndex % 2 === 0 ? "#FFFFFF" : "#E9EEF5",
-                        ...(cellIndex === 1 && firstColumnColor
-                          ? {
-                              color: firstColumnColor,
-                              fontWeight: 600,
-                            }
-                          : {}),
-                      }}
-                      className={clsx(
-                        "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
-                        cell.column.columnDef.meta?.className,
-                      )}
-                    >
-                      {cell.column.id === "filename"
-                        ? String(cell.getValue())
-                            .replace(".pdf", "")
-                            .replace(/\s+\d+$/, "")
-                        : flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={visibleColumnsCount}
-                  className="px-3 py-8 text-center text-sm text-slate-400"
-                >
-                  {emptyMessage}
-                </td>
+          <tbody>
+            {table.getRowModel().rows.map((row, index) => (
+              <tr
+                key={row.id}
+                className={
+                  index % 2 === 0
+                    ? "bg-white"
+                    : "bg-slate-100"
+                }
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="border-b border-slate-200 px-5 py-4 text-sm text-slate-700"
+                  >
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </td>
+                ))}
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
 
-      {enablePagination && (
-        <div className="grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-3 py-3">
-          <p className="text-[12px] text-slate-500">
-            Showing{" "}
-            <span className="font-semibold text-black">
-              {showingFrom}-{showingTo}
-            </span>{" "}
-            of{" "}
-            <span className="font-semibold text-black">
-              {totalRows.toLocaleString()}
-            </span>{" "}
-            {rowLabel}
-          </p>
+      <div className="flex items-center justify-between border-t border-slate-200 px-5 py-4">
+        <div className="text-sm text-slate-600">
+          Showing{" "}
+          <span className="font-semibold">
+            {table.getRowModel().rows.length}
+          </span>{" "}
+          rows
+        </div>
 
-          <div className="flex items-center justify-center gap-4">
-            <button
-              type="button"
-              onClick={onFirstPage}
-              disabled={!canPrev}
-              className={paginationButtonClass}
-            >
-              <FaAngleDoubleLeft className="h-4 w-4 text-black" />
-            </button>
+        <div className="flex items-center gap-3">
+          <button
+            className={paginationButtonClass}
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronsLeft className="h-5 w-5" />
+          </button>
 
-            <button
-              type="button"
-              onClick={onPrevPage}
-              disabled={!canPrev}
-              className={paginationButtonClass}
-            >
-              <FaAngleLeft className="h-4 w-4 text-black" />
-            </button>
+          <button
+            className={paginationButtonClass}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
 
-            <div className="flex items-center gap-2 text-[12px] text-slate-500">
-              <span>Page</span>
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
+            <span>Page</span>
 
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm">
-                {currentPage}
-              </span>
-
-              <span className="text-black">of {totalPages}</span>
+            <div className="flex h-10 min-w-[40px] items-center justify-center rounded-xl border border-slate-300 bg-white px-3 shadow-sm">
+              {table.getState().pagination.pageIndex + 1}
             </div>
 
-            <button
-              type="button"
-              onClick={onNextPage}
-              disabled={!canNext}
-              className={paginationButtonClass}
-            >
-              <FaAngleRight className="h-4 w-4 text-black" />
-            </button>
-
-            <button
-              type="button"
-              onClick={onLastPage}
-              disabled={!canNext}
-              className={paginationButtonClass}
-            >
-              <FaAngleDoubleRight className="h-4 w-4 text-black" />
-            </button>
+            <span>
+              of {table.getPageCount()}
+            </span>
           </div>
 
-          <div />
+          <button
+            className={paginationButtonClass}
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          <button
+            className={paginationButtonClass}
+            onClick={() =>
+              table.setPageIndex(
+                table.getPageCount() - 1
+              )
+            }
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronsRight className="h-5 w-5" />
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }
-
-export default Table;

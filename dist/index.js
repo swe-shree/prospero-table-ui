@@ -1,9 +1,7 @@
 "use strict";
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -17,187 +15,136 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
-  Table: () => Table,
-  default: () => Table_default
+  Table: () => Table
 });
 module.exports = __toCommonJS(index_exports);
 
 // src/Table.tsx
 var import_react_table = require("@tanstack/react-table");
-var import_clsx = __toESM(require("clsx"));
-var import_fa = require("react-icons/fa");
+var import_react = require("react");
+var import_lucide_react = require("lucide-react");
 var import_jsx_runtime = require("react/jsx-runtime");
 function Table({
   data,
-  table,
-  emptyMessage = "No records to display",
-  firstColumnColor,
-  enablePagination = true,
-  rowLabel = "documents",
-  showingFrom = 0,
-  showingTo = 0,
-  totalRows = data?.length ?? 0,
-  currentPage = 1,
-  totalPages = 1,
-  canPrev = false,
-  canNext = false,
-  onFirstPage,
-  onPrevPage,
-  onNextPage,
-  onLastPage
+  columns
 }) {
-  const rows = table.getRowModel().rows;
-  const headerGroups = table.getHeaderGroups();
-  const visibleColumnsCount = table.getVisibleLeafColumns?.().length ?? 1;
-  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-black shadow-sm transition-colors hover:bg-[#F8FAFC] disabled:opacity-40";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0 text-sm", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20", children: headerGroups.map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: headerGroup.headers.map((header) => {
+  const [sorting, setSorting] = (0, import_react.useState)([]);
+  const table = (0, import_react_table.useReactTable)({
+    data,
+    columns,
+    state: {
+      sorting
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: (0, import_react_table.getCoreRowModel)(),
+    getSortedRowModel: (0, import_react_table.getSortedRowModel)(),
+    getPaginationRowModel: (0, import_react_table.getPaginationRowModel)()
+  });
+  const paginationButtonClass = "flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40";
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "w-full overflow-hidden rounded-2xl border-2 border-slate-300 bg-white", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "max-h-[500px] w-full overflow-auto", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { className: "w-full min-w-full border-separate border-spacing-0", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { className: "sticky top-0 z-20 bg-[#F8FAFC]", children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: headerGroup.headers.map((header) => {
         const canSort = header.column.getCanSort();
         const isSorted = header.column.getIsSorted();
         return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "th",
           {
             onClick: canSort ? header.column.getToggleSortingHandler() : void 0,
-            className: (0, import_clsx.default)(
-              "border-b border-[#CBD5E1] bg-[#F8FAFC] px-3 py-3 text-left",
-              "text-[11px] font-semibold uppercase tracking-wider text-slate-600",
-              canSort && "cursor-pointer transition-colors hover:bg-slate-100 hover:text-slate-900",
-              header.column.columnDef.meta?.className
-            ),
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
-              "div",
-              {
-                className: (0, import_clsx.default)(
-                  "flex w-fit items-center gap-2 text-nowrap",
-                  header.column.columnDef.meta?.headerClassName
-                ),
-                children: [
-                  header.isPlaceholder ? null : (0, import_react_table.flexRender)(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  ),
-                  canSort && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: isSorted === "asc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSortUp, { className: "h-3 w-3 text-slate-700" }) : isSorted === "desc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSortDown, { className: "h-3 w-3 text-slate-700" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaSort, { className: "h-3 w-3 text-slate-400" }) })
-                ]
-              }
-            )
+            className: `border-b border-slate-200 bg-[#F8FAFC] px-5 py-4 text-left text-sm font-semibold uppercase tracking-wide text-slate-700 ${canSort ? "cursor-pointer select-none" : ""}`,
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2", children: [
+              (0, import_react_table.flexRender)(
+                header.column.columnDef.header,
+                header.getContext()
+              ),
+              canSort && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: isSorted === "asc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ArrowUp, { className: "h-3.5 w-3.5 text-slate-700" }) : isSorted === "desc" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ArrowDown, { className: "h-3.5 w-3.5 text-slate-700" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ArrowUpDown, { className: "h-3.5 w-3.5 text-slate-400" }) })
+            ] })
           },
           header.id
         );
       }) }, headerGroup.id)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { className: "text-xs", children: data && rows.length > 0 ? rows.map((row, rowIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { className: "group", children: row.getVisibleCells().map((cell, cellIndex) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        "td",
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: table.getRowModel().rows.map((row, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        "tr",
         {
-          style: {
-            backgroundColor: rowIndex % 2 === 0 ? "#FFFFFF" : "#E9EEF5",
-            ...cellIndex === 1 && firstColumnColor ? {
-              color: firstColumnColor,
-              fontWeight: 600
-            } : {}
-          },
-          className: (0, import_clsx.default)(
-            "border-b border-[#E2E8F0] px-3 py-2 text-left font-normal text-slate-700 group-hover:!bg-blue-50",
-            cell.column.columnDef.meta?.className
-          ),
-          children: cell.column.id === "filename" ? String(cell.getValue()).replace(".pdf", "").replace(/\s+\d+$/, "") : (0, import_react_table.flexRender)(
-            cell.column.columnDef.cell,
-            cell.getContext()
-          )
+          className: index % 2 === 0 ? "bg-white" : "bg-slate-100",
+          children: row.getVisibleCells().map((cell) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "td",
+            {
+              className: "border-b border-slate-200 px-5 py-4 text-sm text-slate-700",
+              children: (0, import_react_table.flexRender)(
+                cell.column.columnDef.cell,
+                cell.getContext()
+              )
+            },
+            cell.id
+          ))
         },
-        cell.id
-      )) }, row.id)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        "td",
-        {
-          colSpan: visibleColumnsCount,
-          className: "px-3 py-8 text-center text-sm text-slate-400",
-          children: emptyMessage
-        }
-      ) }) })
+        row.id
+      )) })
     ] }) }),
-    enablePagination && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-3 items-center border-t border-[#CBD5E1] bg-white px-3 py-3", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "text-[12px] text-slate-500", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between border-t border-slate-200 px-5 py-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "text-sm text-slate-600", children: [
         "Showing",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "font-semibold text-black", children: [
-          showingFrom,
-          "-",
-          showingTo
-        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold", children: table.getRowModel().rows.length }),
         " ",
-        "of",
-        " ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "font-semibold text-black", children: totalRows.toLocaleString() }),
-        " ",
-        rowLabel
+        "rows"
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-center gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-3", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
-            type: "button",
-            onClick: onFirstPage,
-            disabled: !canPrev,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaAngleDoubleLeft, { className: "h-4 w-4 text-black" })
+            onClick: () => table.setPageIndex(0),
+            disabled: !table.getCanPreviousPage(),
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ChevronsLeft, { className: "h-5 w-5" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
-            type: "button",
-            onClick: onPrevPage,
-            disabled: !canPrev,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaAngleLeft, { className: "h-4 w-4 text-black" })
+            onClick: () => table.previousPage(),
+            disabled: !table.getCanPreviousPage(),
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ChevronLeft, { className: "h-5 w-5" })
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-[12px] text-slate-500", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 text-sm font-medium text-slate-700", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Page" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "flex h-10 w-10 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white font-semibold text-black shadow-sm", children: currentPage }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "text-black", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex h-10 min-w-[40px] items-center justify-center rounded-xl border border-slate-300 bg-white px-3 shadow-sm", children: table.getState().pagination.pageIndex + 1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
             "of ",
-            totalPages
+            table.getPageCount()
           ] })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
-            type: "button",
-            onClick: onNextPage,
-            disabled: !canNext,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaAngleRight, { className: "h-4 w-4 text-black" })
+            onClick: () => table.nextPage(),
+            disabled: !table.getCanNextPage(),
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ChevronRight, { className: "h-5 w-5" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
-            type: "button",
-            onClick: onLastPage,
-            disabled: !canNext,
             className: paginationButtonClass,
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_fa.FaAngleDoubleRight, { className: "h-4 w-4 text-black" })
+            onClick: () => table.setPageIndex(
+              table.getPageCount() - 1
+            ),
+            disabled: !table.getCanNextPage(),
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.ChevronsRight, { className: "h-5 w-5" })
           }
         )
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {})
+      ] })
     ] })
   ] });
 }
-var Table_default = Table;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Table
